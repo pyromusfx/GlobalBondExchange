@@ -140,19 +140,36 @@ export function usePriceChart(containerRef: React.RefObject<HTMLDivElement>, cou
   
   // Chart'ı oluştur
   useEffect(() => {
-    if (containerRef.current && chartData.length > 0 && !chartRef.current) {
+    // Container ve veri kontrolü
+    if (!containerRef.current || chartData.length === 0) {
+      return;
+    }
+    
+    // Temizleme işlemi, her zaman mevcut grafiği temizle
+    if (chartRef.current) {
+      chartRef.current.remove();
+      chartRef.current = null;
+      seriesRef.current = null;
+    }
+    
+    // Gecikme ekleyerek DOM'un tamamen yüklenmesini sağla
+    const timer = setTimeout(() => {
       try {
-        // Mevcut grafiği temizle
-        if (chartRef.current) {
-          chartRef.current.remove();
-          chartRef.current = null;
-          seriesRef.current = null;
+        // Grafiğin oluşturulacağı element hala DOM'da mı kontrol et
+        if (!containerRef.current) {
+          console.error("Container ref is null");
+          return;
         }
+
+        console.log("Creating chart with container dimensions:", {
+          width: containerRef.current.clientWidth,
+          height: containerRef.current.clientHeight
+        });
         
         // Grafiği oluştur
         const chart = createChart(containerRef.current, {
-          width: defaultOptions.width,
-          height: defaultOptions.height,
+          width: containerRef.current.clientWidth || defaultOptions.width,
+          height: containerRef.current.clientHeight || defaultOptions.height,
           layout: {
             background: { type: 'solid' as ColorType, color: defaultOptions.colors.backgroundColor },
             textColor: defaultOptions.colors.textColor,
@@ -190,9 +207,7 @@ export function usePriceChart(containerRef: React.RefObject<HTMLDivElement>, cou
           wickDownColor: defaultOptions.colors.wickDownColor,
         });
         
-        // Veriyi olduğu gibi ayarla - candlestick için OHLC verilerinin hepsi gerekli
-        
-        // Set data
+        // Veriyi ayarla
         series.setData(chartData);
         
         // Container boyut değişikliklerini izle
@@ -202,13 +217,16 @@ export function usePriceChart(containerRef: React.RefObject<HTMLDivElement>, cou
           }
           
           const { width, height } = entries[0].contentRect;
-          chart.applyOptions({
-            width: width,
-            height: height
-          });
+          if (width > 0 && height > 0 && chartRef.current) {
+            chartRef.current.applyOptions({
+              width: width,
+              height: height
+            });
+            
+            // Yeniden içeriğe sığdır
+            chartRef.current.timeScale().fitContent();
+          }
         });
-        
-        resizeObserver.observe(containerRef.current);
         
         // Referansları sakla
         chartRef.current = chart;
@@ -217,13 +235,21 @@ export function usePriceChart(containerRef: React.RefObject<HTMLDivElement>, cou
         // Scale content to fit
         chart.timeScale().fitContent();
         
+        // ResizeObserver'ı başlat
+        if (containerRef.current) {
+          resizeObserver.observe(containerRef.current);
+        }
+        
         // Temizleme işlevi
         return () => {
+          clearTimeout(timer);
           if (containerRef.current) {
             resizeObserver.unobserve(containerRef.current);
           }
           resizeObserver.disconnect();
-          chart.remove();
+          if (chartRef.current) {
+            chartRef.current.remove();
+          }
           chartRef.current = null;
           seriesRef.current = null;
         };
@@ -231,8 +257,10 @@ export function usePriceChart(containerRef: React.RefObject<HTMLDivElement>, cou
         console.error("There was a problem when creating the chart:", e);
         setError("Failed to create chart");
       }
-    }
-  }, [containerRef, chartData, defaultOptions, defaultOptions.colors]);
+    }, 100); // 100ms gecikme
+    
+    return () => clearTimeout(timer);
+  }, [containerRef.current, chartData.length, countryCode]);
   
   // Container boyutu değişirse grafiği güncelle
   useEffect(() => {

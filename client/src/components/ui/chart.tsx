@@ -34,6 +34,7 @@ export default function CandlestickChart({
   },
   height = 400
 }: ChartProps) {
+  console.log("CandlestickChart rendered with data length:", data?.length);
   const chartContainerRef = useRef<HTMLDivElement>(null);
 
   // Generate some demo data if none provided

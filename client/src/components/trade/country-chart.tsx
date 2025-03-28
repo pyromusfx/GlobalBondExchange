@@ -14,6 +14,7 @@ export default function CountryChart({ country, className }: CountryChartProps) 
   const containerRef = useRef<HTMLDivElement>(null);
   // Son işlenen fiyatı takip etmek için bir ref tanımlıyoruz (Component üst seviyesinde)
   const lastProcessedPrice = useRef<string | null>(null);
+  const uniqueChartId = useRef(`chart-${country.countryCode}-${Math.random().toString(36).substring(2, 9)}`);
   
   const { chartData, isLoading, error, appendNewPrice } = usePriceChart(containerRef, country.countryCode, {
     height: 400,
@@ -97,7 +98,12 @@ export default function CountryChart({ country, className }: CountryChartProps) 
                 <p className="text-red-500">{error}</p>
               </div>
             ) : (
-              <div ref={containerRef} className="w-full h-full" />
+              <div 
+                id={uniqueChartId.current}
+                ref={containerRef} 
+                className="w-full h-full" 
+                style={{ minHeight: '400px' }}
+              />
             )}
           </div>
         </CardContent>
