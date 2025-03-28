@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { createChart, LineStyle, Time } from 'lightweight-charts';
+import { createChart, ColorType, Time } from 'lightweight-charts';
 import { apiRequest } from '@/lib/queryClient';
 
 // Arayüzler
@@ -154,7 +154,7 @@ export function usePriceChart(containerRef: React.RefObject<HTMLDivElement>, cou
           width: defaultOptions.width,
           height: defaultOptions.height,
           layout: {
-            background: { type: 'solid', color: defaultOptions.colors.backgroundColor },
+            background: { type: 'solid' as ColorType, color: defaultOptions.colors.backgroundColor },
             textColor: defaultOptions.colors.textColor,
           },
           grid: {
@@ -180,22 +180,20 @@ export function usePriceChart(containerRef: React.RefObject<HTMLDivElement>, cou
           },
         });
         
-        // Basit line series oluştur
-        const series = chart.addLineSeries({
-          color: defaultOptions.colors.lineColor,
-          lineWidth: 2,
-          crosshairMarkerVisible: true,
-          crosshairMarkerRadius: 4,
+        // Mum serisi (Candlestick series) oluştur
+        const series = chart.addCandlestickSeries({
+          upColor: defaultOptions.colors.upColor,
+          downColor: defaultOptions.colors.downColor,
+          borderUpColor: defaultOptions.colors.borderUpColor,
+          borderDownColor: defaultOptions.colors.borderDownColor,
+          wickUpColor: defaultOptions.colors.wickUpColor,
+          wickDownColor: defaultOptions.colors.wickDownColor,
         });
         
-        // Veriyi uygun formata dönüştür ve ayarla
-        const lineData = chartData.map(item => ({
-          time: item.time,
-          value: item.close
-        }));
+        // Veriyi olduğu gibi ayarla - candlestick için OHLC verilerinin hepsi gerekli
         
         // Set data
-        series.setData(lineData);
+        series.setData(chartData);
         
         // Container boyut değişikliklerini izle
         const resizeObserver = new ResizeObserver(entries => {
@@ -257,13 +255,8 @@ export function usePriceChart(containerRef: React.RefObject<HTMLDivElement>, cou
   useEffect(() => {
     if (seriesRef.current && chartData.length > 0) {
       try {
-        // Veriyi uygun formata dönüştür ve ayarla
-        const lineData = chartData.map(item => ({
-          time: item.time,
-          value: item.close
-        }));
-        
-        seriesRef.current.setData(lineData);
+        // Candlestick için veriyi direkt kullan
+        seriesRef.current.setData(chartData);
         
         // Görüntüyü boyutlandır
         if (chartRef.current) {
