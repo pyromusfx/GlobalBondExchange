@@ -1,8 +1,10 @@
 import { useLocation, Link } from "wouter";
-import { FaHome, FaChartLine, FaExchangeAlt, FaTag, FaUser } from "react-icons/fa";
+import { FaHome, FaChartLine, FaExchangeAlt, FaTag, FaUser, FaGift, FaUserFriends } from "react-icons/fa";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function MobileNavigation() {
   const [location] = useLocation();
+  const { user } = useAuth();
 
   const isActive = (path: string) => {
     return location === path;
@@ -35,12 +37,29 @@ export default function MobileNavigation() {
             <span className="text-xs mt-1">Pre-Sale</span>
           </a>
         </Link>
-        <Link href="/auth">
-          <a className={`flex flex-col items-center ${isActive("/auth") || isActive("/kyc") ? "text-primary" : "text-muted-foreground"}`}>
-            <FaUser className="text-lg" />
-            <span className="text-xs mt-1">Account</span>
-          </a>
-        </Link>
+        {user ? (
+          <>
+            <Link href="/bonus">
+              <a className={`flex flex-col items-center ${isActive("/bonus") ? "text-primary" : "text-muted-foreground"}`}>
+                <FaGift className="text-lg" />
+                <span className="text-xs mt-1">Bonus</span>
+              </a>
+            </Link>
+            <Link href="/affiliate">
+              <a className={`flex flex-col items-center ${isActive("/affiliate") ? "text-primary" : "text-muted-foreground"}`}>
+                <FaUserFriends className="text-lg" />
+                <span className="text-xs mt-1">Affiliate</span>
+              </a>
+            </Link>
+          </>
+        ) : (
+          <Link href="/auth">
+            <a className={`flex flex-col items-center ${isActive("/auth") || isActive("/kyc") ? "text-primary" : "text-muted-foreground"}`}>
+              <FaUser className="text-lg" />
+              <span className="text-xs mt-1">Account</span>
+            </a>
+          </Link>
+        )}
       </div>
     </div>
   );

@@ -54,12 +54,26 @@ export default function Header() {
                 {t('header.presale')}
               </div>
             </Link>
-            {user && !user.isKycVerified && (
-              <Link href="/kyc">
-                <div className={`mx-3 hover:text-primary transition cursor-pointer ${isActive("/kyc") ? "text-white" : "text-muted-foreground"}`}>
-                  {t('header.kyc')}
-                </div>
-              </Link>
+            {user && (
+              <>
+                {!user.isKycVerified && (
+                  <Link href="/kyc">
+                    <div className={`mx-3 hover:text-primary transition cursor-pointer ${isActive("/kyc") ? "text-white" : "text-muted-foreground"}`}>
+                      {t('header.kyc')}
+                    </div>
+                  </Link>
+                )}
+                <Link href="/bonus">
+                  <div className={`mx-3 hover:text-primary transition cursor-pointer ${isActive("/bonus") ? "text-white" : "text-muted-foreground"}`}>
+                    Bonus
+                  </div>
+                </Link>
+                <Link href="/affiliate">
+                  <div className={`mx-3 hover:text-primary transition cursor-pointer ${isActive("/affiliate") ? "text-white" : "text-muted-foreground"}`}>
+                    Affiliate
+                  </div>
+                </Link>
+              </>
             )}
           </nav>
         </div>
@@ -132,12 +146,26 @@ export default function Header() {
                     {t('header.presale')}
                   </div>
                 </Link>
-                {user && !user.isKycVerified && (
-                  <Link href="/kyc">
-                    <div className="text-lg py-2 hover:text-primary cursor-pointer" onClick={() => setMobileMenuOpen(false)}>
-                      {t('header.kyc')}
-                    </div>
-                  </Link>
+                {user && (
+                  <>
+                    {!user.isKycVerified && (
+                      <Link href="/kyc">
+                        <div className="text-lg py-2 hover:text-primary cursor-pointer" onClick={() => setMobileMenuOpen(false)}>
+                          {t('header.kyc')}
+                        </div>
+                      </Link>
+                    )}
+                    <Link href="/bonus">
+                      <div className="text-lg py-2 hover:text-primary cursor-pointer" onClick={() => setMobileMenuOpen(false)}>
+                        Bonus
+                      </div>
+                    </Link>
+                    <Link href="/affiliate">
+                      <div className="text-lg py-2 hover:text-primary cursor-pointer" onClick={() => setMobileMenuOpen(false)}>
+                        Affiliate
+                      </div>
+                    </Link>
+                  </>
                 )}
                 
                 {/* Mobil görünümde Wallet Connect */}
