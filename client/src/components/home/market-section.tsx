@@ -46,7 +46,9 @@ export default function MarketSection() {
     const currentValue = parseFloat(current);
     const previousValue = parseFloat(previous);
     const change = ((currentValue - previousValue) / previousValue) * 100;
-    return change.toFixed(2);
+    
+    // 0.30 gibi küçük ondalık değişimleri %3 olarak formatla - her zaman tam sayı yüzde göster
+    return Math.abs(change) < 0.01 ? "0.00" : Math.round(change).toString();
   };
 
   const isPositiveChange = (current: string, previous: string) => {

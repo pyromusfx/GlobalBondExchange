@@ -7,7 +7,7 @@ import NewsTicker from "@/components/layout/news-ticker";
 import EnhancedTradingView from "@/components/trade/enhanced-trading-view";
 import TradeForm from "@/components/trade/trade-form";
 import { useCountry } from "@/hooks/use-countries";
-import { Loader2 } from "lucide-react";
+import { Loader2, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function TradePage() {
@@ -80,7 +80,24 @@ export default function TradePage() {
                 />
                 <div>
                   <h1 className="text-2xl font-bold">{country.countryName} ({country.countryCode})</h1>
-                  <p className="text-muted-foreground">Current Price: ${parseFloat(country.currentPrice || "0").toFixed(3)}</p>
+                  <div className="flex items-center space-x-2">
+                    <p className="text-muted-foreground">Current Price: ${parseFloat(country.currentPrice || "0").toFixed(3)}</p>
+                    {country.previousPrice && parseFloat(country.previousPrice) > 0 && (
+                      <span className={`font-mono text-sm flex items-center ${parseFloat(country.currentPrice) >= parseFloat(country.previousPrice) ? 'text-green-500' : 'text-red-500'}`}>
+                        {parseFloat(country.currentPrice) >= parseFloat(country.previousPrice) ? (
+                          <>
+                            <ArrowUpRight className="h-3 w-3 mr-1" />
+                            +{Math.round(((parseFloat(country.currentPrice) - parseFloat(country.previousPrice)) / parseFloat(country.previousPrice)) * 100)}%
+                          </>
+                        ) : (
+                          <>
+                            <ArrowDownRight className="h-3 w-3 mr-1" />
+                            {Math.round(((parseFloat(country.previousPrice) - parseFloat(country.currentPrice)) / parseFloat(country.previousPrice)) * 100)}%
+                          </>
+                        )}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
               
