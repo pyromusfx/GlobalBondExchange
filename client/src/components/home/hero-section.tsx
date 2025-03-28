@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
+import HeroWorldMap from "./hero-world-map";
 
 export default function HeroSection() {
   const { t } = useTranslation();
@@ -28,14 +29,11 @@ export default function HeroSection() {
           </div>
         </div>
       </div>
-      {/* World Map Background - Using SVG for better performance */}
+      {/* World Map Background - Interactive map */}
       <div className="absolute inset-0 z-0 opacity-30">
-        <img 
-          src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5ce?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80" 
-          className="w-full h-full object-cover" 
-          alt={t('common.worldMapBackground')} 
-          loading="lazy"
-        />
+        <div className="w-full h-full">
+          <HeroWorldMap />
+        </div>
       </div>
     </section>
   );

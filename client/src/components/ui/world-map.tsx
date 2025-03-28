@@ -1,7 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
-import { useLocation } from "wouter";;
+import { 
+  ComposableMap, 
+  Geographies, 
+  Geography, 
+  ZoomableGroup, 
+  Marker 
+} from 'react-simple-maps';
+import { useLocation } from "wouter";
 import { Tooltip } from '@/components/ui/tooltip';
 import { TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { CountryShare } from '@shared/schema';
@@ -138,72 +144,129 @@ Change: ${direction}${change}%`;
     }
   };
 
+  const [position, setPosition] = useState({ coordinates: [0, 0], zoom: 1 });
+  
+  // Handle zooming and panning
+  const handleMoveEnd = useCallback(position => {
+    setPosition(position);
+  }, []);
+  
+  // Hot spots to highlight major financial centers
+  const financialCenters = [
+    { name: "New York", coordinates: [-74.0059, 40.7128], size: 8 },
+    { name: "London", coordinates: [-0.1278, 51.5074], size: 8 },
+    { name: "Tokyo", coordinates: [139.6917, 35.6895], size: 8 },
+    { name: "Hong Kong", coordinates: [114.1694, 22.3193], size: 8 },
+    { name: "Singapore", coordinates: [103.8198, 1.3521], size: 8 },
+    { name: "Shanghai", coordinates: [121.4737, 31.2304], size: 8 }
+  ];
+
   return (
     <div className="w-full h-full">
       <TooltipProvider>
         <ComposableMap
           projection="geoMercator"
-          projectionConfig={{
-            scale: 120,
-            center: [0, 30]
-          }}
           style={{ width: "100%", height: "100%" }}
         >
-          <Geographies geography={geoUrl}>
-            {({ geographies }) =>
-              geographies.map((geo) => {
-                const countryCode = geo.properties.iso_a2;
-                return (
-                  <Tooltip key={geo.rsmKey}>
-                    <TooltipTrigger asChild>
-                      <Geography
-                        geography={geo}
-                        onMouseEnter={() => {
-                          setHoveredCountry(countryCode);
-                          setTooltipContent(getTooltipContent(countryCode));
-                        }}
-                        onMouseLeave={() => {
-                          setHoveredCountry(null);
-                          setTooltipContent(null);
-                        }}
-                        onClick={() => handleCountryClick(countryCode)}
-                        style={{
-                          default: {
-                            fill: getCountryColor(countryCode),
-                            stroke: "#212B36",
-                            strokeWidth: 0.5,
-                            outline: "none"
-                          },
-                          hover: {
-                            fill: "hsl(45, 93%, 47%)",
-                            stroke: "#212B36",
-                            strokeWidth: 0.5,
-                            outline: "none",
-                            cursor: "pointer"
-                          },
-                          pressed: {
-                            fill: "hsl(45, 93%, 40%)",
-                            stroke: "#212B36",
-                            strokeWidth: 0.5,
-                            outline: "none"
-                          }
-                        }}
-                      />
-                    </TooltipTrigger>
-                    {hoveredCountry === countryCode && tooltipContent && (
-                      <TooltipContent>
-                        <div className="whitespace-pre-line text-sm">
-                          {tooltipContent}
-                        </div>
-                      </TooltipContent>
-                    )}
-                  </Tooltip>
-                );
-              })
-            }
-          </Geographies>
+          <ZoomableGroup
+            zoom={position.zoom}
+            center={position.coordinates}
+            onMoveEnd={handleMoveEnd}
+            maxZoom={8}
+          >
+            <Geographies geography={geoUrl}>
+              {({ geographies }) =>
+                geographies.map((geo) => {
+                  const countryCode = geo.properties.iso_a2;
+                  return (
+                    <Tooltip key={geo.rsmKey}>
+                      <TooltipTrigger asChild>
+                        <Geography
+                          geography={geo}
+                          onMouseEnter={() => {
+                            setHoveredCountry(countryCode);
+                            setTooltipContent(getTooltipContent(countryCode));
+                          }}
+                          onMouseLeave={() => {
+                            setHoveredCountry(null);
+                            setTooltipContent(null);
+                          }}
+                          onClick={() => handleCountryClick(countryCode)}
+                          style={{
+                            default: {
+                              fill: getCountryColor(countryCode),
+                              stroke: "#212B36",
+                              strokeWidth: 0.5,
+                              outline: "none"
+                            },
+                            hover: {
+                              fill: "hsl(45, 93%, 47%)",
+                              stroke: "#212B36",
+                              strokeWidth: 0.5,
+                              outline: "none",
+                              cursor: "pointer"
+                            },
+                            pressed: {
+                              fill: "hsl(45, 93%, 40%)",
+                              stroke: "#212B36",
+                              strokeWidth: 0.5,
+                              outline: "none"
+                            }
+                          }}
+                        />
+                      </TooltipTrigger>
+                      {hoveredCountry === countryCode && tooltipContent && (
+                        <TooltipContent>
+                          <div className="whitespace-pre-line text-sm">
+                            {tooltipContent}
+                          </div>
+                        </TooltipContent>
+                      )}
+                    </Tooltip>
+                  );
+                })
+              }
+            </Geographies>
+            
+            {/* Financial centers markers */}
+            {financialCenters.map(({ name, coordinates, size }) => (
+              <Marker key={name} coordinates={coordinates}>
+                <circle r={size / position.zoom} fill="rgba(255, 215, 0, 0.8)" stroke="#fff" strokeWidth={1} />
+                {position.zoom > 2 && (
+                  <text
+                    textAnchor="middle"
+                    y={position.zoom > 4 ? -15 : -10}
+                    style={{ 
+                      fontFamily: "system-ui", 
+                      fill: "#fff", 
+                      fontSize: 10 / (position.zoom > 4 ? 1 : position.zoom), 
+                      fontWeight: "bold",
+                      textShadow: "0px 0px 3px #000" 
+                    }}
+                  >
+                    {name}
+                  </text>
+                )}
+              </Marker>
+            ))}
+          </ZoomableGroup>
         </ComposableMap>
       </TooltipProvider>
+      
+      <div className="absolute bottom-2 left-2 bg-secondary bg-opacity-80 p-2 rounded-md text-xs">
+        <div>
+          <span className="font-bold">Zoom:</span> {Math.round(position.zoom * 100) / 100}x
+        </div>
+        <div>
+          <span className="font-bold">Click:</span> See Country Details
+        </div>
+        <div>
+          <span className="font-bold">Drag:</span> Pan Map
+        </div>
+        <div>
+          <span className="font-bold">Wheel:</span> Zoom In/Out
+        </div>
+      </div>
     </div>
   );
 }
