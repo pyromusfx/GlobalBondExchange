@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { createChart, IChartApi, ISeriesApi, Time, CandlestickData, SeriesType } from 'lightweight-charts';
+import { createChart, LineStyle, Time } from 'lightweight-charts';
 import { apiRequest } from '@/lib/queryClient';
 
 // Arayüzler
@@ -36,8 +36,8 @@ export function usePriceChart(containerRef: React.RefObject<HTMLDivElement>, cou
   const [error, setError] = useState<string | null>(null);
   
   // Chart nesnelerini saklamak için referanslar
-  const chartRef = useRef<IChartApi | null>(null);
-  const seriesRef = useRef<ISeriesApi<any> | null>(null);
+  const chartRef = useRef<any>(null);
+  const seriesRef = useRef<any>(null);
   
   // Varsayılan ayarlar
   const defaultOptions = {
@@ -69,11 +69,10 @@ export function usePriceChart(containerRef: React.RefObject<HTMLDivElement>, cou
       setError(null);
       
       try {
-        // Burada gerçek API isteği yapılacak - şimdilik demo veri kullanıyoruz
+        // Burada gerçek API isteği yapılacak
         const response = await apiRequest('GET', `/api/price-history/${countryCode}`);
         
         if (!response.ok) {
-          // Eğer API henüz hazır değilse demo veri kullanabiliriz
           console.log("API endpoint is not ready yet, using demo data");
           generateDemoData();
         } else {
@@ -142,89 +141,98 @@ export function usePriceChart(containerRef: React.RefObject<HTMLDivElement>, cou
   // Chart'ı oluştur
   useEffect(() => {
     if (containerRef.current && chartData.length > 0 && !chartRef.current) {
-      // Mevcut grafiği temizle
-      if (chartRef.current) {
-        chartRef.current.remove();
-        chartRef.current = null;
-        seriesRef.current = null;
-      }
-      
-      // Grafiği oluştur
-      const chart = createChart(containerRef.current, {
-        width: defaultOptions.width,
-        height: defaultOptions.height,
-        layout: {
-          background: { type: 'solid', color: defaultOptions.colors.backgroundColor },
-          textColor: defaultOptions.colors.textColor,
-        },
-        grid: {
-          vertLines: { color: 'rgba(42, 46, 57, 0.2)' },
-          horzLines: { color: 'rgba(42, 46, 57, 0.2)' },
-        },
-        timeScale: {
-          timeVisible: true,
-          secondsVisible: false,
-          borderColor: 'rgba(151, 151, 151, 0.2)',
-        },
-        rightPriceScale: {
-          borderColor: 'rgba(151, 151, 151, 0.2)',
-        },
-        handleScroll: {
-          mouseWheel: true,
-          pressedMouseMove: true,
-        },
-        handleScale: {
-          axisPressedMouseMove: true,
-          mouseWheel: true,
-          pinch: true,
-        },
-      });
-      
-      // Lightweight Charts güncel API'si ile seri oluştur
-      // @ts-ignore - Tip uyumsuzluğu nedeniyle
-      const series = chart.addSeries({
-        type: 'Area',
-        lineColor: defaultOptions.colors.lineColor,
-        topColor: defaultOptions.colors.areaTopColor,
-        bottomColor: defaultOptions.colors.areaBottomColor,
-      });
-      
-      // Veriyi uygun formata dönüştür ve ayarla
-      const lineData = chartData.map(item => ({
-        time: item.time,
-        value: item.close
-      }));
-      series.setData(lineData);
-      
-      // Container boyut değişikliklerini izle
-      const resizeObserver = new ResizeObserver(entries => {
-        if (entries.length === 0 || !entries[0].contentRect) {
-          return;
+      try {
+        // Mevcut grafiği temizle
+        if (chartRef.current) {
+          chartRef.current.remove();
+          chartRef.current = null;
+          seriesRef.current = null;
         }
         
-        const { width, height } = entries[0].contentRect;
-        chart.applyOptions({
-          width: width,
-          height: height
+        // Grafiği oluştur
+        const chart = createChart(containerRef.current, {
+          width: defaultOptions.width,
+          height: defaultOptions.height,
+          layout: {
+            background: { type: 'solid', color: defaultOptions.colors.backgroundColor },
+            textColor: defaultOptions.colors.textColor,
+          },
+          grid: {
+            vertLines: { color: 'rgba(42, 46, 57, 0.2)' },
+            horzLines: { color: 'rgba(42, 46, 57, 0.2)' },
+          },
+          timeScale: {
+            timeVisible: true,
+            secondsVisible: false,
+            borderColor: 'rgba(151, 151, 151, 0.2)',
+          },
+          rightPriceScale: {
+            borderColor: 'rgba(151, 151, 151, 0.2)',
+          },
+          handleScroll: {
+            mouseWheel: true,
+            pressedMouseMove: true,
+          },
+          handleScale: {
+            axisPressedMouseMove: true,
+            mouseWheel: true,
+            pinch: true,
+          },
         });
-      });
-      
-      resizeObserver.observe(containerRef.current);
-      
-      // Referansları sakla
-      chartRef.current = chart;
-      seriesRef.current = series;
-      
-      // Temizleme işlevi
-      return () => {
-        if (containerRef.current) {
-          resizeObserver.unobserve(containerRef.current);
-        }
-        resizeObserver.disconnect();
-        chart.remove();
-        chartRef.current = null;
-        seriesRef.current = null;
-      };
+        
+        // Basit line series oluştur
+        const series = chart.addLineSeries({
+          color: defaultOptions.colors.lineColor,
+          lineWidth: 2,
+          crosshairMarkerVisible: true,
+          crosshairMarkerRadius: 4,
+        });
+        
+        // Veriyi uygun formata dönüştür ve ayarla
+        const lineData = chartData.map(item => ({
+          time: item.time,
+          value: item.close
+        }));
+        
+        // Set data
+        series.setData(lineData);
+        
+        // Container boyut değişikliklerini izle
+        const resizeObserver = new ResizeObserver(entries => {
+          if (entries.length === 0 || !entries[0].contentRect) {
+            return;
+          }
+          
+          const { width, height } = entries[0].contentRect;
+          chart.applyOptions({
+            width: width,
+            height: height
+          });
+        });
+        
+        resizeObserver.observe(containerRef.current);
+        
+        // Referansları sakla
+        chartRef.current = chart;
+        seriesRef.current = series;
+        
+        // Scale content to fit
+        chart.timeScale().fitContent();
+        
+        // Temizleme işlevi
+        return () => {
+          if (containerRef.current) {
+            resizeObserver.unobserve(containerRef.current);
+          }
+          resizeObserver.disconnect();
+          chart.remove();
+          chartRef.current = null;
+          seriesRef.current = null;
+        };
+      } catch (e) {
+        console.error("There was a problem when creating the chart:", e);
+        setError("Failed to create chart");
+      }
     }
   }, [containerRef, chartData, defaultOptions, defaultOptions.colors]);
   
@@ -248,16 +256,21 @@ export function usePriceChart(containerRef: React.RefObject<HTMLDivElement>, cou
   // Veri güncellendiğinde seriyi güncelle
   useEffect(() => {
     if (seriesRef.current && chartData.length > 0) {
-      // Veriyi uygun formata dönüştür ve ayarla
-      const lineData = chartData.map(item => ({
-        time: item.time,
-        value: item.close
-      }));
-      seriesRef.current.setData(lineData);
-      
-      // Görüntüyü boyutlandır
-      if (chartRef.current) {
-        chartRef.current.timeScale().fitContent();
+      try {
+        // Veriyi uygun formata dönüştür ve ayarla
+        const lineData = chartData.map(item => ({
+          time: item.time,
+          value: item.close
+        }));
+        
+        seriesRef.current.setData(lineData);
+        
+        // Görüntüyü boyutlandır
+        if (chartRef.current) {
+          chartRef.current.timeScale().fitContent();
+        }
+      } catch (e) {
+        console.error("Error updating chart data:", e);
       }
     }
   }, [chartData]);
