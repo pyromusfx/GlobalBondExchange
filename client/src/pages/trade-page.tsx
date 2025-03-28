@@ -5,6 +5,7 @@ import MobileNavigation from "@/components/layout/mobile-navigation";
 import Footer from "@/components/layout/footer";
 import NewsTicker from "@/components/layout/news-ticker";
 import TradingView from "@/components/trade/trading-view";
+import EnhancedTradingView from "@/components/trade/enhanced-trading-view";
 import TradeForm from "@/components/trade/trade-form";
 import { useCountry } from "@/hooks/use-countries";
 import { Loader2 } from "lucide-react";
@@ -85,7 +86,20 @@ export default function TradePage() {
               </div>
               
               {/* TradingView Chart Component */}
-              <TradingView country={country} />
+              <div className="flex gap-4 mb-6">
+                <div className="w-full">
+                  <TradingView country={country} />
+                </div>
+              </div>
+              
+              {/* Enhanced News-Based Chart */}
+              <div className="mb-6">
+                <h2 className="text-lg font-medium mb-2">News-Driven Chart</h2>
+                <p className="text-sm text-muted-foreground mb-4">
+                  This chart shows price movements based on real-time news analysis.
+                </p>
+                <EnhancedTradingView country={country} />
+              </div>
             
               <div className="flex flex-col gap-4 mt-6">
                 <div className="bg-secondary/50 rounded-lg p-4">

@@ -234,6 +234,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Get price history for a country
+  app.get("/api/price-history/:countryCode", async (req, res) => {
+    try {
+      const { countryCode } = req.params;
+      
+      // Import the news analyzer functions
+      const { getPriceHistoryForCountry } = require('./news-analyzer');
+      
+      // Get or generate price history
+      const priceHistory = getPriceHistoryForCountry(countryCode);
+      
+      return res.status(200).json(priceHistory);
+    } catch (error) {
+      console.error('Error getting price history:', error);
+      return res.status(500).json({ message: "Error fetching price history" });
+    }
+  });
+  
   // Affiliate system routes
   
   // Register with a referral code
