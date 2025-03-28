@@ -110,7 +110,7 @@ export default function TradingViewWidget({
         if (containerRef.current) {
           containerRef.current.innerHTML = `
             <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: ${theme === "dark" ? "#fff" : "#333"};">
-              <p>Chart visualization unavailable. Please check your internet connection.</p>
+              <p>Loading market data...</p>
             </div>
           `;
         }

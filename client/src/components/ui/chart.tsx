@@ -148,7 +148,7 @@ export default function CandlestickChart({
       // Display fallback message
       if (chartContainerRef.current) {
         const fallbackMsg = document.createElement('div');
-        fallbackMsg.textContent = 'Chart visualization unavailable';
+        fallbackMsg.textContent = 'Loading chart...';
         fallbackMsg.style.textAlign = 'center';
         fallbackMsg.style.padding = '40px';
         fallbackMsg.style.color = colors.textColor || '#848E9C';

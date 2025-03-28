@@ -156,12 +156,14 @@ Change: ${direction}${change}%`;
   };
   
   const handleCountryClick = (countryCode: string) => {
-    if (!countries) return;
+    // Sadece geçerli bir ülke kodu varsa yönlendirme yapalım
+    if (!countryCode || countryCode === "") return;
     
-    const country = countries.find(c => c.countryCode === countryCode);
-    if (country) {
-      navigate(`/trade/${country.countryCode}`);
-    }
+    // Doğrudan ülke kodu ile yönlendirme - API tarafından veri alımını trade sayfasına bırakalım
+    navigate(`/trade/${countryCode}`);
+    
+    // Konsola bilgi yazdıralım
+    console.log(`Navigating to trade page for country: ${countryCode}`);
   };
 
   const [position, setPosition] = useState<{ coordinates: [number, number]; zoom: number }>({ coordinates: [0, 0], zoom: 1 });
