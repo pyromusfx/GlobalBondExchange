@@ -86,87 +86,20 @@ export default function CountryChart({ country, className }: CountryChartProps) 
         </div>
         
         <CardContent className="p-0 pt-4">
-          {/* 1D view */}
-          <TabsContent value="1D" className="mt-0">
-            <div className="w-full h-[400px] relative">
-              {isLoading ? (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                </div>
-              ) : error ? (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <p className="text-red-500">{error}</p>
-                </div>
-              ) : (
-                <div ref={containerRef} className="w-full h-full" />
-              )}
-            </div>
-          </TabsContent>
-          
-          {/* All other views use the same chart for now */}
-          <TabsContent value="1W" className="mt-0">
-            <div className="w-full h-[400px] relative">
-              {isLoading ? (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                </div>
-              ) : error ? (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <p className="text-red-500">{error}</p>
-                </div>
-              ) : (
-                <div ref={containerRef} className="w-full h-full" />
-              )}
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="1M" className="mt-0">
-            <div className="w-full h-[400px] relative">
-              {isLoading ? (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                </div>
-              ) : error ? (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <p className="text-red-500">{error}</p>
-                </div>
-              ) : (
-                <div ref={containerRef} className="w-full h-full" />
-              )}
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="3M" className="mt-0">
-            <div className="w-full h-[400px] relative">
-              {isLoading ? (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                </div>
-              ) : error ? (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <p className="text-red-500">{error}</p>
-                </div>
-              ) : (
-                <div ref={containerRef} className="w-full h-full" />
-              )}
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="1Y" className="mt-0">
-            <div className="w-full h-[400px] relative">
-              {isLoading ? (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                </div>
-              ) : error ? (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <p className="text-red-500">{error}</p>
-                </div>
-              ) : (
-                <div ref={containerRef} className="w-full h-full" />
-              )}
-            </div>
-          </TabsContent>
+          {/* Only show one chart container, all tabs use the same data */}
+          <div className="w-full h-[400px] relative p-2">
+            {isLoading ? (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </div>
+            ) : error ? (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <p className="text-red-500">{error}</p>
+              </div>
+            ) : (
+              <div ref={containerRef} className="w-full h-full" />
+            )}
+          </div>
         </CardContent>
       </Tabs>
     </Card>

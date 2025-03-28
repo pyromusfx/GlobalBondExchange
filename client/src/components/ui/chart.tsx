@@ -81,7 +81,7 @@ export default function CandlestickChart({
       // Create chart
       const chart = createChart(chartContainerRef.current, {
         layout: {
-          background: { color: colors.backgroundColor || 'transparent' },
+          background: { type: 'solid' as any, color: colors.backgroundColor || 'transparent' },
           textColor: colors.textColor || '#848E9C',
         },
         width: chartContainerRef.current.clientWidth,
