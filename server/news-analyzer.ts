@@ -217,17 +217,23 @@ export function calculateNewsImpact(categoryScores: Record<string, number>, coun
   let totalImpact = 0;
   let totalWeight = 0;
   
-  // Her kategori için ağırlıklı etki puanı hesapla
+  // Her kategori için ağırlıklı etki puanı hesapla - daha büyük etki için çarpanları artır
   for (const [category, score] of Object.entries(categoryScores)) {
     if (score > 0 && sensitivity[category] !== undefined) {
-      const impact = (sensitivity[category] / 5) * score; // -1 ile 1 arasına normalize et
+      // Daha güçlü etki için arttırılmış etki değeri (ortalama %50 daha fazla etki)
+      const multiplier = 1.5;  
+      const impact = (sensitivity[category] / 5) * score * multiplier; // -1.5 ile 1.5 arası değer verebilir
       totalImpact += impact;
       totalWeight += score;
     }
   }
   
-  // Toplam ağırlık 0 ise etki yok
-  if (totalWeight === 0) return 0;
+  // Rastgele ek volatilite (gürültü) ekle - %30-60 arası rastgele etki
+  const noiseLevel = 0.3 + (Math.random() * 0.3); // 0.3 ile 0.6 arası
+  const noiseImpact = (Math.random() > 0.5 ? 1 : -1) * noiseLevel;
+  
+  // Toplam ağırlık 0 ise sadece gürültü etkisi kullan
+  if (totalWeight === 0) return noiseImpact * 0.5; // gürültü seviyesini yarıya düşür
   
   // Ağırlıklı ortalama etki puanı
   return totalImpact / totalWeight;
@@ -260,9 +266,13 @@ export async function processNewsAndUpdateCountries(newsItems: any[]) {
       const currentPrice = parseFloat(targetCountry.currentPrice || "0");
       const previousPrice = currentPrice;
       
-      // Etki (impact) -1 ile 1 arasında, fiyat değişimini +/- %5 ile %15 arasında (arttırılmış volatilite)
-      const priceChangePercent = impact * (Math.random() * 10 + 5);
+      // Etki (impact) -1 ile 1 arasında, fiyat değişimini +/- %5 ile %15 arasında (DAHA FAZLA arttırılmış volatilite)
+      const priceChangePercent = impact * (Math.random() * 10 + 5) * 1.5; // %50 daha fazla etki
       const newPrice = currentPrice * (1 + priceChangePercent / 100);
+      
+      // Fiyatın $0.05'in altına düşmesini önle
+      const minPrice = 0.05;
+      const adjustedPrice = Math.max(newPrice, minPrice);
       
       // Güncellenmiş değerleri kaydet
       await storage.updateCountry(targetCountry.countryCode, {
