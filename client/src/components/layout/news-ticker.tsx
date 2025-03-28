@@ -23,8 +23,8 @@ export default function NewsTicker() {
   useEffect(() => {
     if (tickerRef.current && newsItems?.length) {
       const width = tickerRef.current.scrollWidth;
-      // Hızı %50 artırmak için 50 yerine 75 kullanıyoruz (50 * 1.5 = 75)
-      const duration = Math.max(26, width / 75); // 75px per second (50% daha hızlı)
+      // Hızı %100 artırmak için 50 yerine 100 kullanıyoruz (50 * 2 = 100)
+      const duration = Math.max(15, width / 100); // 100px per second (%100 daha hızlı)
       setAnimationDuration(duration);
     }
   }, [newsItems]);
