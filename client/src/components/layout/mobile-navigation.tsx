@@ -13,51 +13,37 @@ export default function MobileNavigation() {
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-secondary border-t border-border z-50 md:hidden">
       <div className="flex justify-around items-center py-3">
-        <Link href="/">
-          <a className={`flex flex-col items-center ${isActive("/") ? "text-primary" : "text-muted-foreground"}`}>
-            <FaHome className="text-lg" />
-            <span className="text-xs mt-1">Home</span>
-          </a>
+        <Link href="/" className={`flex flex-col items-center ${isActive("/") ? "text-primary" : "text-muted-foreground"}`}>
+          <FaHome className="text-lg" />
+          <span className="text-xs mt-1">Home</span>
         </Link>
-        <Link href="/market">
-          <a className={`flex flex-col items-center ${isActive("/market") ? "text-primary" : "text-muted-foreground"}`}>
-            <FaChartLine className="text-lg" />
-            <span className="text-xs mt-1">Market</span>
-          </a>
+        <Link href="/market" className={`flex flex-col items-center ${isActive("/market") ? "text-primary" : "text-muted-foreground"}`}>
+          <FaChartLine className="text-lg" />
+          <span className="text-xs mt-1">Market</span>
         </Link>
-        <Link href="/trade">
-          <a className={`flex flex-col items-center ${isActive("/trade") || location.startsWith("/trade/") ? "text-primary" : "text-muted-foreground"}`}>
-            <FaExchangeAlt className="text-lg" />
-            <span className="text-xs mt-1">Trade</span>
-          </a>
+        <Link href="/trade" className={`flex flex-col items-center ${isActive("/trade") || location.startsWith("/trade/") ? "text-primary" : "text-muted-foreground"}`}>
+          <FaExchangeAlt className="text-lg" />
+          <span className="text-xs mt-1">Trade</span>
         </Link>
-        <Link href="/presale">
-          <a className={`flex flex-col items-center ${isActive("/presale") ? "text-primary" : "text-muted-foreground"}`}>
-            <FaTag className="text-lg" />
-            <span className="text-xs mt-1">Pre-Sale</span>
-          </a>
+        <Link href="/presale" className={`flex flex-col items-center ${isActive("/presale") ? "text-primary" : "text-muted-foreground"}`}>
+          <FaTag className="text-lg" />
+          <span className="text-xs mt-1">Pre-Sale</span>
         </Link>
         {user ? (
           <>
-            <Link href="/bonus">
-              <a className={`flex flex-col items-center ${isActive("/bonus") ? "text-primary" : "text-muted-foreground"}`}>
-                <FaGift className="text-lg" />
-                <span className="text-xs mt-1">Bonus</span>
-              </a>
+            <Link href="/bonus" className={`flex flex-col items-center ${isActive("/bonus") ? "text-primary" : "text-muted-foreground"}`}>
+              <FaGift className="text-lg" />
+              <span className="text-xs mt-1">Bonus</span>
             </Link>
-            <Link href="/affiliate">
-              <a className={`flex flex-col items-center ${isActive("/affiliate") ? "text-primary" : "text-muted-foreground"}`}>
-                <FaUserFriends className="text-lg" />
-                <span className="text-xs mt-1">Affiliate</span>
-              </a>
+            <Link href="/affiliate" className={`flex flex-col items-center ${isActive("/affiliate") ? "text-primary" : "text-muted-foreground"}`}>
+              <FaUserFriends className="text-lg" />
+              <span className="text-xs mt-1">Affiliate</span>
             </Link>
           </>
         ) : (
-          <Link href="/auth">
-            <a className={`flex flex-col items-center ${isActive("/auth") || isActive("/kyc") ? "text-primary" : "text-muted-foreground"}`}>
-              <FaUser className="text-lg" />
-              <span className="text-xs mt-1">Account</span>
-            </a>
+          <Link href="/auth" className={`flex flex-col items-center ${isActive("/auth") || isActive("/kyc") ? "text-primary" : "text-muted-foreground"}`}>
+            <FaUser className="text-lg" />
+            <span className="text-xs mt-1">Account</span>
           </Link>
         )}
       </div>
