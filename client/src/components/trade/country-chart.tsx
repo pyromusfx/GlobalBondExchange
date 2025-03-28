@@ -26,10 +26,17 @@ export default function CountryChart({ country, className }: CountryChartProps) 
 
   // Yeni fiyat geldiğinde grafiği güncelle
   useEffect(() => {
+    // Priceların karşılaştırılacağı bir ref tanımlıyoruz
+    const lastProcessedPrice = React.useRef<string | null>(null);
+    
     if (country.currentPrice && chartData.length > 0) {
-      const price = parseFloat(country.currentPrice);
-      if (!isNaN(price)) {
-        appendNewPrice(price);
+      // Sadece fiyat değiştiyse güncelle, aynı fiyatı tekrar tekrar ekleme
+      if (country.currentPrice !== lastProcessedPrice.current) {
+        const price = parseFloat(country.currentPrice);
+        if (!isNaN(price)) {
+          appendNewPrice(price);
+          lastProcessedPrice.current = country.currentPrice;
+        }
       }
     }
   }, [country.currentPrice, appendNewPrice, chartData.length]);
