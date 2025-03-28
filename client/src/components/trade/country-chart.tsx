@@ -12,6 +12,9 @@ interface CountryChartProps {
 
 export default function CountryChart({ country, className }: CountryChartProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  // Son işlenen fiyatı takip etmek için bir ref tanımlıyoruz (Component üst seviyesinde)
+  const lastProcessedPrice = useRef<string | null>(null);
+  
   const { chartData, isLoading, error, appendNewPrice } = usePriceChart(containerRef, country.countryCode, {
     height: 400,
     colors: {
@@ -26,9 +29,6 @@ export default function CountryChart({ country, className }: CountryChartProps) 
 
   // Yeni fiyat geldiğinde grafiği güncelle
   useEffect(() => {
-    // Priceların karşılaştırılacağı bir ref tanımlıyoruz
-    const lastProcessedPrice = React.useRef<string | null>(null);
-    
     if (country.currentPrice && chartData.length > 0) {
       // Sadece fiyat değiştiyse güncelle, aynı fiyatı tekrar tekrar ekleme
       if (country.currentPrice !== lastProcessedPrice.current) {
