@@ -6,7 +6,10 @@ import { countries, featuredCountries, newsFeed } from "@shared/countries";
 import { 
   insertKycSchema, 
   insertTransactionSchema, 
-  insertUserHoldingsSchema
+  insertUserHoldingsSchema,
+  insertAffiliateCommissionSchema,
+  insertBonusClaimSchema,
+  insertUserSchema
 } from "@shared/schema";
 import { z } from "zod";
 
@@ -224,6 +227,160 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return res.status(200).json(news);
     } catch (error) {
       return res.status(500).json({ message: "Error fetching news" });
+    }
+  });
+  
+  // Affiliate system routes
+  
+  // Register with a referral code
+  app.post("/api/register-with-referral", async (req, res, next) => {
+    try {
+      const { username, email, password, fullName, referralCode } = req.body;
+      
+      // Check if the referral code is valid
+      const referrer = await storage.getUserByReferralCode(referralCode);
+      if (!referrer) {
+        return res.status(400).json({ message: "Invalid referral code" });
+      }
+      
+      // Create the new user with referrer info
+      const userData = {
+        username,
+        email,
+        password,
+        fullName,
+        referredBy: referrer.id
+      };
+      
+      const validatedData = insertUserSchema.parse(userData);
+      const user = await storage.createUser(validatedData);
+      
+      // Generate an affiliate commission (5% of initial balance)
+      const commissionAmount = (parseFloat(user.walletBalance) * 0.05).toString();
+      const commissionData = insertAffiliateCommissionSchema.parse({
+        referrerId: referrer.id,
+        referredUserId: user.id,
+        amount: commissionAmount
+      });
+      
+      await storage.createAffiliateCommission(commissionData);
+      
+      // Log in the user automatically
+      req.login(user, (err) => {
+        if (err) return next(err);
+        return res.status(201).json(user);
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Validation error", errors: error.errors });
+      }
+      next(error);
+    }
+  });
+  
+  // Get user's referral info
+  app.get("/api/referrals", async (req, res, next) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+    
+    try {
+      const referrals = await storage.getUserReferrals(req.user.id);
+      const commissions = await storage.getUserAffiliateCommissions(req.user.id);
+      
+      // Calculate total earned
+      const totalEarned = commissions.reduce((sum, commission) => {
+        return sum + parseFloat(commission.amount);
+      }, 0);
+      
+      return res.status(200).json({
+        referrals,
+        commissions,
+        referralCode: req.user.referralCode,
+        totalEarned: totalEarned.toString()
+      });
+    } catch (error) {
+      next(error);
+    }
+  });
+  
+  // Bonus system routes
+  
+  // Check if user can claim bonus
+  app.get("/api/bonus/can-claim", async (req, res, next) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+    
+    try {
+      const canClaim = await storage.canClaimBonus(req.user.id);
+      return res.status(200).json({ canClaim });
+    } catch (error) {
+      next(error);
+    }
+  });
+  
+  // Claim bonus
+  app.post("/api/bonus/claim", async (req, res, next) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+    
+    try {
+      // Check if user can claim a bonus
+      const canClaim = await storage.canClaimBonus(req.user.id);
+      if (!canClaim) {
+        return res.status(400).json({ message: "You can claim a bonus only once every 24 hours" });
+      }
+      
+      // Get a random country for the bonus
+      const countries = await storage.getAllCountries();
+      const randomCountry = countries[Math.floor(Math.random() * countries.length)];
+      
+      // Create the bonus claim with 1 share of the random country
+      const bonusData = insertBonusClaimSchema.parse({
+        userId: req.user.id,
+        countryCode: randomCountry.countryCode,
+        shares: "1"
+      });
+      
+      const bonus = await storage.claimBonus(bonusData);
+      
+      return res.status(201).json({
+        ...bonus,
+        countryName: randomCountry.countryName
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Validation error", errors: error.errors });
+      }
+      next(error);
+    }
+  });
+  
+  // Get user's bonus claims history
+  app.get("/api/bonus/history", async (req, res, next) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+    
+    try {
+      const bonusClaims = await storage.getUserBonusClaims(req.user.id);
+      
+      // Add country names to the bonus claims
+      const claimsWithCountryNames = await Promise.all(
+        bonusClaims.map(async claim => {
+          const country = await storage.getCountryByCode(claim.countryCode);
+          return {
+            ...claim,
+            countryName: country ? country.countryName : "Unknown"
+          };
+        })
+      );
+      
+      return res.status(200).json(claimsWithCountryNames);
+    } catch (error) {
+      next(error);
     }
   });
 

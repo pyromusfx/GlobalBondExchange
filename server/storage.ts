@@ -5,6 +5,8 @@ import {
   userHoldings, 
   transactions, 
   newsItems,
+  affiliateCommissions,
+  bonusClaims,
   type User, 
   type InsertUser, 
   type KycInfo, 
@@ -16,7 +18,11 @@ import {
   type Transaction, 
   type InsertTransaction, 
   type NewsItem, 
-  type InsertNewsItem 
+  type InsertNewsItem,
+  type AffiliateCommission,
+  type InsertAffiliateCommission,
+  type BonusClaim,
+  type InsertBonusClaim
 } from "@shared/schema";
 import createMemoryStore from "memorystore";
 import session from "express-session";
@@ -28,6 +34,8 @@ export interface IStorage {
   getUserByUsername(username: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  generateReferralCode(userId: number): Promise<string>;
+  updateUser(userId: number, updates: Partial<User>): Promise<User | undefined>;
   
   // KYC operations
   submitKyc(kycData: InsertKycInfo): Promise<KycInfo>;
@@ -56,6 +64,17 @@ export interface IStorage {
   getLatestNews(): Promise<NewsItem[]>;
   addNewsItem(news: InsertNewsItem): Promise<NewsItem>;
   
+  // Affiliate operations
+  createAffiliateCommission(commission: InsertAffiliateCommission): Promise<AffiliateCommission>;
+  getUserAffiliateCommissions(userId: number): Promise<AffiliateCommission[]>;
+  getUserReferrals(userId: number): Promise<User[]>;
+  getUserByReferralCode(referralCode: string): Promise<User | undefined>;
+  
+  // Bonus operations
+  canClaimBonus(userId: number): Promise<boolean>;
+  claimBonus(bonus: InsertBonusClaim): Promise<BonusClaim>;
+  getUserBonusClaims(userId: number): Promise<BonusClaim[]>;
+  
   // Session store
   sessionStore: session.SessionStore;
 }
@@ -68,6 +87,8 @@ export class MemStorage implements IStorage {
   private holdingsMap: Map<string, UserHolding>; // key: userId-countryCode
   private transactionsMap: Map<number, Transaction>;
   private newsMap: Map<number, NewsItem>;
+  private affiliateCommissionsMap: Map<number, AffiliateCommission>;
+  private bonusClaimsMap: Map<number, BonusClaim>;
   
   sessionStore: session.SessionStore;
   
@@ -77,6 +98,8 @@ export class MemStorage implements IStorage {
   private holdingIdCounter: number = 1;
   private transactionIdCounter: number = 1;
   private newsIdCounter: number = 1;
+  private affiliateCommissionIdCounter: number = 1;
+  private bonusClaimIdCounter: number = 1;
 
   constructor() {
     this.usersMap = new Map();
@@ -85,6 +108,8 @@ export class MemStorage implements IStorage {
     this.holdingsMap = new Map();
     this.transactionsMap = new Map();
     this.newsMap = new Map();
+    this.affiliateCommissionsMap = new Map();
+    this.bonusClaimsMap = new Map();
     
     const MemoryStore = createMemoryStore(session);
     this.sessionStore = new MemoryStore({
@@ -112,15 +137,42 @@ export class MemStorage implements IStorage {
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.userIdCounter++;
     const now = new Date();
+    
+    // Generate a unique referral code for the user
+    const referralCode = await this.generateReferralCode(id);
+    
     const user: User = { 
       ...insertUser, 
       id, 
       isKycVerified: false,
       walletBalance: "1000",
+      referralCode,
       createdAt: now
     };
     this.usersMap.set(id, user);
     return user;
+  }
+  
+  async generateReferralCode(userId: number): Promise<string> {
+    // Create a referral code based on userId and a random string
+    const randomStr = Math.random().toString(36).substring(2, 8).toUpperCase();
+    return `${userId}${randomStr}`;
+  }
+  
+  async updateUser(userId: number, updates: Partial<User>): Promise<User | undefined> {
+    const user = await this.getUser(userId);
+    if (user) {
+      const updatedUser = { ...user, ...updates };
+      this.usersMap.set(userId, updatedUser);
+      return updatedUser;
+    }
+    return undefined;
+  }
+  
+  async getUserByReferralCode(referralCode: string): Promise<User | undefined> {
+    return Array.from(this.usersMap.values()).find(
+      (user) => user.referralCode === referralCode
+    );
   }
 
   // KYC operations
@@ -358,6 +410,83 @@ export class MemStorage implements IStorage {
     
     this.newsMap.set(id, newsItem);
     return newsItem;
+  }
+
+  // Affiliate operations
+  async createAffiliateCommission(commission: InsertAffiliateCommission): Promise<AffiliateCommission> {
+    const id = this.affiliateCommissionIdCounter++;
+    const now = new Date();
+    const affiliateCommission: AffiliateCommission = {
+      ...commission,
+      id,
+      status: "pending",
+      createdAt: now,
+      paidAt: null
+    };
+    
+    this.affiliateCommissionsMap.set(id, affiliateCommission);
+    return affiliateCommission;
+  }
+  
+  async getUserAffiliateCommissions(userId: number): Promise<AffiliateCommission[]> {
+    return Array.from(this.affiliateCommissionsMap.values())
+      .filter(commission => commission.referrerId === userId)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+  
+  async getUserReferrals(userId: number): Promise<User[]> {
+    return Array.from(this.usersMap.values())
+      .filter(user => user.referredBy === userId);
+  }
+  
+  // Bonus operations
+  async canClaimBonus(userId: number): Promise<boolean> {
+    const user = await this.getUser(userId);
+    if (!user) return false;
+    
+    // User can claim bonus once every 24 hours
+    if (!user.lastBonusClaimDate) return true;
+    
+    const now = new Date();
+    const lastClaim = new Date(user.lastBonusClaimDate);
+    const hoursDiff = (now.getTime() - lastClaim.getTime()) / (1000 * 60 * 60);
+    
+    return hoursDiff >= 24;
+  }
+  
+  async claimBonus(bonus: InsertBonusClaim): Promise<BonusClaim> {
+    const id = this.bonusClaimIdCounter++;
+    const now = new Date();
+    const bonusClaim: BonusClaim = {
+      ...bonus,
+      id,
+      claimDate: now
+    };
+    
+    this.bonusClaimsMap.set(id, bonusClaim);
+    
+    // Update user's last bonus claim date
+    const user = await this.getUser(bonus.userId);
+    if (user) {
+      user.lastBonusClaimDate = now;
+      this.usersMap.set(user.id, user);
+      
+      // Add the bonus shares to user's holdings
+      await this.updateUserHoldings({
+        userId: bonus.userId,
+        countryCode: bonus.countryCode,
+        shares: bonus.shares,
+        averageBuyPrice: "0" // Bonus shares are free
+      });
+    }
+    
+    return bonusClaim;
+  }
+  
+  async getUserBonusClaims(userId: number): Promise<BonusClaim[]> {
+    return Array.from(this.bonusClaimsMap.values())
+      .filter(claim => claim.userId === userId)
+      .sort((a, b) => b.claimDate.getTime() - a.claimDate.getTime());
   }
 }
 

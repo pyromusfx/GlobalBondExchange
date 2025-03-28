@@ -106,7 +106,8 @@ export function setupAuth(app: Express) {
           email: user.email,
           fullName: user.fullName,
           isKycVerified: user.isKycVerified,
-          walletBalance: user.walletBalance
+          walletBalance: user.walletBalance,
+          referralCode: user.referralCode
         });
       });
     } catch (error) {
@@ -128,7 +129,8 @@ export function setupAuth(app: Express) {
           email: user.email,
           fullName: user.fullName,
           isKycVerified: user.isKycVerified,
-          walletBalance: user.walletBalance
+          walletBalance: user.walletBalance,
+          referralCode: user.referralCode
         });
       });
     })(req, res, next);
@@ -153,7 +155,8 @@ export function setupAuth(app: Express) {
       email: user.email,
       fullName: user.fullName,
       isKycVerified: user.isKycVerified,
-      walletBalance: user.walletBalance
+      walletBalance: user.walletBalance,
+      referralCode: user.referralCode
     });
   });
 }

@@ -17,6 +17,8 @@ import MarketPage from "@/pages/market-page";
 import TradePage from "@/pages/trade-page";
 import PresalePage from "@/pages/presale-page";
 import KycPage from "@/pages/kyc-page";
+import BonusPage from "@/pages/bonus-page";
+import AffiliatePage from "@/pages/affiliate-page";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -28,6 +30,8 @@ function Router() {
       <ProtectedRoute path="/trade/:countryCode?" component={TradePage} />
       <Route path="/presale" component={PresalePage} />
       <ProtectedRoute path="/kyc" component={KycPage} />
+      <ProtectedRoute path="/bonus" component={BonusPage} />
+      <ProtectedRoute path="/affiliate" component={AffiliatePage} />
       <Route component={NotFound} />
     </Switch>
   );

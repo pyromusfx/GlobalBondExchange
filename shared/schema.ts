@@ -11,6 +11,9 @@ export const users = pgTable("users", {
   fullName: text("full_name"),
   isKycVerified: boolean("is_kyc_verified").default(false),
   walletBalance: decimal("wallet_balance").default("1000"),
+  referralCode: text("referral_code").unique(),
+  referredBy: integer("referred_by").references(() => users.id),
+  lastBonusClaimDate: timestamp("last_bonus_claim_date"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -82,6 +85,27 @@ export const newsItems = pgTable("news_items", {
   timestamp: timestamp("timestamp").defaultNow(),
 });
 
+// Affiliate commissions table
+export const affiliateCommissions = pgTable("affiliate_commissions", {
+  id: serial("id").primaryKey(),
+  referrerId: integer("referrer_id").notNull().references(() => users.id),
+  referredUserId: integer("referred_user_id").notNull().references(() => users.id),
+  transactionId: integer("transaction_id").references(() => transactions.id),
+  amount: decimal("amount").notNull(),
+  status: text("status").default("pending"), // pending, paid
+  createdAt: timestamp("created_at").defaultNow(),
+  paidAt: timestamp("paid_at"),
+});
+
+// Bonus claims table
+export const bonusClaims = pgTable("bonus_claims", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  countryCode: text("country_code").notNull().references(() => countryShares.countryCode),
+  shares: decimal("shares").notNull(),
+  claimDate: timestamp("claim_date").defaultNow(),
+});
+
 // Schema validations
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
@@ -115,6 +139,17 @@ export const insertNewsItemSchema = createInsertSchema(newsItems).omit({
   timestamp: true,
 });
 
+export const insertAffiliateCommissionSchema = createInsertSchema(affiliateCommissions).omit({
+  id: true,
+  createdAt: true,
+  paidAt: true,
+});
+
+export const insertBonusClaimSchema = createInsertSchema(bonusClaims).omit({
+  id: true,
+  claimDate: true,
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -133,6 +168,12 @@ export type InsertTransaction = z.infer<typeof insertTransactionSchema>;
 
 export type NewsItem = typeof newsItems.$inferSelect;
 export type InsertNewsItem = z.infer<typeof insertNewsItemSchema>;
+
+export type AffiliateCommission = typeof affiliateCommissions.$inferSelect;
+export type InsertAffiliateCommission = z.infer<typeof insertAffiliateCommissionSchema>;
+
+export type BonusClaim = typeof bonusClaims.$inferSelect;
+export type InsertBonusClaim = z.infer<typeof insertBonusClaimSchema>;
 
 // Login type
 export type LoginCredentials = Pick<InsertUser, "username" | "password">;
