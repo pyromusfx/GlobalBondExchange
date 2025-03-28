@@ -1,0 +1,139 @@
+{
+  "header": {
+    "home": "Inicio",
+    "market": "Mercado",
+    "trade": "Operar",
+    "presale": "Preventa",
+    "kyc": "KYC",
+    "balance": "Saldo",
+    "login": "Iniciar Sesión",
+    "register": "Registrarse",
+    "logout": "Cerrar Sesión"
+  },
+  "auth": {
+    "login": "Iniciar Sesión",
+    "register": "Registrarse",
+    "username": "Nombre de Usuario",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar Contraseña",
+    "loginButton": "Iniciar Sesión",
+    "registerButton": "Registrarse",
+    "haveAccount": "¿Ya tienes una cuenta?",
+    "noAccount": "¿No tienes una cuenta?",
+    "createOne": "Crear una"
+  },
+  "home": {
+    "hero": {
+      "title": "Opera con Bonos Nacionales en Sekance",
+      "subtitle": "La primera plataforma para operar con bonos nacionales de 193 países de la ONU",
+      "startTrading": "Comenzar a Operar"
+    },
+    "features": {
+      "title": "Por Qué Elegir Sekance",
+      "subtitle": "La plataforma de operación de bonos más segura y transparente",
+      "security": {
+        "title": "Seguridad",
+        "description": "Tus inversiones están aseguradas con la última tecnología de encriptación"
+      },
+      "transparency": {
+        "title": "Transparencia",
+        "description": "Todas las transacciones se registran en la blockchain para total transparencia"
+      },
+      "global": {
+        "title": "Acceso Global",
+        "description": "Opera con bonos de 193 países desde cualquier lugar del mundo"
+      },
+      "leverage": {
+        "title": "Operación con Apalancamiento",
+        "description": "Opera con hasta 50x de apalancamiento para maximizar tus ganancias"
+      }
+    },
+    "map": {
+      "title": "Mercado Global de Bonos",
+      "subtitle": "Explora bonos de todo el mundo"
+    },
+    "market": {
+      "title": "Resumen del Mercado",
+      "subtitle": "Consulta los últimos precios y tendencias",
+      "viewAll": "Ver Todos los Mercados"
+    },
+    "presale": {
+      "title": "Oportunidades de Preventa",
+      "subtitle": "Obtén acceso anticipado a nuevas ofertas de bonos",
+      "viewAll": "Ver Todas las Preventas"
+    }
+  },
+  "market": {
+    "title": "Mercado de Bonos",
+    "subtitle": "Explora y opera con bonos de 193 países",
+    "all": "Todos",
+    "gainers": "Ganadores",
+    "losers": "Perdedores",
+    "search": "Buscar país...",
+    "table": {
+      "country": "País",
+      "price": "Precio",
+      "change": "Cambio 24h",
+      "marketCap": "Capitalización",
+      "volume": "Volumen 24h",
+      "trade": "Operar"
+    }
+  },
+  "trade": {
+    "overview": "Resumen del Mercado",
+    "chart": "Gráfico de Precios",
+    "buy": "Comprar",
+    "sell": "Vender",
+    "amount": "Cantidad",
+    "totalCost": "Coste Total",
+    "leverage": "Apalancamiento",
+    "placeOrder": "Colocar Orden",
+    "orderHistory": "Historial de Órdenes",
+    "orderType": "Tipo de Orden",
+    "date": "Fecha",
+    "status": "Estado"
+  },
+  "presale": {
+    "title": "Preventa de Bonos",
+    "subtitle": "Obtén acceso anticipado a nuevas ofertas de bonos a precios con descuento",
+    "available": "Disponible",
+    "sold": "Vendido",
+    "price": "Precio",
+    "buyNow": "Comprar Ahora",
+    "totalSupply": "Suministro Total",
+    "endDate": "Fecha Final",
+    "country": "País"
+  },
+  "kyc": {
+    "title": "Verificación KYC",
+    "subtitle": "Completa tu verificación KYC para desbloquear todas las funciones",
+    "personal": "Información Personal",
+    "identity": "Verificación de Identidad",
+    "submit": "Enviar Verificación",
+    "status": "Estado de Verificación",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "dateOfBirth": "Fecha de Nacimiento",
+    "country": "País",
+    "address": "Dirección",
+    "city": "Ciudad",
+    "postalCode": "Código Postal",
+    "phoneNumber": "Número de Teléfono",
+    "idType": "Tipo de ID",
+    "idNumber": "Número de ID",
+    "pending": "Pendiente",
+    "approved": "Aprobado",
+    "rejected": "Rechazado"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Se produjo un error",
+    "retry": "Reintentar",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "save": "Guardar",
+    "yes": "Sí",
+    "no": "No"
+  }
+}

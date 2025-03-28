@@ -1,0 +1,139 @@
+{
+  "header": {
+    "home": "Home",
+    "market": "Market",
+    "trade": "Trade",
+    "presale": "Pre-Sale",
+    "kyc": "KYC",
+    "balance": "Balance",
+    "login": "Log In",
+    "register": "Register",
+    "logout": "Log Out"
+  },
+  "auth": {
+    "login": "Log In",
+    "register": "Register",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "loginButton": "Log In",
+    "registerButton": "Register",
+    "haveAccount": "Already have an account?",
+    "noAccount": "Don't have an account?",
+    "createOne": "Create one"
+  },
+  "home": {
+    "hero": {
+      "title": "Trade Country Bonds on Sekance",
+      "subtitle": "The first platform for trading national bonds from 193 UN countries",
+      "startTrading": "Start Trading"
+    },
+    "features": {
+      "title": "Why Choose Sekance",
+      "subtitle": "The most secure and transparent bond trading platform",
+      "security": {
+        "title": "Security",
+        "description": "Your investments are secured with the latest encryption technology"
+      },
+      "transparency": {
+        "title": "Transparency",
+        "description": "All transactions are recorded on the blockchain for full transparency"
+      },
+      "global": {
+        "title": "Global Access",
+        "description": "Trade bonds from 193 countries from anywhere in the world"
+      },
+      "leverage": {
+        "title": "Leverage Trading",
+        "description": "Trade with up to 50x leverage to maximize your profits"
+      }
+    },
+    "map": {
+      "title": "Global Bond Market",
+      "subtitle": "Explore bonds from around the world"
+    },
+    "market": {
+      "title": "Market Overview",
+      "subtitle": "See the latest prices and trends",
+      "viewAll": "View All Markets"
+    },
+    "presale": {
+      "title": "Pre-Sale Opportunities",
+      "subtitle": "Get early access to new bond offerings",
+      "viewAll": "View All Pre-Sales"
+    }
+  },
+  "market": {
+    "title": "Bond Market",
+    "subtitle": "Explore and trade bonds from 193 countries",
+    "all": "All",
+    "gainers": "Gainers",
+    "losers": "Losers",
+    "search": "Search country...",
+    "table": {
+      "country": "Country",
+      "price": "Price",
+      "change": "24h Change",
+      "marketCap": "Market Cap",
+      "volume": "24h Volume",
+      "trade": "Trade"
+    }
+  },
+  "trade": {
+    "overview": "Market Overview",
+    "chart": "Price Chart",
+    "buy": "Buy",
+    "sell": "Sell",
+    "amount": "Amount",
+    "totalCost": "Total Cost",
+    "leverage": "Leverage",
+    "placeOrder": "Place Order",
+    "orderHistory": "Order History",
+    "orderType": "Order Type",
+    "date": "Date",
+    "status": "Status"
+  },
+  "presale": {
+    "title": "Bond Pre-Sale",
+    "subtitle": "Get early access to new bond offerings at discounted prices",
+    "available": "Available",
+    "sold": "Sold",
+    "price": "Price",
+    "buyNow": "Buy Now",
+    "totalSupply": "Total Supply",
+    "endDate": "End Date",
+    "country": "Country"
+  },
+  "kyc": {
+    "title": "KYC Verification",
+    "subtitle": "Complete your KYC verification to unlock all features",
+    "personal": "Personal Information",
+    "identity": "Identity Verification",
+    "submit": "Submit Verification",
+    "status": "Verification Status",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "dateOfBirth": "Date of Birth",
+    "country": "Country",
+    "address": "Address",
+    "city": "City",
+    "postalCode": "Postal Code",
+    "phoneNumber": "Phone Number",
+    "idType": "ID Type",
+    "idNumber": "ID Number",
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "yes": "Yes",
+    "no": "No"
+  }
+}

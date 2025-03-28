@@ -1,0 +1,139 @@
+{
+  "header": {
+    "home": "Accueil",
+    "market": "Marché",
+    "trade": "Négocier",
+    "presale": "Prévente",
+    "kyc": "KYC",
+    "balance": "Solde",
+    "login": "Connexion",
+    "register": "S'inscrire",
+    "logout": "Déconnexion"
+  },
+  "auth": {
+    "login": "Connexion",
+    "register": "S'inscrire",
+    "username": "Nom d'utilisateur",
+    "email": "Email",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "loginButton": "Se connecter",
+    "registerButton": "S'inscrire",
+    "haveAccount": "Vous avez déjà un compte?",
+    "noAccount": "Vous n'avez pas de compte?",
+    "createOne": "Créer un compte"
+  },
+  "home": {
+    "hero": {
+      "title": "Négociez des Obligations d'État sur Sekance",
+      "subtitle": "La première plateforme pour négocier des obligations nationales de 193 pays de l'ONU",
+      "startTrading": "Commencer à négocier"
+    },
+    "features": {
+      "title": "Pourquoi Choisir Sekance",
+      "subtitle": "La plateforme de négociation d'obligations la plus sécurisée et transparente",
+      "security": {
+        "title": "Sécurité",
+        "description": "Vos investissements sont sécurisés avec la dernière technologie de cryptage"
+      },
+      "transparency": {
+        "title": "Transparence",
+        "description": "Toutes les transactions sont enregistrées sur la blockchain pour une transparence totale"
+      },
+      "global": {
+        "title": "Accès Global",
+        "description": "Négociez des obligations de 193 pays depuis n'importe où dans le monde"
+      },
+      "leverage": {
+        "title": "Négociation avec Effet de Levier",
+        "description": "Négociez avec un effet de levier jusqu'à 50x pour maximiser vos profits"
+      }
+    },
+    "map": {
+      "title": "Marché Mondial des Obligations",
+      "subtitle": "Explorez les obligations du monde entier"
+    },
+    "market": {
+      "title": "Aperçu du Marché",
+      "subtitle": "Voir les derniers prix et tendances",
+      "viewAll": "Voir Tous les Marchés"
+    },
+    "presale": {
+      "title": "Opportunités de Prévente",
+      "subtitle": "Obtenez un accès anticipé aux nouvelles offres d'obligations",
+      "viewAll": "Voir Toutes les Préventes"
+    }
+  },
+  "market": {
+    "title": "Marché des Obligations",
+    "subtitle": "Explorez et négociez des obligations de 193 pays",
+    "all": "Tous",
+    "gainers": "Gagnants",
+    "losers": "Perdants",
+    "search": "Rechercher un pays...",
+    "table": {
+      "country": "Pays",
+      "price": "Prix",
+      "change": "Variation 24h",
+      "marketCap": "Cap. du Marché",
+      "volume": "Volume 24h",
+      "trade": "Négocier"
+    }
+  },
+  "trade": {
+    "overview": "Aperçu du Marché",
+    "chart": "Graphique des Prix",
+    "buy": "Acheter",
+    "sell": "Vendre",
+    "amount": "Montant",
+    "totalCost": "Coût Total",
+    "leverage": "Effet de Levier",
+    "placeOrder": "Passer l'Ordre",
+    "orderHistory": "Historique des Ordres",
+    "orderType": "Type d'Ordre",
+    "date": "Date",
+    "status": "Statut"
+  },
+  "presale": {
+    "title": "Prévente d'Obligations",
+    "subtitle": "Obtenez un accès anticipé aux nouvelles offres d'obligations à des prix réduits",
+    "available": "Disponible",
+    "sold": "Vendu",
+    "price": "Prix",
+    "buyNow": "Acheter Maintenant",
+    "totalSupply": "Offre Totale",
+    "endDate": "Date de Fin",
+    "country": "Pays"
+  },
+  "kyc": {
+    "title": "Vérification KYC",
+    "subtitle": "Complétez votre vérification KYC pour débloquer toutes les fonctionnalités",
+    "personal": "Informations Personnelles",
+    "identity": "Vérification d'Identité",
+    "submit": "Soumettre la Vérification",
+    "status": "Statut de Vérification",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "dateOfBirth": "Date de Naissance",
+    "country": "Pays",
+    "address": "Adresse",
+    "city": "Ville",
+    "postalCode": "Code Postal",
+    "phoneNumber": "Numéro de Téléphone",
+    "idType": "Type de Pièce d'Identité",
+    "idNumber": "Numéro de Pièce d'Identité",
+    "pending": "En Attente",
+    "approved": "Approuvé",
+    "rejected": "Rejeté"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur est survenue",
+    "retry": "Réessayer",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "save": "Enregistrer",
+    "yes": "Oui",
+    "no": "Non"
+  }
+}

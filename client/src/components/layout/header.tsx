@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -8,11 +9,13 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
+import LanguageSwitcher from "./language-switcher";
 
 export default function Header() {
   const [location] = useLocation();
   const { user, logoutMutation } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { t } = useTranslation();
 
   const isActive = (path: string) => {
     return location === path;
@@ -32,28 +35,28 @@ export default function Header() {
           <nav className="hidden md:flex ml-10">
             <Link href="/">
               <div className={`mx-3 hover:text-primary transition cursor-pointer ${isActive("/") ? "text-white" : "text-muted-foreground"}`}>
-                Home
+                {t('header.home')}
               </div>
             </Link>
             <Link href="/market">
               <div className={`mx-3 hover:text-primary transition cursor-pointer ${isActive("/market") ? "text-white" : "text-muted-foreground"}`}>
-                Market
+                {t('header.market')}
               </div>
             </Link>
             <Link href="/trade">
               <div className={`mx-3 hover:text-primary transition cursor-pointer ${isActive("/trade") ? "text-white" : "text-muted-foreground"}`}>
-                Trade
+                {t('header.trade')}
               </div>
             </Link>
             <Link href="/presale">
               <div className={`mx-3 hover:text-primary transition cursor-pointer ${isActive("/presale") ? "text-white" : "text-muted-foreground"}`}>
-                Pre-Sale
+                {t('header.presale')}
               </div>
             </Link>
             {user && !user.isKycVerified && (
               <Link href="/kyc">
                 <div className={`mx-3 hover:text-primary transition cursor-pointer ${isActive("/kyc") ? "text-white" : "text-muted-foreground"}`}>
-                  KYC
+                  {t('header.kyc')}
                 </div>
               </Link>
             )}
@@ -61,10 +64,12 @@ export default function Header() {
         </div>
 
         <div className="flex items-center">
+          <LanguageSwitcher />
+          
           {user ? (
             <div className="hidden md:flex items-center">
               <span className="mr-4 text-sm text-muted-foreground">
-                Balance: <span className="text-primary font-mono font-medium">${parseFloat(user.walletBalance).toFixed(2)}</span>
+                {t('header.balance')}: <span className="text-primary font-mono font-medium">${user && user.walletBalance ? parseFloat(user.walletBalance).toFixed(2) : "0.00"}</span>
               </span>
               <Button variant="outline" size="sm" className="mr-2">
                 {user.username}
@@ -75,19 +80,19 @@ export default function Header() {
                 onClick={handleLogout}
                 disabled={logoutMutation.isPending}
               >
-                Log Out
+                {t('header.logout')}
               </Button>
             </div>
           ) : (
             <div className="hidden md:flex space-x-2">
               <Link href="/auth">
                 <Button className="bg-primary hover:bg-primary/80 text-secondary py-2 px-4 rounded font-medium">
-                  Log In
+                  {t('header.login')}
                 </Button>
               </Link>
               <Link href="/auth">
                 <Button variant="outline" className="border-primary text-primary hover:bg-primary/10 py-2 px-4 rounded font-medium">
-                  Register
+                  {t('header.register')}
                 </Button>
               </Link>
             </div>
@@ -103,28 +108,28 @@ export default function Header() {
               <div className="flex flex-col mt-8 space-y-4">
                 <Link href="/">
                   <div className="text-lg py-2 hover:text-primary cursor-pointer" onClick={() => setMobileMenuOpen(false)}>
-                    Home
+                    {t('header.home')}
                   </div>
                 </Link>
                 <Link href="/market">
                   <div className="text-lg py-2 hover:text-primary cursor-pointer" onClick={() => setMobileMenuOpen(false)}>
-                    Market
+                    {t('header.market')}
                   </div>
                 </Link>
                 <Link href="/trade">
                   <div className="text-lg py-2 hover:text-primary cursor-pointer" onClick={() => setMobileMenuOpen(false)}>
-                    Trade
+                    {t('header.trade')}
                   </div>
                 </Link>
                 <Link href="/presale">
                   <div className="text-lg py-2 hover:text-primary cursor-pointer" onClick={() => setMobileMenuOpen(false)}>
-                    Pre-Sale
+                    {t('header.presale')}
                   </div>
                 </Link>
                 {user && !user.isKycVerified && (
                   <Link href="/kyc">
                     <div className="text-lg py-2 hover:text-primary cursor-pointer" onClick={() => setMobileMenuOpen(false)}>
-                      KYC
+                      {t('header.kyc')}
                     </div>
                   </Link>
                 )}
@@ -132,7 +137,7 @@ export default function Header() {
                 {user ? (
                   <div className="mt-4 space-y-2">
                     <div className="text-sm text-muted-foreground">
-                      Balance: <span className="text-primary font-mono font-medium">${parseFloat(user.walletBalance).toFixed(2)}</span>
+                      {t('header.balance')}: <span className="text-primary font-mono font-medium">${user && user.walletBalance ? parseFloat(user.walletBalance).toFixed(2) : "0.00"}</span>
                     </div>
                     <Button 
                       variant="destructive" 
@@ -144,19 +149,19 @@ export default function Header() {
                       disabled={logoutMutation.isPending}
                       className="w-full"
                     >
-                      Log Out
+                      {t('header.logout')}
                     </Button>
                   </div>
                 ) : (
                   <div className="mt-4 space-y-2">
                     <Link href="/auth">
                       <Button className="w-full bg-primary hover:bg-primary/80 text-secondary" onClick={() => setMobileMenuOpen(false)}>
-                        Log In
+                        {t('header.login')}
                       </Button>
                     </Link>
                     <Link href="/auth">
                       <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary/10" onClick={() => setMobileMenuOpen(false)}>
-                        Register
+                        {t('header.register')}
                       </Button>
                     </Link>
                   </div>

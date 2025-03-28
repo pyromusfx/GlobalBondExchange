@@ -1,0 +1,139 @@
+{
+  "header": {
+    "home": "首页",
+    "market": "市场",
+    "trade": "交易",
+    "presale": "预售",
+    "kyc": "身份验证",
+    "balance": "余额",
+    "login": "登录",
+    "register": "注册",
+    "logout": "登出"
+  },
+  "auth": {
+    "login": "登录",
+    "register": "注册",
+    "username": "用户名",
+    "email": "邮箱",
+    "password": "密码",
+    "confirmPassword": "确认密码",
+    "loginButton": "登录",
+    "registerButton": "注册",
+    "haveAccount": "已有账户？",
+    "noAccount": "没有账户？",
+    "createOne": "创建一个"
+  },
+  "home": {
+    "hero": {
+      "title": "在Sekance上交易国家债券",
+      "subtitle": "首个交易193个联合国成员国国家债券的平台",
+      "startTrading": "开始交易"
+    },
+    "features": {
+      "title": "为什么选择Sekance",
+      "subtitle": "最安全和透明的债券交易平台",
+      "security": {
+        "title": "安全",
+        "description": "您的投资通过最新的加密技术保障安全"
+      },
+      "transparency": {
+        "title": "透明",
+        "description": "所有交易都记录在区块链上，确保完全透明"
+      },
+      "global": {
+        "title": "全球访问",
+        "description": "从世界任何地方交易193个国家的债券"
+      },
+      "leverage": {
+        "title": "杠杆交易",
+        "description": "使用高达50倍杠杆最大化您的利润"
+      }
+    },
+    "map": {
+      "title": "全球债券市场",
+      "subtitle": "探索全球各地的债券"
+    },
+    "market": {
+      "title": "市场概览",
+      "subtitle": "查看最新价格和趋势",
+      "viewAll": "查看所有市场"
+    },
+    "presale": {
+      "title": "预售机会",
+      "subtitle": "提前获取新债券发行的机会",
+      "viewAll": "查看所有预售"
+    }
+  },
+  "market": {
+    "title": "债券市场",
+    "subtitle": "探索和交易来自193个国家的债券",
+    "all": "全部",
+    "gainers": "涨幅榜",
+    "losers": "跌幅榜",
+    "search": "搜索国家...",
+    "table": {
+      "country": "国家",
+      "price": "价格",
+      "change": "24小时变化",
+      "marketCap": "市值",
+      "volume": "24小时成交量",
+      "trade": "交易"
+    }
+  },
+  "trade": {
+    "overview": "市场概览",
+    "chart": "价格图表",
+    "buy": "买入",
+    "sell": "卖出",
+    "amount": "数量",
+    "totalCost": "总成本",
+    "leverage": "杠杆",
+    "placeOrder": "下单",
+    "orderHistory": "订单历史",
+    "orderType": "订单类型",
+    "date": "日期",
+    "status": "状态"
+  },
+  "presale": {
+    "title": "债券预售",
+    "subtitle": "以折扣价格提前获取新债券发行的机会",
+    "available": "可用",
+    "sold": "已售",
+    "price": "价格",
+    "buyNow": "立即购买",
+    "totalSupply": "总供应量",
+    "endDate": "结束日期",
+    "country": "国家"
+  },
+  "kyc": {
+    "title": "KYC身份验证",
+    "subtitle": "完成KYC身份验证以解锁所有功能",
+    "personal": "个人信息",
+    "identity": "身份验证",
+    "submit": "提交验证",
+    "status": "验证状态",
+    "firstName": "名",
+    "lastName": "姓",
+    "dateOfBirth": "出生日期",
+    "country": "国家",
+    "address": "地址",
+    "city": "城市",
+    "postalCode": "邮政编码",
+    "phoneNumber": "电话号码",
+    "idType": "证件类型",
+    "idNumber": "证件号码",
+    "pending": "待处理",
+    "approved": "已批准",
+    "rejected": "已拒绝"
+  },
+  "common": {
+    "loading": "加载中...",
+    "error": "发生错误",
+    "retry": "重试",
+    "cancel": "取消",
+    "confirm": "确认",
+    "save": "保存",
+    "yes": "是",
+    "no": "否"
+  }
+}

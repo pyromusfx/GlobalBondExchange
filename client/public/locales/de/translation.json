@@ -1,0 +1,139 @@
+{
+  "header": {
+    "home": "Startseite",
+    "market": "Markt",
+    "trade": "Handel",
+    "presale": "Vorverkauf",
+    "kyc": "KYC",
+    "balance": "Guthaben",
+    "login": "Anmelden",
+    "register": "Registrieren",
+    "logout": "Abmelden"
+  },
+  "auth": {
+    "login": "Anmelden",
+    "register": "Registrieren",
+    "username": "Benutzername",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "confirmPassword": "Passwort bestätigen",
+    "loginButton": "Anmelden",
+    "registerButton": "Registrieren",
+    "haveAccount": "Haben Sie bereits ein Konto?",
+    "noAccount": "Haben Sie kein Konto?",
+    "createOne": "Erstellen Sie eines"
+  },
+  "home": {
+    "hero": {
+      "title": "Handeln Sie Staatsanleihen auf Sekance",
+      "subtitle": "Die erste Plattform für den Handel mit nationalen Anleihen aus 193 UN-Ländern",
+      "startTrading": "Handel beginnen"
+    },
+    "features": {
+      "title": "Warum Sekance wählen",
+      "subtitle": "Die sicherste und transparenteste Handelsplattform für Anleihen",
+      "security": {
+        "title": "Sicherheit",
+        "description": "Ihre Investitionen sind durch neueste Verschlüsselungstechnologie gesichert"
+      },
+      "transparency": {
+        "title": "Transparenz",
+        "description": "Alle Transaktionen werden für volle Transparenz in der Blockchain aufgezeichnet"
+      },
+      "global": {
+        "title": "Globaler Zugang",
+        "description": "Handeln Sie mit Anleihen aus 193 Ländern von überall auf der Welt"
+      },
+      "leverage": {
+        "title": "Hebelhandel",
+        "description": "Handeln Sie mit bis zu 50-fachem Hebel, um Ihre Gewinne zu maximieren"
+      }
+    },
+    "map": {
+      "title": "Globaler Anleihemarkt",
+      "subtitle": "Erkunden Sie Anleihen aus der ganzen Welt"
+    },
+    "market": {
+      "title": "Marktübersicht",
+      "subtitle": "Sehen Sie die neuesten Preise und Trends",
+      "viewAll": "Alle Märkte anzeigen"
+    },
+    "presale": {
+      "title": "Vorverkaufsmöglichkeiten",
+      "subtitle": "Erhalten Sie frühzeitigen Zugang zu neuen Anleiheangeboten",
+      "viewAll": "Alle Vorverkäufe anzeigen"
+    }
+  },
+  "market": {
+    "title": "Anleihemarkt",
+    "subtitle": "Erkunden und handeln Sie mit Anleihen aus 193 Ländern",
+    "all": "Alle",
+    "gainers": "Gewinner",
+    "losers": "Verlierer",
+    "search": "Land suchen...",
+    "table": {
+      "country": "Land",
+      "price": "Preis",
+      "change": "24h Änderung",
+      "marketCap": "Marktkapitalisierung",
+      "volume": "24h Volumen",
+      "trade": "Handeln"
+    }
+  },
+  "trade": {
+    "overview": "Marktübersicht",
+    "chart": "Preisdiagramm",
+    "buy": "Kaufen",
+    "sell": "Verkaufen",
+    "amount": "Betrag",
+    "totalCost": "Gesamtkosten",
+    "leverage": "Hebel",
+    "placeOrder": "Auftrag platzieren",
+    "orderHistory": "Auftragshistorie",
+    "orderType": "Auftragstyp",
+    "date": "Datum",
+    "status": "Status"
+  },
+  "presale": {
+    "title": "Anleihen-Vorverkauf",
+    "subtitle": "Erhalten Sie frühzeitigen Zugang zu neuen Anleiheangeboten zu vergünstigten Preisen",
+    "available": "Verfügbar",
+    "sold": "Verkauft",
+    "price": "Preis",
+    "buyNow": "Jetzt kaufen",
+    "totalSupply": "Gesamtangebot",
+    "endDate": "Enddatum",
+    "country": "Land"
+  },
+  "kyc": {
+    "title": "KYC-Verifizierung",
+    "subtitle": "Schließen Sie Ihre KYC-Verifizierung ab, um alle Funktionen freizuschalten",
+    "personal": "Persönliche Informationen",
+    "identity": "Identitätsverifizierung",
+    "submit": "Verifizierung einreichen",
+    "status": "Verifizierungsstatus",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "dateOfBirth": "Geburtsdatum",
+    "country": "Land",
+    "address": "Adresse",
+    "city": "Stadt",
+    "postalCode": "Postleitzahl",
+    "phoneNumber": "Telefonnummer",
+    "idType": "Ausweistyp",
+    "idNumber": "Ausweisnummer",
+    "pending": "Ausstehend",
+    "approved": "Genehmigt",
+    "rejected": "Abgelehnt"
+  },
+  "common": {
+    "loading": "Laden...",
+    "error": "Ein Fehler ist aufgetreten",
+    "retry": "Wiederholen",
+    "cancel": "Abbrechen",
+    "confirm": "Bestätigen",
+    "save": "Speichern",
+    "yes": "Ja",
+    "no": "Nein"
+  }
+}

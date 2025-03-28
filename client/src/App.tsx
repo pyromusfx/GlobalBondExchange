@@ -4,6 +4,8 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from "@/hooks/use-auth";
 import { ProtectedRoute } from "./lib/protected-route";
+import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 // Pages
 import HomePage from "@/pages/home-page";
@@ -28,13 +30,33 @@ function Router() {
   );
 }
 
+function AppContent() {
+  const { i18n } = useTranslation();
+
+  // RTL veya LTR ayarı
+  useEffect(() => {
+    const language = i18n.language || 'en';
+    if (language === "ar" || language === "fa") {
+      document.documentElement.dir = "rtl";
+      document.documentElement.classList.add("rtl");
+    } else {
+      document.documentElement.dir = "ltr";
+      document.documentElement.classList.remove("rtl");
+    }
+  }, [i18n.language]);
+  
+  return (
+    <AuthProvider>
+      <Router />
+      <Toaster />
+    </AuthProvider>
+  );
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <Router />
-        <Toaster />
-      </AuthProvider>
+      <AppContent />
     </QueryClientProvider>
   );
 }

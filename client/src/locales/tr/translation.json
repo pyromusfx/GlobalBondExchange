@@ -1,0 +1,139 @@
+{
+  "header": {
+    "home": "Ana Sayfa",
+    "market": "Piyasa",
+    "trade": "İşlem",
+    "presale": "Ön Satış",
+    "kyc": "KYC",
+    "balance": "Bakiye",
+    "login": "Giriş Yap",
+    "register": "Kayıt Ol",
+    "logout": "Çıkış Yap"
+  },
+  "auth": {
+    "login": "Giriş Yap",
+    "register": "Kayıt Ol",
+    "username": "Kullanıcı Adı",
+    "email": "E-posta",
+    "password": "Şifre",
+    "confirmPassword": "Şifre Tekrar",
+    "loginButton": "Giriş Yap",
+    "registerButton": "Kayıt Ol",
+    "haveAccount": "Zaten hesabınız var mı?",
+    "noAccount": "Hesabınız yok mu?",
+    "createOne": "Yeni hesap oluştur"
+  },
+  "home": {
+    "hero": {
+      "title": "Sekance'da Ülke Tahvillerini İşleyin",
+      "subtitle": "193 BM ülkesinden ulusal tahvil ticareti için ilk platform",
+      "startTrading": "İşleme Başla"
+    },
+    "features": {
+      "title": "Neden Sekance",
+      "subtitle": "En güvenli ve şeffaf tahvil ticaret platformu",
+      "security": {
+        "title": "Güvenlik",
+        "description": "Yatırımlarınız en son şifreleme teknolojisi ile güvence altındadır"
+      },
+      "transparency": {
+        "title": "Şeffaflık",
+        "description": "Tüm işlemler tam şeffaflık için blok zincirinde kaydedilir"
+      },
+      "global": {
+        "title": "Küresel Erişim",
+        "description": "Dünyanın herhangi bir yerinden 193 ülkeden tahvil ticareti yapın"
+      },
+      "leverage": {
+        "title": "Kaldıraçlı İşlem",
+        "description": "Kârınızı maksimize etmek için 50 kata kadar kaldıraçla işlem yapın"
+      }
+    },
+    "map": {
+      "title": "Küresel Tahvil Piyasası",
+      "subtitle": "Dünya genelindeki tahvilleri keşfedin"
+    },
+    "market": {
+      "title": "Piyasa Genel Bakışı",
+      "subtitle": "En son fiyatları ve trendleri görün",
+      "viewAll": "Tüm Piyasaları Görüntüle"
+    },
+    "presale": {
+      "title": "Ön Satış Fırsatları",
+      "subtitle": "Yeni tahvil tekliflerine erken erişim elde edin",
+      "viewAll": "Tüm Ön Satışları Görüntüle"
+    }
+  },
+  "market": {
+    "title": "Tahvil Piyasası",
+    "subtitle": "193 ülkeden tahvilleri keşfedin ve işlem yapın",
+    "all": "Tümü",
+    "gainers": "Yükselenler",
+    "losers": "Düşenler",
+    "search": "Ülke ara...",
+    "table": {
+      "country": "Ülke",
+      "price": "Fiyat",
+      "change": "24s Değişim",
+      "marketCap": "Piyasa Değeri",
+      "volume": "24s Hacim",
+      "trade": "İşlem"
+    }
+  },
+  "trade": {
+    "overview": "Piyasa Genel Bakışı",
+    "chart": "Fiyat Grafiği",
+    "buy": "Al",
+    "sell": "Sat",
+    "amount": "Miktar",
+    "totalCost": "Toplam Maliyet",
+    "leverage": "Kaldıraç",
+    "placeOrder": "Emir Ver",
+    "orderHistory": "Emir Geçmişi",
+    "orderType": "Emir Türü",
+    "date": "Tarih",
+    "status": "Durum"
+  },
+  "presale": {
+    "title": "Tahvil Ön Satışı",
+    "subtitle": "İndirimli fiyatlarla yeni tahvil tekliflerine erken erişim elde edin",
+    "available": "Mevcut",
+    "sold": "Satıldı",
+    "price": "Fiyat",
+    "buyNow": "Şimdi Satın Al",
+    "totalSupply": "Toplam Arz",
+    "endDate": "Bitiş Tarihi",
+    "country": "Ülke"
+  },
+  "kyc": {
+    "title": "KYC Doğrulama",
+    "subtitle": "Tüm özelliklerin kilidini açmak için KYC doğrulamanızı tamamlayın",
+    "personal": "Kişisel Bilgiler",
+    "identity": "Kimlik Doğrulama",
+    "submit": "Doğrulamayı Gönder",
+    "status": "Doğrulama Durumu",
+    "firstName": "Ad",
+    "lastName": "Soyad",
+    "dateOfBirth": "Doğum Tarihi",
+    "country": "Ülke",
+    "address": "Adres",
+    "city": "Şehir",
+    "postalCode": "Posta Kodu",
+    "phoneNumber": "Telefon Numarası",
+    "idType": "Kimlik Türü",
+    "idNumber": "Kimlik Numarası",
+    "pending": "Beklemede",
+    "approved": "Onaylandı",
+    "rejected": "Reddedildi"
+  },
+  "common": {
+    "loading": "Yükleniyor...",
+    "error": "Bir hata oluştu",
+    "retry": "Tekrar Dene",
+    "cancel": "İptal",
+    "confirm": "Onayla",
+    "save": "Kaydet",
+    "yes": "Evet",
+    "no": "Hayır"
+  }
+}
