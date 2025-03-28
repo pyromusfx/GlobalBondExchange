@@ -35,8 +35,8 @@ export default function WorldMap({ colorBy }: WorldMapProps) {
     const country = countries.find(c => c.countryCode === countryCode);
     if (!country) return "hsl(215, 25%, 27%)";
     
-    const currentPrice = parseFloat(country.currentPrice);
-    const previousPrice = parseFloat(country.previousPrice);
+    const currentPrice = parseFloat(country.currentPrice || "0");
+    const previousPrice = parseFloat(country.previousPrice || "0");
     
     if (currentPrice > previousPrice) {
       const percentChange = ((currentPrice - previousPrice) / previousPrice) * 100;
@@ -95,7 +95,7 @@ export default function WorldMap({ colorBy }: WorldMapProps) {
     if (!country) return "hsl(215, 25%, 27%)";
     
     // Use pre-sale progress as a proxy for volume in this demo
-    const progress = parseFloat(country.preSaleProgress);
+    const progress = parseFloat(country.preSaleProgress || "0");
     
     if (progress > 0.7) return "hsl(270, 70%, 50%)"; // High volume
     if (progress > 0.4) return "hsl(200, 70%, 50%)"; // Medium volume
@@ -124,10 +124,10 @@ export default function WorldMap({ colorBy }: WorldMapProps) {
     const country = countries.find(c => c.countryCode === countryCode);
     if (!country) return countryCode;
     
-    const price = parseFloat(country.currentPrice).toFixed(3);
-    const previousPrice = parseFloat(country.previousPrice).toFixed(3);
-    const change = ((parseFloat(country.currentPrice) - parseFloat(country.previousPrice)) / 
-                   parseFloat(country.previousPrice) * 100).toFixed(2);
+    const price = parseFloat(country.currentPrice || "0").toFixed(3);
+    const previousPrice = parseFloat(country.previousPrice || "0").toFixed(3);
+    const change = ((parseFloat(country.currentPrice || "0") - parseFloat(country.previousPrice || "0")) / 
+                   (parseFloat(country.previousPrice || "1")) * 100).toFixed(2);
     const direction = parseFloat(change) >= 0 ? "+" : "";
     
     return `${country.countryName} (${country.countryCode})
@@ -144,15 +144,15 @@ Change: ${direction}${change}%`;
     }
   };
 
-  const [position, setPosition] = useState({ coordinates: [0, 0], zoom: 1 });
+  const [position, setPosition] = useState<{ coordinates: [number, number]; zoom: number }>({ coordinates: [0, 0], zoom: 1 });
   
   // Handle zooming and panning
-  const handleMoveEnd = useCallback(position => {
+  const handleMoveEnd = useCallback((position: { coordinates: [number, number]; zoom: number }) => {
     setPosition(position);
   }, []);
   
   // Hot spots to highlight major financial centers
-  const financialCenters = [
+  const financialCenters: { name: string; coordinates: [number, number]; size: number }[] = [
     { name: "New York", coordinates: [-74.0059, 40.7128], size: 8 },
     { name: "London", coordinates: [-0.1278, 51.5074], size: 8 },
     { name: "Tokyo", coordinates: [139.6917, 35.6895], size: 8 },
@@ -175,9 +175,9 @@ Change: ${direction}${change}%`;
             maxZoom={8}
           >
             <Geographies geography={geoUrl}>
-              {({ geographies }) =>
-                geographies.map((geo) => {
-                  const countryCode = geo.properties.iso_a2;
+              {({ geographies }: { geographies: any[] }) =>
+                geographies.map((geo: any) => {
+                  const countryCode = geo.properties.iso_a2 || "";
                   return (
                     <Tooltip key={geo.rsmKey}>
                       <TooltipTrigger asChild>
