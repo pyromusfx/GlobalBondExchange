@@ -84,7 +84,10 @@ export default function TradePage() {
                 </div>
               </div>
               
-              <div className="flex flex-col gap-4">
+              {/* TradingView Chart Component */}
+              <TradingView country={country} />
+            
+              <div className="flex flex-col gap-4 mt-6">
                 <div className="bg-secondary/50 rounded-lg p-4">
                   <h2 className="text-lg font-medium mb-2">Country Overview</h2>
                   <p>
