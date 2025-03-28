@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import Header from "@/components/layout/header";
 import MobileNavigation from "@/components/layout/mobile-navigation";
 import Footer from "@/components/layout/footer";
@@ -10,10 +11,12 @@ import MapSection from "@/components/home/map-section";
 import FeaturesSection from "@/components/home/features-section";
 
 export default function HomePage() {
+  const { t } = useTranslation();
+  
   // Set page title
   useEffect(() => {
-    document.title = "Sekance - Virtual Bond Exchange";
-  }, []);
+    document.title = "Sekance - " + t('home.pageTitle');
+  }, [t]);
 
   return (
     <div className="min-h-screen flex flex-col">

@@ -1,50 +1,56 @@
 import { Link } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { FaChartLine, FaRocket, FaShieldAlt, FaStar, FaInfoCircle, FaWikipediaW } from "react-icons/fa";
 import CandlestickChart from "@/components/ui/chart";
+import { useMemo } from "react";
 
 export default function FeaturesSection() {
-  // Generate demo chart data
-  const demoChartData = [];
-  let currentDate = new Date();
-  let price = 0.695;
+  const { t } = useTranslation();
   
-  for (let i = 30; i >= 0; i--) {
-    const date = new Date();
-    date.setDate(currentDate.getDate() - i);
+  // Generate demo chart data - memoizing to improve performance
+  const demoChartData = useMemo(() => {
+    const data = [];
+    let currentDate = new Date();
+    let price = 0.695;
     
-    const volatility = 0.02; // 2% max move
-    const change = price * volatility * (Math.random() - 0.5);
-    const open = price;
-    const close = price + change;
-    price = close;
-    
-    const high = Math.max(open, close) + price * 0.01 * Math.random();
-    const low = Math.min(open, close) - price * 0.01 * Math.random();
-    
-    demoChartData.push({
-      time: date.toISOString().split('T')[0],
-      open,
-      high,
-      low,
-      close,
-    });
-  }
+    for (let i = 30; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(currentDate.getDate() - i);
+      
+      const volatility = 0.02; // 2% max move
+      const change = price * volatility * (Math.random() - 0.5);
+      const open = price;
+      const close = price + change;
+      price = close;
+      
+      const high = Math.max(open, close) + price * 0.01 * Math.random();
+      const low = Math.min(open, close) - price * 0.01 * Math.random();
+      
+      data.push({
+        time: date.toISOString().split('T')[0],
+        open,
+        high,
+        low,
+        close,
+      });
+    }
+    return data;
+  }, []);
 
   return (
     <section className="py-16 bg-secondary/50">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold mb-12 text-center">Advanced Trading Features</h2>
+        <h2 className="text-3xl font-bold mb-12 text-center">{t('home.features.title')}</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
           <div className="text-center">
             <div className="bg-card rounded-full p-6 inline-block mb-6">
               <FaChartLine className="text-4xl text-primary" />
             </div>
-            <h3 className="text-xl font-bold mb-3">Professional Charts</h3>
+            <h3 className="text-xl font-bold mb-3">{t('home.features.security.title')}</h3>
             <p className="text-muted-foreground">
-              Advanced candlestick charts with multiple timeframes and technical indicators.
+              {t('home.features.security.description')}
             </p>
           </div>
           
@@ -52,9 +58,9 @@ export default function FeaturesSection() {
             <div className="bg-card rounded-full p-6 inline-block mb-6">
               <FaRocket className="text-4xl text-primary" />
             </div>
-            <h3 className="text-xl font-bold mb-3">Leverage Trading</h3>
+            <h3 className="text-xl font-bold mb-3">{t('home.features.leverage.title')}</h3>
             <p className="text-muted-foreground">
-              Trade with up to 50x leverage to maximize your profit potential across all markets.
+              {t('home.features.leverage.description')}
             </p>
           </div>
           
@@ -62,9 +68,9 @@ export default function FeaturesSection() {
             <div className="bg-card rounded-full p-6 inline-block mb-6">
               <FaShieldAlt className="text-4xl text-primary" />
             </div>
-            <h3 className="text-xl font-bold mb-3">Secure KYC</h3>
+            <h3 className="text-xl font-bold mb-3">{t('home.features.transparency.title')}</h3>
             <p className="text-muted-foreground">
-              Quick and secure KYC verification process to get started with trading in minutes.
+              {t('home.features.transparency.description')}
             </p>
           </div>
         </div>
@@ -78,6 +84,7 @@ export default function FeaturesSection() {
                   src="https://flagcdn.com/w40/jp.png" 
                   alt="Japan Flag" 
                   className="w-8 h-auto mr-3"
+                  loading="lazy"
                 />
                 <div>
                   <div className="font-medium text-lg">Japan (JPN)</div>
@@ -127,14 +134,14 @@ export default function FeaturesSection() {
               <div>
                 <div className="border-b border-border p-2">
                   <div className="flex space-x-1">
-                    <Button variant="secondary" className="flex-1">Spot</Button>
-                    <Button className="flex-1 bg-primary text-secondary">Leverage</Button>
+                    <Button variant="secondary" className="flex-1">{t('trade.spot')}</Button>
+                    <Button className="flex-1 bg-primary text-secondary">{t('trade.leverage')}</Button>
                   </div>
                 </div>
                 
                 {/* Leverage Options */}
                 <div className="p-4 border-b border-border">
-                  <div className="text-xs text-muted-foreground mb-2">Leverage</div>
+                  <div className="text-xs text-muted-foreground mb-2">{t('trade.leverage')}</div>
                   <div className="grid grid-cols-4 gap-2">
                     <Button variant="secondary" size="sm" className="py-1 px-1 text-xs">3x</Button>
                     <Button className="py-1 px-1 text-xs bg-primary text-secondary">10x</Button>
@@ -146,13 +153,13 @@ export default function FeaturesSection() {
                 {/* Trading Form */}
                 <div className="p-4">
                   <div className="flex space-x-1 mb-4">
-                    <Button className="flex-1 bg-green-500 hover:bg-green-600 text-white">Buy</Button>
-                    <Button variant="ghost" className="flex-1 text-muted-foreground">Sell</Button>
+                    <Button className="flex-1 bg-green-500 hover:bg-green-600 text-white">{t('trade.buy')}</Button>
+                    <Button variant="ghost" className="flex-1 text-muted-foreground">{t('trade.sell')}</Button>
                   </div>
                   
                   <div className="space-y-3">
                     <div>
-                      <div className="text-xs text-muted-foreground mb-1">Price (USD)</div>
+                      <div className="text-xs text-muted-foreground mb-1">{t('trade.price')} (USD)</div>
                       <input 
                         type="text" 
                         value="0.695" 
@@ -162,7 +169,7 @@ export default function FeaturesSection() {
                     </div>
                     
                     <div>
-                      <div className="text-xs text-muted-foreground mb-1">Amount (JPN)</div>
+                      <div className="text-xs text-muted-foreground mb-1">{t('trade.amount')} (JPN)</div>
                       <input 
                         type="text" 
                         placeholder="0" 
@@ -174,11 +181,11 @@ export default function FeaturesSection() {
                       <Button variant="secondary" size="sm" className="text-xs">25%</Button>
                       <Button variant="secondary" size="sm" className="text-xs">50%</Button>
                       <Button variant="secondary" size="sm" className="text-xs">75%</Button>
-                      <Button variant="secondary" size="sm" className="text-xs">Max</Button>
+                      <Button variant="secondary" size="sm" className="text-xs">{t('common.max')}</Button>
                     </div>
                     
                     <div>
-                      <div className="text-xs text-muted-foreground mb-1">Total (USD)</div>
+                      <div className="text-xs text-muted-foreground mb-1">{t('trade.totalCost')} (USD)</div>
                       <input 
                         type="text" 
                         placeholder="0" 
@@ -189,7 +196,7 @@ export default function FeaturesSection() {
                     
                     <Link href="/trade/JP">
                       <Button className="w-full bg-green-500 hover:bg-green-600 mt-4">
-                        Buy JPN
+                        {t('trade.buy')} JPN
                       </Button>
                     </Link>
                   </div>
