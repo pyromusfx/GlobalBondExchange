@@ -3,11 +3,11 @@ import { useQuery } from "@tanstack/react-query";
 
 interface NewsItem {
   id: number;
-  countryCode: string;
+  countryCode: string | null;
   title: string;
   content: string;
-  source: string;
-  timestamp: string;
+  source: string | null;
+  timestamp: Date | null;
 }
 
 export default function NewsTicker() {
@@ -53,8 +53,13 @@ export default function NewsTicker() {
       >
         {newsItems.map((item) => (
           <span key={item.id} className="inline-block mr-8">
-            <span className="text-primary font-medium mr-2">{item.countryCode}:</span>
+            {item.countryCode && (
+              <span className="text-primary font-medium mr-2">{item.countryCode}:</span>
+            )}
             {item.title}
+            {item.source && (
+              <span className="text-muted-foreground text-xs ml-2">({item.source})</span>
+            )}
           </span>
         ))}
       </div>

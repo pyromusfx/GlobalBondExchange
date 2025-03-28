@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth } from "./auth";
 import { countries, featuredCountries, newsFeed } from "@shared/countries";
+import { scheduleNewsFeedUpdates } from "./rss-feed";
 import { 
   insertKycSchema, 
   insertTransactionSchema, 
@@ -19,6 +20,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Initialize country data
   await initializeCountryData();
+  
+  // Start BBC news feed updates
+  scheduleNewsFeedUpdates();
 
   // KYC submission route
   app.post("/api/kyc", async (req, res, next) => {
