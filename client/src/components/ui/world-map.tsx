@@ -12,8 +12,28 @@ import { Tooltip } from '@/components/ui/tooltip';
 import { TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { CountryShare } from '@shared/schema';
 
-// World map from react-simple-maps
-const geoUrl = "https://raw.githubusercontent.com/deldersveld/topojson/master/world-countries.json";
+// World map from react-simple-maps - Use a richer topojson source
+const geoUrl = "https://unpkg.com/world-atlas@2.0.2/countries-50m.json";
+
+// Map ISO3 country codes to ISO2 for our database
+function mapISO3toISO2(iso3Code: string): string {
+  const iso3ToIso2Map: Record<string, string> = {
+    USA: "US", GBR: "GB", CAN: "CA", AUS: "AU", DEU: "DE", 
+    FRA: "FR", JPN: "JP", CHN: "CN", ITA: "IT", ESP: "ES",
+    RUS: "RU", BRA: "BR", IND: "IN", MEX: "MX", ZAF: "ZA",
+    NLD: "NL", CHE: "CH", SWE: "SE", NOR: "NO", DNK: "DK",
+    FIN: "FI", IRL: "IE", NZL: "NZ", SGP: "SG", AUT: "AT",
+    BEL: "BE", ARG: "AR", CHL: "CL", COL: "CO", EGY: "EG",
+    GRC: "GR", HKG: "HK", IDN: "ID", ISR: "IL", KOR: "KR",
+    MYS: "MY", PER: "PE", PHL: "PH", POL: "PL", PRT: "PT",
+    SAU: "SA", THA: "TH", TUR: "TR", UKR: "UA", VNM: "VN",
+    ZWE: "ZW", ARE: "AE", BGD: "BD", PAK: "PK", NGA: "NG",
+    KEN: "KE", MAR: "MA", TUN: "TN", GHA: "GH", AGO: "AO",
+    // Add more mappings as needed
+  };
+  
+  return iso3ToIso2Map[iso3Code] || "";
+}
 
 interface WorldMapProps {
   colorBy: 'region' | 'performance' | 'volume';
@@ -177,9 +197,12 @@ Change: ${direction}${change}%`;
             <Geographies geography={geoUrl}>
               {({ geographies }: { geographies: any[] }) =>
                 geographies.map((geo: any) => {
-                  const countryCode = geo.properties.iso_a2 || "";
+                  // world-atlas uses 3-letter country codes, we need to map to 2-letter for our data
+                  const countryCode = geo.properties.iso_a2 || 
+                                      geo.properties.ISO_A2 || 
+                                      (geo.properties.iso_a3 ? mapISO3toISO2(geo.properties.iso_a3) : "");
                   return (
-                    <Tooltip key={geo.rsmKey}>
+                    <Tooltip key={geo.rsmKey || geo.id}>
                       <TooltipTrigger asChild>
                         <Geography
                           geography={geo}
