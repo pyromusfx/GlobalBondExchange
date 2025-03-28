@@ -135,5 +135,15 @@
     "save": "Save",
     "yes": "Yes",
     "no": "No"
+  },
+  "bonds": {
+    "trending": "Trending Bonds",
+    "trendingDescription": "Discover the hottest and coldest bonds in the market",
+    "hotBonds": "Hot Bonds",
+    "coldBonds": "Cold Bonds",
+    "currentPrice": "Current Price",
+    "previousPrice": "Previous",
+    "tradeNow": "Trade Now",
+    "priceChange": "Price Change"
   }
 }

@@ -9,6 +9,7 @@ import PreSaleSection from "@/components/home/pre-sale-section";
 import MarketSection from "@/components/home/market-section";
 import MapSection from "@/components/home/map-section";
 import FeaturesSection from "@/components/home/features-section";
+import HotColdBondsSection from "@/components/home/hot-cold-bonds-section";
 
 export default function HomePage() {
   const { t } = useTranslation();
@@ -25,6 +26,7 @@ export default function HomePage() {
       <main className="flex-grow">
         <HeroSection />
         <PreSaleSection />
+        <HotColdBondsSection />
         <MarketSection />
         <MapSection />
         <FeaturesSection />
