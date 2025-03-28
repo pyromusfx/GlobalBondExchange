@@ -59,12 +59,12 @@ export default function NewsTicker() {
         ))}
       </div>
       
-      <style jsx>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         @keyframes tickerScroll {
           0% { transform: translateX(100%); }
           100% { transform: translateX(-100%); }
         }
-      `}</style>
+      `}} />
     </div>
   );
 }

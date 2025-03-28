@@ -27,34 +27,34 @@ export default function Header() {
       <div className="container mx-auto flex justify-between items-center py-3 px-4">
         <div className="flex items-center">
           <Link href="/">
-            <a className="text-primary font-bold text-2xl">Sekance</a>
+            <div className="text-primary font-bold text-2xl cursor-pointer">Sekance</div>
           </Link>
           <nav className="hidden md:flex ml-10">
             <Link href="/">
-              <a className={`mx-3 hover:text-primary transition ${isActive("/") ? "text-white" : "text-muted-foreground"}`}>
+              <div className={`mx-3 hover:text-primary transition cursor-pointer ${isActive("/") ? "text-white" : "text-muted-foreground"}`}>
                 Home
-              </a>
+              </div>
             </Link>
             <Link href="/market">
-              <a className={`mx-3 hover:text-primary transition ${isActive("/market") ? "text-white" : "text-muted-foreground"}`}>
+              <div className={`mx-3 hover:text-primary transition cursor-pointer ${isActive("/market") ? "text-white" : "text-muted-foreground"}`}>
                 Market
-              </a>
+              </div>
             </Link>
             <Link href="/trade">
-              <a className={`mx-3 hover:text-primary transition ${isActive("/trade") ? "text-white" : "text-muted-foreground"}`}>
+              <div className={`mx-3 hover:text-primary transition cursor-pointer ${isActive("/trade") ? "text-white" : "text-muted-foreground"}`}>
                 Trade
-              </a>
+              </div>
             </Link>
             <Link href="/presale">
-              <a className={`mx-3 hover:text-primary transition ${isActive("/presale") ? "text-white" : "text-muted-foreground"}`}>
+              <div className={`mx-3 hover:text-primary transition cursor-pointer ${isActive("/presale") ? "text-white" : "text-muted-foreground"}`}>
                 Pre-Sale
-              </a>
+              </div>
             </Link>
             {user && !user.isKycVerified && (
               <Link href="/kyc">
-                <a className={`mx-3 hover:text-primary transition ${isActive("/kyc") ? "text-white" : "text-muted-foreground"}`}>
+                <div className={`mx-3 hover:text-primary transition cursor-pointer ${isActive("/kyc") ? "text-white" : "text-muted-foreground"}`}>
                   KYC
-                </a>
+                </div>
               </Link>
             )}
           </nav>
@@ -102,66 +102,65 @@ export default function Header() {
             <SheetContent side="right" className="bg-card">
               <div className="flex flex-col mt-8 space-y-4">
                 <Link href="/">
-                  <a className="text-lg py-2 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>
+                  <div className="text-lg py-2 hover:text-primary cursor-pointer" onClick={() => setMobileMenuOpen(false)}>
                     Home
-                  </a>
+                  </div>
                 </Link>
                 <Link href="/market">
-                  <a className="text-lg py-2 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>
+                  <div className="text-lg py-2 hover:text-primary cursor-pointer" onClick={() => setMobileMenuOpen(false)}>
                     Market
-                  </a>
+                  </div>
                 </Link>
                 <Link href="/trade">
-                  <a className="text-lg py-2 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>
+                  <div className="text-lg py-2 hover:text-primary cursor-pointer" onClick={() => setMobileMenuOpen(false)}>
                     Trade
-                  </a>
+                  </div>
                 </Link>
                 <Link href="/presale">
-                  <a className="text-lg py-2 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>
+                  <div className="text-lg py-2 hover:text-primary cursor-pointer" onClick={() => setMobileMenuOpen(false)}>
                     Pre-Sale
-                  </a>
+                  </div>
                 </Link>
                 {user && !user.isKycVerified && (
                   <Link href="/kyc">
-                    <a className="text-lg py-2 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>
+                    <div className="text-lg py-2 hover:text-primary cursor-pointer" onClick={() => setMobileMenuOpen(false)}>
                       KYC
-                    </a>
+                    </div>
                   </Link>
                 )}
                 
-                <div className="border-t border-border pt-4 mt-4">
-                  {user ? (
-                    <>
-                      <div className="text-sm mb-4 text-muted-foreground">
-                        Logged in as <span className="text-primary">{user.username}</span>
-                      </div>
-                      <Button 
-                        variant="destructive" 
-                        className="w-full" 
-                        onClick={() => {
-                          handleLogout();
-                          setMobileMenuOpen(false);
-                        }}
-                        disabled={logoutMutation.isPending}
-                      >
-                        Log Out
-                      </Button>
-                    </>
-                  ) : (
-                    <div className="space-y-2">
-                      <Link href="/auth">
-                        <Button className="w-full bg-primary text-secondary" onClick={() => setMobileMenuOpen(false)}>
-                          Log In
-                        </Button>
-                      </Link>
-                      <Link href="/auth">
-                        <Button variant="outline" className="w-full border-primary text-primary" onClick={() => setMobileMenuOpen(false)}>
-                          Register
-                        </Button>
-                      </Link>
+                {user ? (
+                  <div className="mt-4 space-y-2">
+                    <div className="text-sm text-muted-foreground">
+                      Balance: <span className="text-primary font-mono font-medium">${parseFloat(user.walletBalance).toFixed(2)}</span>
                     </div>
-                  )}
-                </div>
+                    <Button 
+                      variant="destructive" 
+                      size="sm" 
+                      onClick={() => {
+                        handleLogout();
+                        setMobileMenuOpen(false);
+                      }}
+                      disabled={logoutMutation.isPending}
+                      className="w-full"
+                    >
+                      Log Out
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="mt-4 space-y-2">
+                    <Link href="/auth">
+                      <Button className="w-full bg-primary hover:bg-primary/80 text-secondary" onClick={() => setMobileMenuOpen(false)}>
+                        Log In
+                      </Button>
+                    </Link>
+                    <Link href="/auth">
+                      <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary/10" onClick={() => setMobileMenuOpen(false)}>
+                        Register
+                      </Button>
+                    </Link>
+                  </div>
+                )}
               </div>
             </SheetContent>
           </Sheet>
