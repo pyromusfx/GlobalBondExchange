@@ -154,8 +154,34 @@ export function scheduleNewsFeedUpdates() {
   // Initial fetch
   fetchAllNewsFeeds();
   
-  // Set up interval for subsequent fetches (every 15 minutes)
-  setInterval(fetchAllNewsFeeds, 15 * 60 * 1000);
+  // Set up interval for subsequent fetches (her 2 dakikada bir - daha sık güncelleme)
+  setInterval(fetchAllNewsFeeds, 2 * 60 * 1000);
+
+  // Her 30 saniyede bir haberleri tekrar işle ve ülke fiyatlarını daha sık güncelle
+  // Bu, mevcut haberleri yeniden analiz ederek daha fazla fiyat hareketliliği yaratır
+  setInterval(async () => {
+    try {
+      const storage = (await import('./storage')).storage;
+      const newsAnalyzer = await import('./news-analyzer');
+      
+      // Mevcut haberleri al
+      const latestNews = await storage.getLatestNews();
+      if (latestNews.length > 0) {
+        // Rastgele 1-3 haber seç
+        const randomCount = Math.floor(Math.random() * 3) + 1;
+        const randomIndices = Array.from({length: randomCount}, () => 
+          Math.floor(Math.random() * latestNews.length));
+        
+        const selectedNews = randomIndices.map(index => latestNews[index]);
+        
+        // Seçilen haberleri yeniden analiz et ve ülke değerlerini güncelle
+        await newsAnalyzer.processNewsAndUpdateCountries(selectedNews);
+        console.log(`Yeniden analiz: ${randomCount} haber ile ${randomIndices.length} ülkenin fiyatı güncellendi`);
+      }
+    } catch (error) {
+      console.error('Haber yeniden analiz hatası:', error);
+    }
+  }, 30 * 1000);
   
   // Initialize price history for all countries
   initializePriceHistory();

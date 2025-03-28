@@ -102,15 +102,15 @@ export function usePriceChart(containerRef: React.RefObject<HTMLDivElement>, cou
         const date = new Date(now);
         date.setDate(date.getDate() - i);
         
-        // Volatiliteye göre günlük fiyat değişimi
-        const dailyChange = (Math.random() * 2 - 1) * 0.03; // +/- %3 değişim
+        // Volatiliteye göre günlük fiyat değişimi - daha yüksek volatilite
+        const dailyChange = (Math.random() * 2 - 1) * 0.08; // +/- %8 değişim
         basePrice = basePrice * (1 + dailyChange);
         
-        // OHLC (Open, High, Low, Close) veriler
+        // OHLC (Open, High, Low, Close) veriler - daha geniş fiyat aralıkları
         const open = basePrice;
-        const high = open * (1 + Math.random() * 0.02);
-        const low = open * (1 - Math.random() * 0.02);
-        const close = (high + low) / 2 + (Math.random() * 0.01 - 0.005);
+        const high = open * (1 + Math.random() * 0.07); // %7 yukarı hareket potansiyeli
+        const low = open * (1 - Math.random() * 0.07);  // %7 aşağı hareket potansiyeli
+        const close = (high + low) / 2 + (Math.random() * 0.03 - 0.015); // Daha geniş rastgele kapanış
         
         // UTC zaman damgası (milisaniye cinsinden)
         const timestamp = Math.floor(date.getTime() / 1000);
