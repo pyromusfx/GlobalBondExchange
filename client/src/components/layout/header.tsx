@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 import LanguageSwitcher from "./language-switcher";
+import WalletConnectButton from "@/components/wallet/wallet-connect-button";
 
 export default function Header() {
   const [location] = useLocation();
@@ -63,8 +64,13 @@ export default function Header() {
           </nav>
         </div>
 
-        <div className="flex items-center">
+        <div className="flex items-center space-x-4">
           <LanguageSwitcher />
+          
+          {/* Wallet Connect Butonu */}
+          <div className="hidden md:block">
+            <WalletConnectButton />
+          </div>
           
           {user ? (
             <div className="hidden md:flex items-center">
@@ -133,6 +139,11 @@ export default function Header() {
                     </div>
                   </Link>
                 )}
+                
+                {/* Mobil görünümde Wallet Connect */}
+                <div className="py-2">
+                  <WalletConnectButton />
+                </div>
                 
                 {user ? (
                   <div className="mt-4 space-y-2">
