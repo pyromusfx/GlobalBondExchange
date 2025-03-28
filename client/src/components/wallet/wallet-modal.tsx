@@ -73,7 +73,7 @@ export default function WalletModal({ isOpen, onClose, onConnect }: WalletModalP
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{t('wallet.connectWallet') || "Connect Wallet"}</DialogTitle>
+          <DialogTitle>{t('wallet.connectWallet') || "Wallet Connect"}</DialogTitle>
           <DialogDescription>
             {t('wallet.connectDescription') || "Choose your preferred wallet to connect with our platform."}
           </DialogDescription>

@@ -53,7 +53,7 @@ export default function WalletConnectButton() {
           onClick={() => setIsModalOpen(true)}
         >
           <Wallet className="h-4 w-4" />
-          <span>{t('wallet.connectWallet') || "Connect Wallet"}</span>
+          <span>{t('wallet.connectWallet') || "Wallet Connect"}</span>
         </Button>
       )}
 
