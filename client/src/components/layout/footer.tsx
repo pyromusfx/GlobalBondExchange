@@ -34,20 +34,14 @@ export default function Footer() {
             <h4 className="font-bold mb-4">{t('footer.products.title')}</h4>
             <ul className="space-y-2">
               <li>
-                <span 
-                  className="text-muted-foreground hover:text-white transition cursor-pointer"
-                  onClick={() => window.location.href = "/market"}
-                >
-                  {t('footer.products.countryBonds')}
-                </span>
+                <Link href="/market">
+                  <a className="text-muted-foreground hover:text-white transition">{t('footer.products.countryBonds')}</a>
+                </Link>
               </li>
               <li>
-                <span 
-                  className="text-muted-foreground hover:text-white transition cursor-pointer"
-                  onClick={() => window.location.href = "/presale"}
-                >
-                  {t('footer.products.preSale')}
-                </span>
+                <Link href="/presale">
+                  <a className="text-muted-foreground hover:text-white transition">{t('footer.products.preSale')}</a>
+                </Link>
               </li>
               <li>
                 <Link href="/trade">
