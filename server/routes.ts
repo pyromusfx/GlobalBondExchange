@@ -239,11 +239,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { countryCode } = req.params;
       
-      // Import the news analyzer functions
-      const { getPriceHistoryForCountry } = require('./news-analyzer');
+      // Import'ları direkt tanımlayarak kullanıyoruz
+      const { generatePriceHistoryForCountry } = await import('./news-analyzer');
+      const { getPriceHistoryForCountry, savePriceHistoryForCountry } = await import('./news-analyzer-utils');
       
-      // Get or generate price history
-      const priceHistory = getPriceHistoryForCountry(countryCode);
+      // Fiyat geçmişi ver
+      let priceHistory = getPriceHistoryForCountry(countryCode);
+      
+      // Eğer fiyat geçmişi yoksa, oluştur ve kaydet
+      if (priceHistory.length === 0) {
+        priceHistory = generatePriceHistoryForCountry(countryCode);
+        await savePriceHistoryForCountry(countryCode, priceHistory);
+      }
       
       return res.status(200).json(priceHistory);
     } catch (error) {
