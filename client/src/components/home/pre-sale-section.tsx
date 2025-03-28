@@ -93,12 +93,12 @@ export default function PreSaleSection() {
         
         <div className="text-center">
           <Link href="/presale">
-            <a className="inline-flex items-center text-primary hover:text-primary hover:underline">
+            <Button variant="outline" className="inline-flex items-center text-primary hover:text-primary hover:bg-primary/10">
               <span>View All Pre-Sale Countries</span>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
               </svg>
-            </a>
+            </Button>
           </Link>
         </div>
       </div>

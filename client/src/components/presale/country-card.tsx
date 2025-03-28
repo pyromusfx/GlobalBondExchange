@@ -138,11 +138,12 @@ export default function CountryCard({ country }: CountryCardProps) {
             {buyMutation.isPending ? "Processing..." : "Purchase Shares"}
           </Button>
         ) : (
-          <Link href="/auth">
-            <Button className="w-full bg-primary hover:bg-primary/80 text-secondary py-2 rounded font-medium">
-              Log In to Purchase
-            </Button>
-          </Link>
+          <Button 
+            className="w-full bg-primary hover:bg-primary/80 text-secondary py-2 rounded font-medium" 
+            onClick={() => window.location.href = "/auth"}
+          >
+            Log In to Purchase
+          </Button>
         )}
       </div>
     </div>

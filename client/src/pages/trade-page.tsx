@@ -71,8 +71,64 @@ export default function TradePage() {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
             {/* Main Trading View - Takes 3/4 width on desktop */}
-            <div className="lg:col-span-3">
-              <TradingView country={country} />
+            <div className="lg:col-span-3 bg-card p-6 rounded-lg shadow-md">
+              <div className="flex items-center mb-4">
+                <img 
+                  src={`https://flagcdn.com/w40/${country.countryCode.toLowerCase()}.png`} 
+                  alt={`${country.countryName} Flag`} 
+                  className="w-8 h-auto mr-3"
+                />
+                <div>
+                  <h1 className="text-2xl font-bold">{country.countryName} ({country.countryCode})</h1>
+                  <p className="text-muted-foreground">Current Price: ${parseFloat(country.currentPrice || "0").toFixed(3)}</p>
+                </div>
+              </div>
+              
+              <div className="flex flex-col gap-4">
+                <div className="bg-secondary/50 rounded-lg p-4">
+                  <h2 className="text-lg font-medium mb-2">Country Overview</h2>
+                  <p>
+                    {country.countryName} bonds allow you to invest in this nation's economic future. 
+                    Each country has 10 million shares available during pre-sale, priced at $0.50 each.
+                  </p>
+                </div>
+                
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  <div className="bg-secondary/30 p-4 rounded-lg">
+                    <h3 className="text-sm text-muted-foreground">Total Supply</h3>
+                    <p className="text-lg font-medium">10,000,000</p>
+                  </div>
+                  <div className="bg-secondary/30 p-4 rounded-lg">
+                    <h3 className="text-sm text-muted-foreground">Available</h3>
+                    <p className="text-lg font-medium">{parseFloat(country.availableShares?.toString() || "0").toLocaleString()}</p>
+                  </div>
+                  <div className="bg-secondary/30 p-4 rounded-lg">
+                    <h3 className="text-sm text-muted-foreground">Market Cap</h3>
+                    <p className="text-lg font-medium">${(parseFloat(country.currentPrice || "0") * 10000000).toLocaleString()}</p>
+                  </div>
+                </div>
+                
+                <div className="flex justify-center items-center p-8 text-center bg-secondary/10 rounded-lg">
+                  <div>
+                    <img
+                      src={`https://flagcdn.com/h120/${country.countryCode.toLowerCase()}.png`}
+                      alt={`${country.countryName} Flag`}
+                      className="mx-auto mb-4 max-h-32"
+                    />
+                    <a 
+                      href={`https://en.wikipedia.org/wiki/${country.countryName.replace(/ /g, '_')}`}
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline inline-flex items-center"
+                    >
+                      Learn more about {country.countryName}
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
             </div>
             
             {/* Trade Form - Takes 1/4 width on desktop */}
