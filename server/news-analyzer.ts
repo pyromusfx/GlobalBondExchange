@@ -260,8 +260,8 @@ export async function processNewsAndUpdateCountries(newsItems: any[]) {
       const currentPrice = parseFloat(targetCountry.currentPrice || "0");
       const previousPrice = currentPrice;
       
-      // Etki (impact) -1 ile 1 arasında, fiyat değişimini +/- %0.5 ile %5 arasında sınırlandır
-      const priceChangePercent = impact * (Math.random() * 4.5 + 0.5);
+      // Etki (impact) -1 ile 1 arasında, fiyat değişimini +/- %5 ile %15 arasında (arttırılmış volatilite)
+      const priceChangePercent = impact * (Math.random() * 10 + 5);
       const newPrice = currentPrice * (1 + priceChangePercent / 100);
       
       // Güncellenmiş değerleri kaydet
@@ -296,8 +296,8 @@ export async function processNewsAndUpdateCountries(newsItems: any[]) {
       const currentPrice = parseFloat(country.currentPrice || "0");
       const previousPrice = currentPrice;
       
-      // Düşük etki için daha az fiyat değişimi
-      const priceChangePercent = impact * (Math.random() * 1 + 0.1);
+      // Düşük etki için orta seviyede fiyat değişimi (ikincil etkiler için 1-3% arası)
+      const priceChangePercent = impact * (Math.random() * 2 + 1);
       const newPrice = currentPrice * (1 + priceChangePercent / 100);
       
       // Güncellenmiş değerleri kaydet
@@ -344,15 +344,15 @@ export function generatePriceHistoryForCountry(countryCode: string, days: number
     const date = new Date(now);
     date.setDate(date.getDate() - i);
     
-    // Volatiliteye göre günlük fiyat değişimi
-    const dailyChange = (Math.random() * 2 - 1) * (avgVolatility / 10);
+    // Volatiliteye göre günlük fiyat değişimi - Daha yüksek volatilite için katsayı arttırıldı
+    const dailyChange = (Math.random() * 2 - 1) * (avgVolatility / 5);
     basePrice = basePrice * (1 + dailyChange);
     
-    // OHLC (Open, High, Low, Close) verileri
+    // OHLC (Open, High, Low, Close) verileri - Daha yüksek intraday volatilite
     const open = basePrice;
-    const high = open * (1 + Math.random() * 0.02);
-    const low = open * (1 - Math.random() * 0.02);
-    const close = (high + low) / 2 + (Math.random() * 0.01 - 0.005);
+    const high = open * (1 + Math.random() * 0.05); // 5% olası yukarı hareket
+    const low = open * (1 - Math.random() * 0.05);  // 5% olası aşağı hareket
+    const close = (high + low) / 2 + (Math.random() * 0.02 - 0.01); // Biraz daha rastgele kapanış
     
     // UTC zaman damgası (milisaniye cinsinden)
     const timestamp = date.getTime() / 1000;
