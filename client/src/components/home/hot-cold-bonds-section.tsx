@@ -129,11 +129,14 @@ export default function HotColdBondsSection() {
                         </div>
                       </div>
                       
-                      <Button asChild variant="outline" size="sm" className="w-full">
-                        <Link to={`/trade/${country.countryCode}`} className="flex items-center justify-center">
-                          <span>{t('bonds.tradeNow')}</span>
-                          <ArrowUpRight className="ml-2 h-4 w-4" />
-                        </Link>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full flex items-center justify-center"
+                        onClick={() => window.location.href=`/trade/${country.countryCode}`}
+                      >
+                        <span>{t('bonds.tradeNow')}</span>
+                        <ArrowUpRight className="ml-2 h-4 w-4" />
                       </Button>
                     </CardContent>
                   </Card>
@@ -178,11 +181,14 @@ export default function HotColdBondsSection() {
                         </div>
                       </div>
                       
-                      <Button asChild variant="outline" size="sm" className="w-full">
-                        <Link to={`/trade/${country.countryCode}`} className="flex items-center justify-center">
-                          <span>{t('bonds.tradeNow')}</span>
-                          <ArrowDownRight className="ml-2 h-4 w-4" />
-                        </Link>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full flex items-center justify-center"
+                        onClick={() => window.location.href=`/trade/${country.countryCode}`}
+                      >
+                        <span>{t('bonds.tradeNow')}</span>
+                        <ArrowDownRight className="ml-2 h-4 w-4" />
                       </Button>
                     </CardContent>
                   </Card>
