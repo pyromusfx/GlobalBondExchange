@@ -4,7 +4,6 @@ import Header from "@/components/layout/header";
 import MobileNavigation from "@/components/layout/mobile-navigation";
 import Footer from "@/components/layout/footer";
 import NewsTicker from "@/components/layout/news-ticker";
-import TradingView from "@/components/trade/trading-view";
 import EnhancedTradingView from "@/components/trade/enhanced-trading-view";
 import TradeForm from "@/components/trade/trade-form";
 import { useCountry } from "@/hooks/use-countries";
@@ -85,18 +84,12 @@ export default function TradePage() {
                 </div>
               </div>
               
-              {/* TradingView Chart Component */}
-              <div className="flex gap-4 mb-6">
-                <div className="w-full">
-                  <TradingView country={country} />
-                </div>
-              </div>
-              
-              {/* Enhanced News-Based Chart */}
+              {/* Haber tabanlı dinamik grafiğimiz */}
               <div className="mb-6">
-                <h2 className="text-lg font-medium mb-2">News-Driven Chart</h2>
+                <h2 className="text-lg font-medium mb-2">Live News-Driven Price Chart</h2>
                 <p className="text-sm text-muted-foreground mb-4">
-                  This chart shows price movements based on real-time news analysis.
+                  This chart displays real-time price movements based on news analysis from multiple global sources.
+                  Prices are updated automatically as new relevant news arrives.
                 </p>
                 <EnhancedTradingView country={country} />
               </div>
