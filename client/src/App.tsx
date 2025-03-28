@@ -7,6 +7,9 @@ import { ProtectedRoute } from "./lib/protected-route";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
+// Components
+import LiveSupport from "@/components/support/live-support";
+
 // Pages
 import HomePage from "@/pages/home-page";
 import AuthPage from "@/pages/auth-page";
@@ -48,6 +51,7 @@ function AppContent() {
   return (
     <AuthProvider>
       <Router />
+      <LiveSupport />
       <Toaster />
     </AuthProvider>
   );

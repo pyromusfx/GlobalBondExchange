@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CandlestickChart from "@/components/ui/chart";
+import TradingViewWidget from './tradingview-widget';
+import { getForexSymbol, getStockMarketSymbol } from '@/lib/currency-utils';
 import { CountryShare } from "@shared/schema";
 import { FaStar, FaInfoCircle, FaWikipediaW } from "react-icons/fa";
 
@@ -15,12 +17,31 @@ export default function TradingView({ country }: TradingViewProps) {
   // Generate chart data based on country price and some randomness
   const [chartData, setChartData] = useState<any[]>([]);
 
+  // Güvenli bir şekilde string değerini float'a çevirir
+  const safeParseFloat = (value: string | null): number => {
+    if (!value) return 0;
+    const parsed = parseFloat(value);
+    return isNaN(parsed) ? 0 : parsed;
+  };
+
+  // Güvenli bir şekilde değeri sayıya çevirir ve varsayılan değer döndürür
+  const safeGetNumber = (value: number | null, defaultValue = 0): number => {
+    if (value === null || isNaN(value)) return defaultValue;
+    return value;
+  };
+
+  // Güvenli bir şekilde ülkenin değerlerini alırız
+  const currentPrice = safeParseFloat(country.currentPrice);
+  const previousPrice = safeParseFloat(country.previousPrice);
+  const availableShares = safeGetNumber(country.availableShares, 0);
+  const preSaleProgress = safeParseFloat(country.preSaleProgress || "0");
+
   useEffect(() => {
     // Generate historical data points based on current price
     const generateChartData = () => {
       const demoData = [];
       const now = new Date();
-      let price = parseFloat(country.currentPrice);
+      let price = currentPrice;
       
       // Go back from current price to create historical data
       for (let i = 30; i >= 0; i--) {
@@ -51,18 +72,18 @@ export default function TradingView({ country }: TradingViewProps) {
       
       // Ensure the last price matches the current price
       const lastPoint = demoData[demoData.length - 1];
-      lastPoint.close = parseFloat(country.currentPrice);
+      lastPoint.close = currentPrice;
       lastPoint.high = Math.max(lastPoint.high, lastPoint.close);
       
       return demoData;
     };
     
     setChartData(generateChartData());
-  }, [country]);
+  }, [country, currentPrice]);
 
   // Calculate price change
-  const priceChange = (parseFloat(country.currentPrice) - parseFloat(country.previousPrice)).toFixed(3);
-  const percentChange = ((parseFloat(priceChange) / parseFloat(country.previousPrice)) * 100).toFixed(2);
+  const priceChange = (currentPrice - previousPrice).toFixed(3);
+  const percentChange = ((parseFloat(priceChange) / previousPrice) * 100).toFixed(2);
   const isPositive = parseFloat(priceChange) >= 0;
 
   return (
@@ -77,7 +98,7 @@ export default function TradingView({ country }: TradingViewProps) {
           <div>
             <div className="font-medium text-lg">{country.countryName} ({country.countryCode})</div>
             <div className="flex items-center">
-              <span className="font-mono font-medium">${parseFloat(country.currentPrice).toFixed(3)}</span>
+              <span className="font-mono font-medium">${currentPrice.toFixed(3)}</span>
               <span className={`text-sm ml-2 ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
                 {isPositive ? '+' : ''}{priceChange} ({isPositive ? '+' : ''}{percentChange}%)
               </span>
@@ -106,52 +127,72 @@ export default function TradingView({ country }: TradingViewProps) {
       </div>
             
       {/* Chart Area */}
-      <div className="border-b border-border p-1 h-[400px] relative">
-        <CandlestickChart data={chartData} height={400} />
-        
-        {/* Chart Controls */}
-        <div className="absolute top-4 left-4 flex space-x-2">
-          <Button 
-            variant={timeframe === '15m' ? 'default' : 'secondary'} 
-            size="sm" 
-            className="text-xs"
-            onClick={() => setTimeframe('15m')}
-          >
-            15m
-          </Button>
-          <Button 
-            variant={timeframe === '1h' ? 'default' : 'secondary'} 
-            size="sm" 
-            className={`text-xs ${timeframe === '1h' ? 'bg-primary text-secondary' : ''}`}
-            onClick={() => setTimeframe('1h')}
-          >
-            1h
-          </Button>
-          <Button 
-            variant={timeframe === '4h' ? 'default' : 'secondary'} 
-            size="sm" 
-            className="text-xs"
-            onClick={() => setTimeframe('4h')}
-          >
-            4h
-          </Button>
-          <Button 
-            variant={timeframe === '1d' ? 'default' : 'secondary'} 
-            size="sm" 
-            className="text-xs"
-            onClick={() => setTimeframe('1d')}
-          >
-            1d
-          </Button>
-          <Button 
-            variant={timeframe === '1w' ? 'default' : 'secondary'} 
-            size="sm" 
-            className="text-xs"
-            onClick={() => setTimeframe('1w')}
-          >
-            1w
-          </Button>
-        </div>
+      <div className="border-b border-border h-[400px] relative">
+        <Tabs defaultValue="tradingview" className="w-full">
+          <div className="flex items-center justify-between border-b border-border px-4 py-2">
+            <TabsList className="bg-transparent">
+              <TabsTrigger value="tradingview" className="data-[state=active]:bg-secondary data-[state=active]:text-white">TradingView</TabsTrigger>
+              <TabsTrigger value="basic" className="data-[state=active]:bg-secondary data-[state=active]:text-white">Basic Chart</TabsTrigger>
+            </TabsList>
+            
+            {/* Timeframe Controls */}
+            <div className="flex space-x-2">
+              <Button 
+                variant={timeframe === '15m' ? 'default' : 'secondary'} 
+                size="sm" 
+                className="text-xs"
+                onClick={() => setTimeframe('15m')}
+              >
+                15m
+              </Button>
+              <Button 
+                variant={timeframe === '1h' ? 'default' : 'secondary'} 
+                size="sm" 
+                className={`text-xs ${timeframe === '1h' ? 'bg-primary text-secondary' : ''}`}
+                onClick={() => setTimeframe('1h')}
+              >
+                1h
+              </Button>
+              <Button 
+                variant={timeframe === '4h' ? 'default' : 'secondary'} 
+                size="sm" 
+                className="text-xs"
+                onClick={() => setTimeframe('4h')}
+              >
+                4h
+              </Button>
+              <Button 
+                variant={timeframe === '1d' ? 'default' : 'secondary'} 
+                size="sm" 
+                className="text-xs"
+                onClick={() => setTimeframe('1d')}
+              >
+                1d
+              </Button>
+              <Button 
+                variant={timeframe === '1w' ? 'default' : 'secondary'} 
+                size="sm" 
+                className="text-xs"
+                onClick={() => setTimeframe('1w')}
+              >
+                1w
+              </Button>
+            </div>
+          </div>
+          
+          <TabsContent value="tradingview" className="mt-0 h-[350px]">
+            <TradingViewWidget 
+              symbol={getForexSymbol(country.countryCode) || "FX:EURUSD"}
+              height={350}
+              interval={timeframe === "15m" ? "15" : timeframe === "1h" ? "60" : timeframe === "4h" ? "240" : timeframe === "1d" ? "D" : "W"}
+              theme="dark"
+            />
+          </TabsContent>
+          
+          <TabsContent value="basic" className="mt-0 h-[350px] p-1">
+            <CandlestickChart data={chartData} height={350} />
+          </TabsContent>
+        </Tabs>
       </div>
       
       {/* Order Book and Recent Trades Tabs */}
@@ -178,7 +219,7 @@ export default function TradingView({ country }: TradingViewProps) {
                   <tbody>
                     {/* Generate some sell orders (red) */}
                     {Array.from({ length: 8 }).map((_, i) => {
-                      const basePrice = parseFloat(country.currentPrice) * 1.05;
+                      const basePrice = currentPrice * 1.05;
                       const price = (basePrice + (0.02 * (8 - i) * basePrice)).toFixed(4);
                       const amount = (100 + Math.random() * 900).toFixed(2);
                       const total = (parseFloat(price) * parseFloat(amount)).toFixed(2);
@@ -194,14 +235,14 @@ export default function TradingView({ country }: TradingViewProps) {
                     
                     {/* Current price row */}
                     <tr className="border-y border-border bg-secondary/40">
-                      <td className="py-2 px-4 font-mono font-medium">{parseFloat(country.currentPrice).toFixed(4)}</td>
+                      <td className="py-2 px-4 font-mono font-medium">{currentPrice.toFixed(4)}</td>
                       <td className="py-2 px-4 text-right font-mono"></td>
                       <td className="py-2 px-4 text-right font-mono"></td>
                     </tr>
                     
                     {/* Generate some buy orders (green) */}
                     {Array.from({ length: 8 }).map((_, i) => {
-                      const basePrice = parseFloat(country.currentPrice) * 0.95;
+                      const basePrice = currentPrice * 0.95;
                       const price = (basePrice - (0.01 * i * basePrice)).toFixed(4);
                       const amount = (100 + Math.random() * 1200).toFixed(2);
                       const total = (parseFloat(price) * parseFloat(amount)).toFixed(2);
@@ -235,7 +276,7 @@ export default function TradingView({ country }: TradingViewProps) {
                     {Array.from({ length: 20 }).map((_, i) => {
                       const time = new Date(Date.now() - i * 60000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                       const type = Math.random() > 0.5 ? 'Buy' : 'Sell';
-                      const price = (parseFloat(country.currentPrice) * (0.98 + Math.random() * 0.04)).toFixed(4);
+                      const price = (currentPrice * (0.98 + Math.random() * 0.04)).toFixed(4);
                       const amount = (50 + Math.random() * 500).toFixed(2);
                       
                       return (
@@ -268,11 +309,11 @@ export default function TradingView({ country }: TradingViewProps) {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-xs text-muted-foreground mb-1">24h High</p>
-                  <p className="font-mono font-medium">${(parseFloat(country.currentPrice) * 1.05).toFixed(4)}</p>
+                  <p className="font-mono font-medium">${(currentPrice * 1.05).toFixed(4)}</p>
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground mb-1">24h Low</p>
-                  <p className="font-mono font-medium">${(parseFloat(country.currentPrice) * 0.95).toFixed(4)}</p>
+                  <p className="font-mono font-medium">${(currentPrice * 0.95).toFixed(4)}</p>
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground mb-1">24h Volume</p>
@@ -280,7 +321,7 @@ export default function TradingView({ country }: TradingViewProps) {
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground mb-1">Market Cap</p>
-                  <p className="font-mono font-medium">${(parseFloat(country.currentPrice) * 10000000).toLocaleString()}</p>
+                  <p className="font-mono font-medium">${(currentPrice * 10000000).toLocaleString()}</p>
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground mb-1">Total Supply</p>
@@ -288,13 +329,13 @@ export default function TradingView({ country }: TradingViewProps) {
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground mb-1">Available Supply</p>
-                  <p className="font-mono font-medium">{parseInt(country.availableShares.toString()).toLocaleString()}</p>
+                  <p className="font-mono font-medium">{availableShares.toLocaleString()}</p>
                 </div>
                 <div className="col-span-2">
                   <p className="text-xs text-muted-foreground mb-1">Pre-Sale Status</p>
                   <p className="font-medium">
                     {country.isPreSale ? (
-                      <span className="text-primary">Active - {(parseFloat(country.preSaleProgress) * 100).toFixed(0)}% Sold</span>
+                      <span className="text-primary">Active - {(preSaleProgress * 100).toFixed(0)}% Sold</span>
                     ) : (
                       <span>Completed</span>
                     )}
@@ -327,7 +368,7 @@ export default function TradingView({ country }: TradingViewProps) {
                     {/* Generate some recent trades */}
                     {Array.from({ length: 10 }).map((_, i) => {
                       const isBuy = Math.random() > 0.5;
-                      const price = (parseFloat(country.currentPrice) * (0.98 + Math.random() * 0.04)).toFixed(4);
+                      const price = (currentPrice * (0.98 + Math.random() * 0.04)).toFixed(4);
                       const amount = (50 + Math.random() * 500).toFixed(2);
                       const minutes = Math.floor(Math.random() * 60);
                       
