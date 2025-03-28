@@ -161,15 +161,19 @@ export function usePriceChart(containerRef: React.RefObject<HTMLDivElement>, cou
           return;
         }
 
+        // Sabit boyutlar kullanalım (responsive olmak yerine)
+        const chartWidth = 670;  // Sabit genişlik
+        const chartHeight = 400; // Sabit yükseklik
+
         console.log("Creating chart with container dimensions:", {
-          width: containerRef.current.clientWidth,
-          height: containerRef.current.clientHeight
+          width: chartWidth,
+          height: chartHeight
         });
         
         // Grafiği oluştur
         const chart = createChart(containerRef.current, {
-          width: containerRef.current.clientWidth || defaultOptions.width,
-          height: containerRef.current.clientHeight || defaultOptions.height,
+          width: chartWidth,
+          height: chartHeight,
           layout: {
             background: { type: 'solid' as ColorType, color: defaultOptions.colors.backgroundColor },
             textColor: defaultOptions.colors.textColor,
@@ -197,56 +201,62 @@ export function usePriceChart(containerRef: React.RefObject<HTMLDivElement>, cou
           },
         });
         
-        // Mum serisi (Candlestick series) oluştur
-        const series = chart.addCandlestickSeries({
-          upColor: defaultOptions.colors.upColor,
-          downColor: defaultOptions.colors.downColor,
-          borderUpColor: defaultOptions.colors.borderUpColor,
-          borderDownColor: defaultOptions.colors.borderDownColor,
-          wickUpColor: defaultOptions.colors.wickUpColor,
-          wickDownColor: defaultOptions.colors.wickDownColor,
-        });
-        
-        // Veriyi ayarla
-        series.setData(chartData);
-        
-        // Container boyut değişikliklerini izle
-        const resizeObserver = new ResizeObserver(entries => {
-          if (entries.length === 0 || !entries[0].contentRect) {
-            return;
-          }
+        try {
+          // Mum serisi (Candlestick series) oluştur
+          const series = chart.addCandlestickSeries({
+            upColor: defaultOptions.colors.upColor,
+            downColor: defaultOptions.colors.downColor,
+            borderUpColor: defaultOptions.colors.borderUpColor,
+            borderDownColor: defaultOptions.colors.borderDownColor,
+            wickUpColor: defaultOptions.colors.wickUpColor,
+            wickDownColor: defaultOptions.colors.wickDownColor,
+          });
           
-          const { width, height } = entries[0].contentRect;
-          if (width > 0 && height > 0 && chartRef.current) {
-            chartRef.current.applyOptions({
-              width: width,
-              height: height
-            });
-            
-            // Yeniden içeriğe sığdır
-            chartRef.current.timeScale().fitContent();
-          }
-        });
+          // Veriyi ayarla
+          series.setData(chartData);
+          
+          // Referansları sakla
+          seriesRef.current = series;
+        } catch (err) {
+          console.error("Error creating candlestick series:", err);
+          // Line chart olarak fallback
+          const lineSeries = chart.addLineSeries({
+            color: defaultOptions.colors.lineColor,
+            lineWidth: 2,
+          });
+          
+          // Candlestick verilerini line chart formatına çevir
+          const lineData = chartData.map(item => ({
+            time: item.time,
+            value: item.close
+          }));
+          
+          lineSeries.setData(lineData);
+          
+          // Referansları sakla
+          seriesRef.current = lineSeries;
+        }
         
-        // Referansları sakla
+        // Referansı sakla
         chartRef.current = chart;
-        seriesRef.current = series;
         
         // Scale content to fit
         chart.timeScale().fitContent();
         
-        // ResizeObserver'ı başlat
-        if (containerRef.current) {
-          resizeObserver.observe(containerRef.current);
-        }
+        // Window rezize olduğunda grafiği yeniden ölçeklendir (sabit boyutlar koruyarak)
+        const handleResize = () => {
+          if (chartRef.current) {
+            chartRef.current.timeScale().fitContent();
+          }
+        };
+        
+        window.addEventListener('resize', handleResize);
         
         // Temizleme işlevi
         return () => {
           clearTimeout(timer);
-          if (containerRef.current) {
-            resizeObserver.unobserve(containerRef.current);
-          }
-          resizeObserver.disconnect();
+          window.removeEventListener('resize', handleResize);
+          
           if (chartRef.current) {
             chartRef.current.remove();
           }
@@ -257,10 +267,10 @@ export function usePriceChart(containerRef: React.RefObject<HTMLDivElement>, cou
         console.error("There was a problem when creating the chart:", e);
         setError("Failed to create chart");
       }
-    }, 100); // 100ms gecikme
+    }, 200); // 200ms gecikme ile DOM'un hazır olmasını bekle
     
     return () => clearTimeout(timer);
-  }, [containerRef.current, chartData.length, countryCode]);
+  }, [chartData, countryCode]);
   
   // Container boyutu değişirse grafiği güncelle
   useEffect(() => {

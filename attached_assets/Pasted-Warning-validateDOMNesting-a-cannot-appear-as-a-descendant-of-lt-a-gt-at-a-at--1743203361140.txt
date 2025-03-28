@@ -1,0 +1,45 @@
+Warning: validateDOMNesting(...): <a> cannot appear as a descendant of &lt;a&gt;.
+    at a
+    at a
+    at https://4bfd8394-bec5-49c0-9e12-47de752f47ac-00-4tadihg5ibmi.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=76aac145:279:18
+    at li
+    at ul
+    at div
+    at div
+    at div
+    at footer
+    at Footer (https://4bfd8394-bec5-49c0-9e12-47de752f47ac-00-4tadihg5ibmi.worf.replit.dev/src/components/layout/footer.tsx:23:17)
+    at div
+    at HomePage (https://4bfd8394-bec5-49c0-9e12-47de752f47ac-00-4tadihg5ibmi.worf.replit.dev/src/pages/home-page.tsx:32:17)
+    at Route (https://4bfd8394-bec5-49c0-9e12-47de752f47ac-00-4tadihg5ibmi.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=76aac145:265:16)
+    at Switch (https://4bfd8394-bec5-49c0-9e12-47de752f47ac-00-4tadihg5ibmi.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=76aac145:321:17)
+    at Router
+    at AuthProvider (https://4bfd8394-bec5-49c0-9e12-47de752f47ac-00-4tadihg5ibmi.worf.replit.dev/src/hooks/use-auth.tsx:26:32)
+    at AppContent (https://4bfd8394-bec5-49c0-9e12-47de752f47ac-00-4tadihg5ibmi.worf.replit.dev/src/App.tsx?v=wQJArTCW2n-dPVCOjKZ_S:92:20)
+    at QueryClientProvider (https://4bfd8394-bec5-49c0-9e12-47de752f47ac-00-4tadihg5ibmi.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=76aac145:2805:3)
+    at App
+at a
+at a
+at https://4bfd8394-bec5-49c0-9e12-47de752f47ac-00-4tadihg5ibmi.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=76aac145:279:18
+at li
+at ul
+at div
+at div
+at div
+at footer
+at Footer (https://4bfd8394-bec5-49c0-9e12-47de752f47ac-00-4tadihg5ibmi.worf.replit.dev/src/components/layout/footer.tsx:23:17)
+at div
+at HomePage (https://4bfd8394-bec5-49c0-9e12-47de752f47ac-00-4tadihg5ibmi.worf.replit.dev/src/pages/home-page.tsx:32:17)
+at Route (https://4bfd8394-bec5-49c0-9e12-47de752f47ac-00-4tadihg5ibmi.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=76aac145:265:16)
+at Switch (https://4bfd8394-bec5-49c0-9e12-47de752f47ac-00-4tadihg5ibmi.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=76aac145:321:17)
+at Router
+at AuthProvider (https://4bfd8394-bec5-49c0-9e12-47de752f47ac-00-4tadihg5ibmi.worf.replit.dev/src/hooks/use-auth.tsx:26:32)
+at AppContent (https://4bfd8394-bec5-49c0-9e12-47de752f47ac-00-4tadihg5ibmi.worf.replit.dev/src/App.tsx?v=wQJArTCW2n-dPVCOjKZ_S:92:20)
+at QueryClientProvider (https://4bfd8394-bec5-49c0-9e12-47de752f47ac-00-4tadihg5ibmi.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=76aac145:2805:3)
+at App
+at t.value (https://4bfd8394-bec5-49c0-9e12-47de752f47ac-00-4tadihg5ibmi.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://4bfd8394-bec5-49c0-9e12-47de752f47ac-00-4tadihg5ibmi.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://4bfd8394-bec5-49c0-9e12-47de752f47ac-00-4tadihg5ibmi.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://4bfd8394-bec5-49c0-9e12-47de752f47ac-00-4tadihg5ibmi.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+There was a problem when creating the chart: 
+Error {}

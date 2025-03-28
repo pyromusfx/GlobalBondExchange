@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useMemo } from 'react';
 import { createChart } from 'lightweight-charts';
 
 interface ChartProps {
@@ -21,6 +21,19 @@ interface ChartProps {
   height?: number;
 }
 
+// Standardize data format for Chart library
+const normalizeChartData = (data: ChartProps['data']) => {
+  if (!data || !data.length) return [];
+  
+  return data.map(item => ({
+    time: typeof item.time === 'string' ? item.time : String(item.time),
+    open: item.open,
+    high: item.high,
+    low: item.low,
+    close: item.close
+  }));
+};
+
 export default function CandlestickChart({
   data,
   colors = {
@@ -36,9 +49,14 @@ export default function CandlestickChart({
 }: ChartProps) {
   console.log("CandlestickChart rendered with data length:", data?.length);
   const chartContainerRef = useRef<HTMLDivElement>(null);
+  const chartRef = useRef<any>(null);
 
-  // Generate some demo data if none provided
-  if (!data.length) {
+  // Generate demo data if none provided
+  const chartData = useMemo(() => {
+    if (data && data.length) {
+      return normalizeChartData(data);
+    }
+    
     const demoData = [];
     const now = new Date();
     let price = 0.5; // Starting price
@@ -67,11 +85,27 @@ export default function CandlestickChart({
       });
     }
     
-    data = demoData;
-  }
+    return demoData;
+  }, [data]);
 
   useEffect(() => {
+    // Safety check
     if (!chartContainerRef.current) return;
+    
+    // Size check
+    const containerWidth = chartContainerRef.current.clientWidth || 300;
+    const containerHeight = height || 300;
+    
+    if (containerWidth <= 0 || containerHeight <= 0) {
+      console.warn('Chart container has invalid dimensions:', { containerWidth, containerHeight });
+      return;
+    }
+
+    // Clean up previous chart instance if it exists
+    if (chartRef.current) {
+      chartRef.current.remove();
+      chartRef.current = null;
+    }
 
     // Clear previous children
     while (chartContainerRef.current.firstChild) {
@@ -79,14 +113,14 @@ export default function CandlestickChart({
     }
 
     try {
-      // Create chart
+      // Create chart with explicit dimensions
       const chart = createChart(chartContainerRef.current, {
         layout: {
           background: { type: 'solid' as any, color: colors.backgroundColor || 'transparent' },
           textColor: colors.textColor || '#848E9C',
         },
-        width: chartContainerRef.current.clientWidth,
-        height: height,
+        width: containerWidth,
+        height: containerHeight,
         grid: {
           vertLines: { color: colors.lineColor || '#2B2F36' },
           horzLines: { color: colors.lineColor || '#2B2F36' },
@@ -98,8 +132,10 @@ export default function CandlestickChart({
           borderColor: colors.lineColor || '#2B2F36',
         },
       });
+      
+      chartRef.current = chart;
 
-      // Create line series instead if candlestick isn't available
+      // Add price series (try candlestick first, fallback to line)
       try {
         const candleSeries = chart.addCandlestickSeries({
           upColor: colors.upColor || '#0ECB81',
@@ -108,17 +144,19 @@ export default function CandlestickChart({
           wickUpColor: colors.upColor || '#0ECB81',
           wickDownColor: colors.downColor || '#F6465D',
         });
-        candleSeries.setData(data);
+        
+        if (chartData && chartData.length > 0) {
+          candleSeries.setData(chartData);
+        }
       } catch (err) {
-        // Fallback to line series if candlestick isn't available
-        console.log("Falling back to line series");
+        console.log("Falling back to line series", err);
         const lineSeries = chart.addLineSeries({
           color: colors.lineColor || '#2B2F36',
           lineWidth: 2,
         });
         
         // Convert candlestick data to line data
-        const lineData = data.map(item => ({
+        const lineData = chartData.map(item => ({
           time: item.time,
           value: item.close
         }));
@@ -126,15 +164,19 @@ export default function CandlestickChart({
         lineSeries.setData(lineData);
       }
 
-      // Fit content
+      // Fit content to view and resize
       chart.timeScale().fitContent();
 
       // Handle resize
       const handleResize = () => {
-        if (chartContainerRef.current) {
-          chart.applyOptions({
-            width: chartContainerRef.current.clientWidth,
-          });
+        if (chartContainerRef.current && chartRef.current) {
+          const { clientWidth } = chartContainerRef.current;
+          if (clientWidth > 0) {
+            chartRef.current.applyOptions({
+              width: clientWidth,
+            });
+            chartRef.current.timeScale().fitContent();
+          }
         }
       };
 
@@ -142,7 +184,10 @@ export default function CandlestickChart({
 
       return () => {
         window.removeEventListener('resize', handleResize);
-        chart.remove();
+        if (chartRef.current) {
+          chartRef.current.remove();
+          chartRef.current = null;
+        }
       };
     } catch (error) {
       console.error('There was a problem when creating the chart: ', error);
@@ -156,7 +201,7 @@ export default function CandlestickChart({
         chartContainerRef.current.appendChild(fallbackMsg);
       }
     }
-  }, [data, colors, height]);
+  }, [chartData, colors, height]);
 
-  return <div ref={chartContainerRef} className="w-full h-full min-h-[200px]" />;
+  return <div ref={chartContainerRef} className="w-full h-full min-h-[300px]" style={{ height: `${height}px` }} />;
 }

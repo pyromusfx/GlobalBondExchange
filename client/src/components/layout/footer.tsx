@@ -34,23 +34,23 @@ export default function Footer() {
             <h4 className="font-bold mb-4">{t('footer.products.title')}</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="/market">
-                  <a className="text-muted-foreground hover:text-white transition">{t('footer.products.countryBonds')}</a>
+                <Link href="/market" className="text-muted-foreground hover:text-white transition">
+                  {t('footer.products.countryBonds')}
                 </Link>
               </li>
               <li>
-                <Link href="/presale">
-                  <a className="text-muted-foreground hover:text-white transition">{t('footer.products.preSale')}</a>
+                <Link href="/presale" className="text-muted-foreground hover:text-white transition">
+                  {t('footer.products.preSale')}
                 </Link>
               </li>
               <li>
-                <Link href="/trade">
-                  <a className="text-muted-foreground hover:text-white transition">{t('footer.products.leverageTrading')}</a>
+                <Link href="/trade" className="text-muted-foreground hover:text-white transition">
+                  {t('footer.products.leverageTrading')}
                 </Link>
               </li>
               <li>
-                <Link href="/market">
-                  <a className="text-muted-foreground hover:text-white transition">{t('footer.products.marketData')}</a>
+                <Link href="/market" className="text-muted-foreground hover:text-white transition">
+                  {t('footer.products.marketData')}
                 </Link>
               </li>
             </ul>
@@ -63,8 +63,8 @@ export default function Footer() {
                 <a href="#" className="text-muted-foreground hover:text-white transition">{t('footer.support.helpCenter')}</a>
               </li>
               <li>
-                <Link href="/kyc">
-                  <a className="text-muted-foreground hover:text-white transition">{t('footer.support.kycGuide')}</a>
+                <Link href="/kyc" className="text-muted-foreground hover:text-white transition">
+                  {t('footer.support.kycGuide')}
                 </Link>
               </li>
               <li>

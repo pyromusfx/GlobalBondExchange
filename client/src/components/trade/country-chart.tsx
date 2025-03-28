@@ -17,7 +17,8 @@ export default function CountryChart({ country, className }: CountryChartProps) 
   const uniqueChartId = useRef(`chart-${country.countryCode}-${Math.random().toString(36).substring(2, 9)}`);
   
   const { chartData, isLoading, error, appendNewPrice } = usePriceChart(containerRef, country.countryCode, {
-    height: 400,
+    width: 670, // Sabit genişlik
+    height: 400, // Sabit yükseklik
     colors: {
       upColor: '#4caf50',
       downColor: '#ef5350',
