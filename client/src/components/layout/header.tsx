@@ -91,9 +91,11 @@ export default function Header() {
               <span className="mr-4 text-sm text-muted-foreground">
                 {t('header.balance')}: <span className="text-primary font-mono font-medium">${user && user.walletBalance ? parseFloat(user.walletBalance).toFixed(2) : "0.00"}</span>
               </span>
-              <Button variant="outline" size="sm" className="mr-2">
-                {user.username}
-              </Button>
+              <Link href="/profile">
+                <Button variant="outline" size="sm" className="mr-2">
+                  {user.username}
+                </Button>
+              </Link>
               <Button 
                 variant="destructive" 
                 size="sm" 
@@ -178,6 +180,11 @@ export default function Header() {
                     <div className="text-sm text-muted-foreground">
                       {t('header.balance')}: <span className="text-primary font-mono font-medium">${user && user.walletBalance ? parseFloat(user.walletBalance).toFixed(2) : "0.00"}</span>
                     </div>
+                    <Link href="/profile" onClick={() => setMobileMenuOpen(false)}>
+                      <Button variant="outline" size="sm" className="w-full mb-2">
+                        {t('header.profile')}
+                      </Button>
+                    </Link>
                     <Button 
                       variant="destructive" 
                       size="sm" 
