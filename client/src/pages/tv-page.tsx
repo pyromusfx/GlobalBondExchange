@@ -103,21 +103,22 @@ export default function TvPage() {
   };
 
   const getNewsSourceIcon = (source: string | null) => {
-    if (!source) return null;
+    if (!source) return "news";
     
     const sourceLower = source.toLowerCase();
     
     if (sourceLower.includes("bbc")) return "bbc";
-    if (sourceLower.includes("cnn")) return "cnn";
+    if (sourceLower.includes("cnn")) return "news";
     if (sourceLower.includes("reuters")) return "reuters";
-    if (sourceLower.includes("al jazeera")) return "aljazeera";
+    if (sourceLower.includes("al jazeera")) return "news";
     if (sourceLower.includes("bloomberg")) return "bloomberg";
-    if (sourceLower.includes("financial times")) return "ft";
-    if (sourceLower.includes("fox")) return "fox";
-    if (sourceLower.includes("economist")) return "economist";
-    if (sourceLower.includes("wall street")) return "wsj";
-    if (sourceLower.includes("guardian")) return "guardian";
-    if (sourceLower.includes("nhk")) return "nhk";
+    if (sourceLower.includes("financial times")) return "news";
+    if (sourceLower.includes("fox")) return "news";
+    if (sourceLower.includes("economist")) return "news";
+    if (sourceLower.includes("wall street")) return "news";
+    if (sourceLower.includes("guardian")) return "news";
+    if (sourceLower.includes("nhk")) return "news";
+    if (sourceLower.includes("cnbc")) return "cnbc";
     
     // Default
     return "news";
@@ -152,7 +153,7 @@ export default function TvPage() {
   ];
 
   // Video player state
-  const [isPlayingVideo, setIsPlayingVideo] = useState<boolean>(false);
+  const [isPlayingVideo, setIsPlayingVideo] = useState<boolean>(true); // Auto-play by default
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [videoProgress, setVideoProgress] = useState<number>(0);
   const [selectedChannel, setSelectedChannel] = useState<string>("bloomberg");
@@ -232,20 +233,20 @@ export default function TvPage() {
         <div className="relative rounded-lg overflow-hidden bg-black aspect-video mb-4">
           <div className="absolute inset-0 flex items-center justify-center">
             {/* Placeholder for video that would come from a real streaming source */}
-            <div className="flex flex-col items-center justify-center text-white">
-              <Avatar className="h-16 w-16 mb-2">
+            <div className="flex flex-col items-center justify-center text-white w-full h-full">
+              <Avatar className="h-24 w-24 mb-4">
                 <AvatarImage src={currentChannel.logoSrc} alt={currentChannel.name} />
                 <AvatarFallback>{currentChannel.name.substring(0, 2)}</AvatarFallback>
               </Avatar>
-              <h3 className="text-xl font-bold mb-1">{currentChannel.name}</h3>
-              <p className="text-sm opacity-80 mb-4">
+              <h3 className="text-2xl font-bold mb-2">{currentChannel.name}</h3>
+              <p className="text-base opacity-90 mb-6 max-w-md text-center">
                 {news.title}
               </p>
               
               {/* LIVE indicator */}
-              <div className="flex items-center bg-red-600 px-3 py-1 rounded-full mb-4">
-                <span className="h-2 w-2 rounded-full bg-white animate-pulse mr-2"></span>
-                <span className="text-xs font-bold">LIVE</span>
+              <div className="flex items-center bg-red-600 px-4 py-2 rounded-full mb-6">
+                <span className="h-3 w-3 rounded-full bg-white animate-pulse mr-2"></span>
+                <span className="text-sm font-bold">LIVE</span>
               </div>
             </div>
           </div>
@@ -276,7 +277,7 @@ export default function TvPage() {
                 <span className="text-xs text-white mr-2">
                   {Math.floor(videoProgress / 100 * 120)}s / 120s
                 </span>
-                <Button variant="ghost" size="icon" className="text-white hover:bg-white/20">
+                <Button variant="ghost" size="icon" className="text-white hover:bg-white/20" onClick={() => setIsPlayingVideo(true)}>
                   <Maximize className="h-5 w-5" />
                 </Button>
               </div>
