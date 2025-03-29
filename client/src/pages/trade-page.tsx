@@ -394,63 +394,271 @@ export default function TradePage() {
             <div className="lg:w-1/3 p-4">
               <div className="mb-4">
                 <h2 className="text-lg font-semibold mb-2">Trade {safeCountry.countryCode}/USDT</h2>
-                <div className="grid grid-cols-2 gap-2">
-                  <Button variant="outline" className="text-green-500 border-green-500 hover:bg-green-500/10">
-                    Buy
-                  </Button>
-                  <Button variant="outline" className="text-red-500 border-red-500 hover:bg-red-500/10">
-                    Sell
-                  </Button>
-                </div>
+                <Tabs defaultValue="buy" key={`trade-form-${countryKey}`}>
+                  <TabsList className="grid grid-cols-2 gap-2 bg-transparent p-0 h-auto">
+                    <TabsTrigger 
+                      value="buy" 
+                      className="rounded text-green-500 border border-green-500 hover:bg-green-500/10 data-[state=active]:bg-green-500/20 data-[state=active]:text-green-500 data-[state=active]:shadow-none">
+                      Buy
+                    </TabsTrigger>
+                    <TabsTrigger 
+                      value="sell" 
+                      className="rounded text-red-500 border border-red-500 hover:bg-red-500/10 data-[state=active]:bg-red-500/20 data-[state=active]:text-red-500 data-[state=active]:shadow-none">
+                      Sell
+                    </TabsTrigger>
+                  </TabsList>
+                  
+                  {/* Buy Form */}
+                  <TabsContent value="buy" className="mt-4 space-y-4">
+                    <div>
+                      <div className="flex justify-between items-center mb-2">
+                        <h3 className="text-sm font-medium">Amount</h3>
+                        <div className="text-xs text-[#848E9C]">
+                          Available: <span className="text-white">0.00 USDT</span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex rounded-md border border-[#2B2F36] bg-[#1C212B] overflow-hidden">
+                        <Input
+                          className="bg-transparent border-none flex-grow"
+                          placeholder="0.00"
+                          type="number"
+                          id="buy-amount"
+                        />
+                        <div className="px-3 py-2 border-l border-[#2B2F36] flex items-center bg-[#12161C]">
+                          <span className="text-sm mr-1">USDT</span>
+                          <ChevronDown className="h-4 w-4" />
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-4 gap-2 mt-2">
+                        {[25, 50, 75, 100].map((percent) => (
+                          <button 
+                            key={`buy-${percent}`}
+                            onClick={() => {
+                              // This would calculate the amount based on the percentage of available balance
+                              const buyAmountInput = document.getElementById('buy-amount') as HTMLInputElement | null;
+                            if (buyAmountInput) {
+                              buyAmountInput.value = (0 * percent / 100).toString();
+                            }
+                            }}
+                            className="text-xs text-[#848E9C] py-1 px-2 bg-[#1C212B] rounded hover:bg-[#2B2F36]">
+                            {percent}%
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <div className="flex justify-between items-center mb-2">
+                        <h3 className="text-sm font-medium">Total</h3>
+                        <div className="text-xs text-[#848E9C]">≈ <span id="buy-estimate-usd">$0.00</span></div>
+                      </div>
+                      
+                      <div className="flex rounded-md border border-[#2B2F36] bg-[#1C212B] overflow-hidden">
+                        <Input
+                          className="bg-transparent border-none flex-grow"
+                          placeholder="0.00"
+                          type="number"
+                          id="buy-total"
+                          onChange={(e) => {
+                            const price = parseFloat(safeCountry.currentPrice || "0");
+                            const total = parseFloat(e.target.value || "0");
+                            const amount = price > 0 ? total / price : 0;
+                            const buyAmountInput = document.getElementById('buy-amount') as HTMLInputElement | null;
+                            if (buyAmountInput) {
+                              buyAmountInput.value = amount.toFixed(4);
+                            }
+                          }}
+                        />
+                        <div className="px-3 py-2 border-l border-[#2B2F36] flex items-center bg-[#12161C]">
+                          <span className="text-sm mr-1">{safeCountry.countryCode}</span>
+                          <ChevronDown className="h-4 w-4" />
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <h3 className="text-sm font-medium mb-2">Leverage</h3>
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        {[1, 3, 10, 20, 50].map((leverage) => (
+                          <button 
+                            key={`leverage-${leverage}`}
+                            onClick={() => {
+                              // This would set the active leverage
+                              const buttons = document.querySelectorAll('#leverage-buttons button');
+                              buttons.forEach((btn) => {
+                                btn.classList.remove('bg-green-500/20', 'border-green-500');
+                                btn.classList.add('bg-[#1C212B]', 'border-[#2B2F36]');
+                              });
+                              const currentBtn = document.getElementById(`leverage-${leverage}`);
+                              if (currentBtn) {
+                                currentBtn.classList.remove('bg-[#1C212B]', 'border-[#2B2F36]');
+                                currentBtn.classList.add('bg-green-500/20', 'border-green-500');
+                              }
+                            }}
+                            id={`leverage-${leverage}`}
+                            className={`text-xs py-1 px-3 rounded border ${
+                              leverage === 10 
+                                ? 'bg-green-500/20 border-green-500' 
+                                : 'bg-[#1C212B] border-[#2B2F36] hover:bg-[#2B2F36]'
+                            }`}>
+                            {leverage}x
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <Button 
+                      className="w-full bg-green-500 hover:bg-green-600 text-white" 
+                      onClick={() => {
+                        // This would submit the buy order
+                        alert('Buy order placed (demo)');
+                      }}>
+                      Buy {safeCountry.countryCode}
+                    </Button>
+                  </TabsContent>
+                  
+                  {/* Sell Form */}
+                  <TabsContent value="sell" className="mt-4 space-y-4">
+                    <div>
+                      <div className="flex justify-between items-center mb-2">
+                        <h3 className="text-sm font-medium">Amount</h3>
+                        <div className="text-xs text-[#848E9C]">
+                          Available: <span className="text-white">0.00 {safeCountry.countryCode}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex rounded-md border border-[#2B2F36] bg-[#1C212B] overflow-hidden">
+                        <Input
+                          className="bg-transparent border-none flex-grow"
+                          placeholder="0.00"
+                          type="number"
+                          id="sell-amount"
+                        />
+                        <div className="px-3 py-2 border-l border-[#2B2F36] flex items-center bg-[#12161C]">
+                          <span className="text-sm mr-1">{safeCountry.countryCode}</span>
+                          <ChevronDown className="h-4 w-4" />
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-4 gap-2 mt-2">
+                        {[25, 50, 75, 100].map((percent) => (
+                          <button 
+                            key={`sell-${percent}`}
+                            onClick={() => {
+                              // This would calculate the amount based on the percentage of available holdings
+                              const sellAmountInput = document.getElementById('sell-amount') as HTMLInputElement | null;
+                              if (sellAmountInput) {
+                                sellAmountInput.value = (0 * percent / 100).toString();
+                              }
+                            }}
+                            className="text-xs text-[#848E9C] py-1 px-2 bg-[#1C212B] rounded hover:bg-[#2B2F36]">
+                            {percent}%
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <div className="flex justify-between items-center mb-2">
+                        <h3 className="text-sm font-medium">Total</h3>
+                        <div className="text-xs text-[#848E9C]">≈ <span id="sell-estimate-usd">$0.00</span></div>
+                      </div>
+                      
+                      <div className="flex rounded-md border border-[#2B2F36] bg-[#1C212B] overflow-hidden">
+                        <Input
+                          className="bg-transparent border-none flex-grow"
+                          placeholder="0.00"
+                          type="number"
+                          id="sell-total"
+                          onChange={(e) => {
+                            const price = parseFloat(safeCountry.currentPrice || "0");
+                            const amount = parseFloat(e.target.value || "0");
+                            const total = price * amount;
+                            const sellEstimateElement = document.getElementById('sell-estimate-usd');
+                            if (sellEstimateElement) {
+                              sellEstimateElement.textContent = `$${total.toFixed(2)}`;
+                            }
+                          }}
+                        />
+                        <div className="px-3 py-2 border-l border-[#2B2F36] flex items-center bg-[#12161C]">
+                          <span className="text-sm mr-1">USDT</span>
+                          <ChevronDown className="h-4 w-4" />
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <h3 className="text-sm font-medium mb-2">Leverage</h3>
+                      <div className="flex flex-wrap gap-2 mb-2" id="sell-leverage-buttons">
+                        {[1, 3, 10, 20, 50].map((leverage) => (
+                          <button 
+                            key={`sell-leverage-${leverage}`}
+                            onClick={() => {
+                              // This would set the active leverage
+                              const buttons = document.querySelectorAll('#sell-leverage-buttons button');
+                              buttons.forEach((btn) => {
+                                btn.classList.remove('bg-red-500/20', 'border-red-500');
+                                btn.classList.add('bg-[#1C212B]', 'border-[#2B2F36]');
+                              });
+                              const currentBtn = document.getElementById(`sell-leverage-${leverage}`);
+                              if (currentBtn) {
+                                currentBtn.classList.remove('bg-[#1C212B]', 'border-[#2B2F36]');
+                                currentBtn.classList.add('bg-red-500/20', 'border-red-500');
+                              }
+                            }}
+                            id={`sell-leverage-${leverage}`}
+                            className={`text-xs py-1 px-3 rounded border ${
+                              leverage === 10 
+                                ? 'bg-red-500/20 border-red-500' 
+                                : 'bg-[#1C212B] border-[#2B2F36] hover:bg-[#2B2F36]'
+                            }`}>
+                            {leverage}x
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <Button 
+                      className="w-full bg-red-500 hover:bg-red-600 text-white" 
+                      onClick={() => {
+                        // This would submit the sell order
+                        alert('Sell order placed (demo)');
+                      }}>
+                      Sell {safeCountry.countryCode}
+                    </Button>
+                  </TabsContent>
+                </Tabs>
               </div>
               
-              <div className="mt-6">
-                <h3 className="text-sm font-medium mb-2">Amount</h3>
-                <div className="flex rounded-md border border-[#2B2F36] bg-[#1C212B] overflow-hidden">
-                  <Input
-                    className="bg-transparent border-none flex-grow"
-                    placeholder="0.00"
-                    type="number"
-                  />
-                  <div className="px-3 py-2 border-l border-[#2B2F36] flex items-center bg-[#12161C]">
-                    <span className="text-sm mr-1">USDT</span>
-                    <ChevronDown className="h-4 w-4" />
+              <div className="mt-6 p-3 bg-[#1C212B] rounded-md text-xs">
+                <div className="mb-2 font-medium text-[#F0B90B]">Trading Information</div>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-[#848E9C]">
+                    <span>Price:</span>
+                    <span className="text-white">${parseFloat(safeCountry.currentPrice || "0").toFixed(5)}</span>
+                  </div>
+                  <div className="flex justify-between text-[#848E9C]">
+                    <span>Fee:</span>
+                    <span className="text-white">0.1%</span>
+                  </div>
+                  <div className="flex justify-between text-[#848E9C]">
+                    <span>Daily Volume:</span>
+                    <span className="text-white">${Math.floor(Math.random() * 5000000 + 1000000).toLocaleString()}</span>
                   </div>
                 </div>
               </div>
               
-              <div className="grid grid-cols-4 gap-2 mt-3">
-                <button className="text-xs text-[#848E9C] py-1 px-2 bg-[#1C212B] rounded hover:bg-[#2B2F36]">25%</button>
-                <button className="text-xs text-[#848E9C] py-1 px-2 bg-[#1C212B] rounded hover:bg-[#2B2F36]">50%</button>
-                <button className="text-xs text-[#848E9C] py-1 px-2 bg-[#1C212B] rounded hover:bg-[#2B2F36]">75%</button>
-                <button className="text-xs text-[#848E9C] py-1 px-2 bg-[#1C212B] rounded hover:bg-[#2B2F36]">100%</button>
-              </div>
-              
-              <div className="mt-6">
-                <h3 className="text-sm font-medium mb-2">Leverage</h3>
-                <div className="flex space-x-2 mb-2">
-                  <button className="text-xs py-1 px-3 bg-[#1C212B] rounded hover:bg-[#2B2F36] border border-[#2B2F36]">1x</button>
-                  <button className="text-xs py-1 px-3 bg-[#1C212B] rounded hover:bg-[#2B2F36] border border-[#2B2F36]">3x</button>
-                  <button className="text-xs py-1 px-3 bg-green-500/20 rounded border border-green-500">10x</button>
-                  <button className="text-xs py-1 px-3 bg-[#1C212B] rounded hover:bg-[#2B2F36] border border-[#2B2F36]">20x</button>
-                  <button className="text-xs py-1 px-3 bg-[#1C212B] rounded hover:bg-[#2B2F36] border border-[#2B2F36]">50x</button>
+              {/* Post-trade information section */}
+              <div className="mt-4 p-3 bg-[#1C212B] rounded-md text-xs">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="font-medium">Recent Activity</span>
+                  <button className="text-[#F0B90B] hover:underline text-xs">View All</button>
                 </div>
-              </div>
-              
-              <div className="mt-6">
-                <Button className="w-full bg-green-500 hover:bg-green-600 text-white">
-                  Buy {safeCountry.countryCode}
-                </Button>
-              </div>
-              
-              <div className="mt-6 p-3 bg-[#1C212B] rounded-md text-xs text-[#848E9C]">
-                <div className="flex justify-between mb-2">
-                  <span>Available Balance:</span>
-                  <span>0.00 USDT</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Fee:</span>
-                  <span>0.1%</span>
+                <div className="text-center text-[#848E9C] py-4">
+                  <p>No recent trades</p>
+                  <p className="mt-1 text-xs">Your trading activity will appear here</p>
                 </div>
               </div>
             </div>
