@@ -113,55 +113,128 @@ export default function CandlestickChart({
     }
 
     try {
-      // Create chart with explicit dimensions
+      // Log data for debugging
+      console.log("Creating generic chart with data:", chartData.length);
+      if (chartData.length > 0) {
+        console.log("Sample data:", chartData[0]);
+      }
+      
+      // Create chart with explicit dimensions - basitleştirilmiş konfigürasyon
       const chart = createChart(chartContainerRef.current, {
         layout: {
-          background: { type: 'solid' as any, color: colors.backgroundColor || 'transparent' },
-          textColor: colors.textColor || '#848E9C',
+          background: { type: 'solid' as any, color: colors.backgroundColor || '#131722' },
+          textColor: colors.textColor || '#D9D9D9',
         },
         width: containerWidth,
         height: containerHeight,
         grid: {
-          vertLines: { color: colors.lineColor || '#2B2F36' },
-          horzLines: { color: colors.lineColor || '#2B2F36' },
+          vertLines: { color: colors.lineColor || 'rgba(42, 46, 57, 0.5)' },
+          horzLines: { color: colors.lineColor || 'rgba(42, 46, 57, 0.5)' },
         },
         timeScale: {
-          borderColor: colors.lineColor || '#2B2F36',
-        },
-        rightPriceScale: {
-          borderColor: colors.lineColor || '#2B2F36',
+          timeVisible: true,
+          secondsVisible: false,
+          borderColor: 'rgba(151, 151, 151, 0.2)',
         },
       });
       
       chartRef.current = chart;
 
-      // Add price series (try candlestick first, fallback to line)
+      // Add price series
       try {
-        const candleSeries = chart.addCandlestickSeries({
-          upColor: colors.upColor || '#0ECB81',
-          downColor: colors.downColor || '#F6465D',
-          borderVisible: false,
-          wickUpColor: colors.upColor || '#0ECB81',
-          wickDownColor: colors.downColor || '#F6465D',
-        });
-        
         if (chartData && chartData.length > 0) {
-          candleSeries.setData(chartData);
+          console.log("Setting candlestick data...");
+          
+          // Make sure data has the exact format we want - time özelliği için UTCTimestamp kullan
+          const formattedData = chartData.map(item => {
+            // Time string ise DateTimeFormat ile parse et
+            let timeValue: number;
+            if (typeof item.time === 'string') {
+              if (item.time.includes('-')) {
+                // ISO date format (YYYY-MM-DD)
+                const parts = item.time.split('-');
+                const utcDate = Date.UTC(
+                  parseInt(parts[0]), // year
+                  parseInt(parts[1]) - 1, // month (0-indexed)
+                  parseInt(parts[2]) // day
+                );
+                timeValue = utcDate / 1000; // Convert to seconds
+              } else {
+                // Unix timestamp format
+                timeValue = parseInt(item.time);
+              }
+            } else {
+              timeValue = Number(item.time);
+            }
+            
+            return {
+              time: timeValue as any, // as UTCTimestamp,
+              open: Number(item.open),
+              high: Number(item.high),
+              low: Number(item.low),
+              close: Number(item.close)
+            };
+          });
+          
+          console.log("Formatted data sample:", formattedData[0]);
+          
+          // Candlestick ekle
+          const candleSeries = chart.addCandlestickSeries({
+            upColor: colors.upColor || '#26a69a',  // Daha belirgin yeşil
+            downColor: colors.downColor || '#ef5350', // Daha belirgin kırmızı
+            borderVisible: false,
+            wickUpColor: colors.upColor || '#26a69a',
+            wickDownColor: colors.downColor || '#ef5350',
+          });
+          
+          // Set data
+          candleSeries.setData(formattedData);
+          console.log("Candlestick data set successfully!");
+        } else {
+          throw new Error("No chart data available");
         }
       } catch (err) {
-        console.log("Falling back to line series", err);
-        const lineSeries = chart.addLineSeries({
-          color: colors.lineColor || '#2B2F36',
-          lineWidth: 2,
-        });
+        console.error("Candlestick series error:", err);
+        console.log("Falling back to line series");
         
-        // Convert candlestick data to line data
-        const lineData = chartData.map(item => ({
-          time: item.time,
-          value: item.close
-        }));
-        
-        lineSeries.setData(lineData);
+        try {
+          const lineSeries = chart.addLineSeries({
+            color: '#2962FF',
+            lineWidth: 2,
+          });
+          
+          // Convert to line data format - ISO format işle
+          const lineData = chartData.map(item => {
+            let timeValue: number;
+            if (typeof item.time === 'string') {
+              if (item.time.includes('-')) {
+                // ISO date format (YYYY-MM-DD)
+                const parts = item.time.split('-');
+                const utcDate = Date.UTC(
+                  parseInt(parts[0]), // year
+                  parseInt(parts[1]) - 1, // month (0-indexed)
+                  parseInt(parts[2]) // day
+                );
+                timeValue = utcDate / 1000; // Convert to seconds
+              } else {
+                // Unix timestamp format
+                timeValue = parseInt(item.time);
+              }
+            } else {
+              timeValue = Number(item.time);
+            }
+            
+            return {
+              time: timeValue as any,
+              value: Number(item.close)
+            };
+          });
+          
+          lineSeries.setData(lineData);
+          console.log("Line series fallback successful");
+        } catch (lineErr) {
+          console.error("Line series error:", lineErr);
+        }
       }
 
       // Fit content to view and resize

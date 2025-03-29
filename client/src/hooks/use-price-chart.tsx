@@ -216,34 +216,26 @@ export function usePriceChart(containerRef: React.RefObject<HTMLDivElement>, cou
           height: chartHeight
         });
         
-        // Grafiği oluştur
+        // DOM'u temizle öncelikle
+        containerRef.current.innerHTML = '';
+        
+        console.log("Data for chart:", chartData.length, "items", chartData.length > 0 ? chartData[0] : "no data");
+        
+        // Grafiği oluştur - basitleştirilmiş yapılandırma
         const chart = createChart(containerRef.current, {
           width: chartWidth,
           height: chartHeight,
           layout: {
-            background: { type: 'solid' as ColorType, color: defaultOptions.colors.backgroundColor },
-            textColor: defaultOptions.colors.textColor,
+            background: { type: 'solid' as ColorType, color: '#131722' },
+            textColor: '#D9D9D9',
           },
           grid: {
-            vertLines: { color: 'rgba(42, 46, 57, 0.2)' },
-            horzLines: { color: 'rgba(42, 46, 57, 0.2)' },
+            vertLines: { color: 'rgba(42, 46, 57, 0.5)' },
+            horzLines: { color: 'rgba(42, 46, 57, 0.5)' },
           },
           timeScale: {
             timeVisible: true,
             secondsVisible: false,
-            borderColor: 'rgba(151, 151, 151, 0.2)',
-          },
-          rightPriceScale: {
-            borderColor: 'rgba(151, 151, 151, 0.2)',
-          },
-          handleScroll: {
-            mouseWheel: true,
-            pressedMouseMove: true,
-          },
-          handleScale: {
-            axisPressedMouseMove: true,
-            mouseWheel: true,
-            pinch: true,
           },
         });
         
