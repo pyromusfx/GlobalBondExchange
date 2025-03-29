@@ -25,6 +25,12 @@ const RSS_FEEDS = [
   { url: 'https://www.cnbc.com/id/10000664/device/rss/rss.html', source: 'CNBC Economy' },
   { url: 'https://www.wsj.com/xml/rss/3_7085.xml', source: 'WSJ World' },
   { url: 'https://www.wsj.com/xml/rss/3_7031.xml', source: 'WSJ Business' },
+  { url: 'https://markets.businessinsider.com/rss/news', source: 'Business Insider Markets' },
+  { url: 'http://feeds.marketwatch.com/marketwatch/topstories/', source: 'MarketWatch Top' },
+  { url: 'http://feeds.marketwatch.com/marketwatch/marketpulse/', source: 'MarketWatch Pulse' },
+  { url: 'https://www.investing.com/rss/news.rss', source: 'Investing.com News' },
+  { url: 'https://www.investing.com/rss/market_overview_Commodities.rss', source: 'Investing.com Commodities' },
+  { url: 'https://www.investing.com/rss/market_overview_forex.rss', source: 'Investing.com Forex' },
   
   // Diğer bölgesel kaynaklar
   { url: 'https://timesofindia.indiatimes.com/rssfeeds/296589292.cms', source: 'Times of India World' },
@@ -32,7 +38,23 @@ const RSS_FEEDS = [
   { url: 'https://feeds.thelocal.com/rss/de', source: 'The Local Germany' },
   { url: 'https://feeds.thelocal.com/rss/fr', source: 'The Local France' },
   { url: 'https://moxie.foxnews.com/google-publisher/world.xml', source: 'Fox News World' },
-  { url: 'https://www3.nhk.or.jp/rss/news/cat6.xml', source: 'NHK World Japan' }
+  { url: 'https://www3.nhk.or.jp/rss/news/cat6.xml', source: 'NHK World Japan' },
+  { url: 'https://www.bangkokpost.com/rss/data/most-recent.xml', source: 'Bangkok Post' },
+  { url: 'https://www.straitstimes.com/global.xml', source: 'Straits Times Global' },
+  { url: 'https://www3.nhk.or.jp/rss/news/cat9.xml', source: 'NHK Business' },
+  { url: 'https://www.jpost.com/Rss/RssFeedsWorld.aspx', source: 'Jerusalem Post World' },
+  
+  // Türk kaynakları
+  { url: 'https://www.trthaber.com/ekonomi_articles.rss', source: 'TRT Ekonomi' },
+  { url: 'https://www.trthaber.com/dunya_articles.rss', source: 'TRT Dünya' },
+  { url: 'https://www.hurriyet.com.tr/rss/dunya', source: 'Hürriyet Dünya' },
+  { url: 'https://www.hurriyet.com.tr/rss/ekonomi', source: 'Hürriyet Ekonomi' },
+  
+  // Teknoloji ve inovasyon
+  { url: 'https://www.wired.com/feed/rss', source: 'Wired' },
+  { url: 'https://techcrunch.com/feed/', source: 'TechCrunch' },
+  { url: 'https://www.theverge.com/rss/index.xml', source: 'The Verge' },
+  { url: 'https://www.zdnet.com/topic/banking/rss.xml', source: 'ZDNet Banking' }
 ];
 
 // Initialize RSS parser
@@ -143,15 +165,36 @@ async function fetchRSSFeed(feedInfo: {url: string, source: string}) {
     const newsItems = [];
     
     // Process the items
-    for (const item of feed.items.slice(0, 15)) { // Daha fazla haber almak için 10'dan 15'e çıkarıldı
+    for (const item of feed.items.slice(0, 20)) { // Daha fazla haber almak için 15'den 20'ye çıkarıldı
       // Haber başlığını kontrol et - benzersiz değilse atla
       if (!item.title || !isUniqueNews(item.title)) {
         continue;
       }
       
-      const countryCode = detectCountry(item.title || '', item.content || item.contentSnippet || '');
+      // Kaynak Türkçe ise veya içerikte Turkish/Turkey geçiyorsa direkt Türkiye'ye bağla
+      const isTurkishSource = feedInfo.source.includes('TRT') || 
+                             feedInfo.source.includes('Hürriyet') || 
+                             (item.title || '').toLowerCase().includes('turk') || 
+                             (item.content || '').toLowerCase().includes('turk');
+      
+      // Ülke kodunu belirle veya Türkçe kaynak ise Türkiye'yi seç
+      const countryCode = isTurkishSource ? 'TR' : detectCountry(item.title || '', item.content || item.contentSnippet || '');
+      
       // Ülke kodu bulunamadıysa rastgele bir ülke seç (daha fazla fiyat hareketi için)
-      const finalCountryCode = countryCode || countryMapping[Math.floor(Math.random() * countryMapping.length)].code;
+      // Ancak rastgele seçimde ana ekonomiler ve Türkiye'nin seçilme olasılığını artır
+      const keyCountries = ['US', 'CN', 'JP', 'DE', 'GB', 'FR', 'TR', 'RU', 'IN', 'BR'];
+      let finalCountryCode;
+      
+      if (!countryCode) {
+        // %70 olasılıkla önemli ülkeleri seç, %30 olasılıkla herhangi bir ülkeyi
+        if (Math.random() < 0.7) {
+          finalCountryCode = keyCountries[Math.floor(Math.random() * keyCountries.length)];
+        } else {
+          finalCountryCode = countryMapping[Math.floor(Math.random() * countryMapping.length)].code;
+        }
+      } else {
+        finalCountryCode = countryCode;
+      }
       
       // Add the news item to the database
       const newsItem = await storage.addNewsItem({
@@ -224,7 +267,7 @@ export function scheduleNewsFeedUpdates() {
   // Set up interval for subsequent fetches (her 30 saniyede bir - çok daha sık güncelleme)
   setInterval(fetchAllNewsFeeds, 30 * 1000);
 
-  // Her 5 saniyede bir haberleri tekrar işle ve ülke fiyatlarını sürekli değişecek şekilde güncelle
+  // Her 3 saniyede bir haberleri tekrar işle ve ülke fiyatlarını sürekli değişecek şekilde güncelle
   // Bu, mevcut haberleri yeniden analiz ederek sürekli fiyat hareketliliği yaratır
   setInterval(async () => {
     try {
@@ -234,21 +277,56 @@ export function scheduleNewsFeedUpdates() {
       // Mevcut haberleri al
       const latestNews = await storage.getLatestNews();
       if (latestNews.length > 0) {
-        // Rastgele 5-15 haber seç - daha fazla haber ve daha fazla fiyat hareketi
-        const randomCount = Math.floor(Math.random() * 11) + 5; 
-        const randomIndices = Array.from({length: randomCount}, () => 
-          Math.floor(Math.random() * latestNews.length));
+        // Rastgele 8-20 haber seç - çok daha fazla haber ve sürekli fiyat hareketi
+        const randomCount = Math.floor(Math.random() * 13) + 8; 
         
-        const selectedNews = randomIndices.map(index => latestNews[index]);
+        // Haberlerin seçiminde önyargı oluştur - Türkiye ile ilgili haberler daha fazla seçilsin
+        const turkishNews = latestNews.filter(news => 
+          news.countryCode === 'TR' || 
+          (news.title && news.title.toLowerCase().includes('turk')) || 
+          (news.content && news.content.toLowerCase().includes('turk'))
+        );
+        
+        // Rastgele haber seçimi
+        let selectedNews = [];
+        
+        // Eğer Türkiye ile ilgili haber varsa, %50 ihtimal ile bunlar arasından seç
+        if (turkishNews.length > 0 && Math.random() > 0.5) {
+          // Türkiye haberlerinden rastgele seç
+          const turkishCount = Math.min(turkishNews.length, randomCount);
+          const turkishIndices = Array.from({length: turkishCount}, () => 
+            Math.floor(Math.random() * turkishNews.length));
+          
+          selectedNews = turkishIndices.map(index => turkishNews[index]);
+          
+          // Eğer yeterli haber yoksa diğer haberlerden de ekle
+          if (selectedNews.length < randomCount) {
+            const otherNews = latestNews.filter(news => !turkishNews.includes(news));
+            const otherCount = randomCount - selectedNews.length;
+            
+            if (otherNews.length > 0) {
+              const otherIndices = Array.from({length: otherCount}, () => 
+                Math.floor(Math.random() * otherNews.length));
+              
+              selectedNews = [...selectedNews, ...otherIndices.map(index => otherNews[index])];
+            }
+          }
+        } else {
+          // Normal rastgele seçim
+          const randomIndices = Array.from({length: randomCount}, () => 
+            Math.floor(Math.random() * latestNews.length));
+          
+          selectedNews = randomIndices.map(index => latestNews[index]);
+        }
         
         // Seçilen haberleri yeniden analiz et ve ülke değerlerini güncelle
         await newsAnalyzer.processNewsAndUpdateCountries(selectedNews);
-        console.log(`Yeniden analiz: ${randomCount} haber ile ${randomIndices.length} ülkenin fiyatı güncellendi`);
+        console.log(`Yeniden analiz: ${randomCount} haber ile ${selectedNews.length} ülkenin fiyatı güncellendi`);
       }
     } catch (error) {
       console.error('Haber yeniden analiz hatası:', error);
     }
-  }, 5 * 1000);
+  }, 3 * 1000);
   
   // Initialize price history for all countries
   initializePriceHistory();
