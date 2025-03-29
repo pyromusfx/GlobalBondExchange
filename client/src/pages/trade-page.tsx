@@ -9,7 +9,7 @@ import TradeForm from "@/components/trade/trade-form";
 import { useAllCountries, useCountry } from "@/hooks/use-countries";
 import { Loader2, ArrowUpRight, ArrowDownRight, ChevronDown, Clock, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { CountryShare } from "@shared/schema";
 
@@ -266,18 +266,127 @@ export default function TradePage() {
             {/* Grafik bölümü */}
             <div className="lg:w-2/3 border-b lg:border-b-0 lg:border-r border-[#2B2F36] p-4">
               <div className="mb-4">
-                <Tabs defaultValue="chart">
+                <Tabs defaultValue="chart" key={`chart-tabs-${countryKey}`}>
                   <TabsList className="inline-flex border-b border-[#2B2F36] bg-transparent">
                     <TabsTrigger value="chart" className="rounded-none border-0 text-sm">Chart</TabsTrigger>
                     <TabsTrigger value="info" className="rounded-none border-0 text-sm">Info</TabsTrigger>
                     <TabsTrigger value="trading-data" className="rounded-none border-0 text-sm">Trading Data</TabsTrigger>
                     <TabsTrigger value="square" className="rounded-none border-0 text-sm">Square</TabsTrigger>
                   </TabsList>
+
+                  <TabsContent value="chart" className="mt-3">
+                    <div className="h-[520px] relative">
+                      <EnhancedTradingView country={safeCountry} />
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="info" className="mt-3">
+                    <div className="h-[520px] p-4 overflow-y-auto">
+                      <h3 className="text-lg font-semibold mb-4">{safeCountry.countryName} Information</h3>
+                      <div className="space-y-4 text-sm">
+                        <p>
+                          {safeCountry.countryName} bonds represent a unique opportunity to invest in the economic future of this country.
+                          These financial instruments are backed by the government and provide exposure to the country's economic performance.
+                        </p>
+                        <h4 className="font-medium">Economic Overview</h4>
+                        <p>
+                          {safeCountry.countryName}'s economy is influenced by various factors including geographic location, natural resources,
+                          political stability, and global economic trends. Price changes reflect market sentiment driven by news, policy changes,
+                          and economic indicators.
+                        </p>
+                        <h4 className="font-medium">Trading Information</h4>
+                        <ul className="list-disc pl-5 space-y-1">
+                          <li>Bond Code: {safeCountry.countryCode}</li>
+                          <li>Bond Type: Sovereign</li>
+                          <li>Starting Price: $1.00 USD</li>
+                          <li>Leverage Options: 1x, 3x, 10x, 20x, 50x</li>
+                          <li>Trading Fee: 0.1%</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="trading-data" className="mt-3">
+                    <div className="h-[520px] p-4 overflow-y-auto">
+                      <h3 className="text-lg font-semibold mb-4">{safeCountry.countryCode} Trading Data</h3>
+                      <div className="space-y-6">
+                        <div>
+                          <h4 className="font-medium mb-2">Price Statistics (24h)</h4>
+                          <div className="grid grid-cols-2 gap-4 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-[#848E9C]">Current Price:</span>
+                              <span>${parseFloat(safeCountry.currentPrice || "0").toFixed(5)}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-[#848E9C]">24h Change:</span>
+                              <span className={parseFloat(safeCountry.currentPrice || "0") > parseFloat(safeCountry.previousPrice || "0") ? 'text-green-500' : 'text-red-500'}>
+                                {parseFloat(safeCountry.currentPrice || "0") > parseFloat(safeCountry.previousPrice || "0") ? '+' : '-'}
+                                {Math.abs(((parseFloat(safeCountry.currentPrice || "0") - parseFloat(safeCountry.previousPrice || "0")) / parseFloat(safeCountry.previousPrice || "1")) * 100).toFixed(2)}%
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-[#848E9C]">24h High:</span>
+                              <span>${(parseFloat(safeCountry.currentPrice || "0") * 1.05).toFixed(5)}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-[#848E9C]">24h Low:</span>
+                              <span>${(parseFloat(safeCountry.currentPrice || "0") * 0.95).toFixed(5)}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-[#848E9C]">24h Volume (Bonds):</span>
+                              <span>{Math.floor(Math.random() * 500000 + 100000).toLocaleString()}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-[#848E9C]">24h Volume (USDT):</span>
+                              <span>${Math.floor(Math.random() * 500000 + 100000).toLocaleString()}</span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <h4 className="font-medium mb-2">Additional Information</h4>
+                          <div className="grid grid-cols-2 gap-4 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-[#848E9C]">Market Cap:</span>
+                              <span>${(parseFloat(safeCountry.currentPrice || "0") * 10000000).toLocaleString()}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-[#848E9C]">Available Supply:</span>
+                              <span>{(safeCountry.availableShares).toLocaleString()} {safeCountry.countryCode}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-[#848E9C]">Total Supply:</span>
+                              <span>{(safeCountry.totalShares).toLocaleString()} {safeCountry.countryCode}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-[#848E9C]">All-Time High:</span>
+                              <span>${(parseFloat(safeCountry.currentPrice || "0") * 1.25).toFixed(5)}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-[#848E9C]">All-Time Low:</span>
+                              <span>${(parseFloat(safeCountry.currentPrice || "0") * 0.75).toFixed(5)}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-[#848E9C]">Price at Launch:</span>
+                              <span>$1.00000</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="square" className="mt-3">
+                    <div className="h-[520px] flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="mb-4 text-[#848E9C]">Square view coming soon</div>
+                        <p className="text-xs text-[#848E9C] max-w-md">
+                          An alternative visualization for {safeCountry.countryName} bond trading data will be available in this tab soon.
+                        </p>
+                      </div>
+                    </div>
+                  </TabsContent>
                 </Tabs>
-              </div>
-              
-              <div className="h-[520px] relative">
-                <EnhancedTradingView country={safeCountry} />
               </div>
             </div>
             
@@ -349,141 +458,170 @@ export default function TradePage() {
           
           {/* Alt bölüm - Emir defteri ve işlemler */}
           <div className="border-t border-[#2B2F36] p-4">
-            <Tabs defaultValue="order-book">
+            <Tabs defaultValue="order-book" key={`trade-tabs-${countryKey}`}>
               <TabsList className="inline-flex border-b border-[#2B2F36] bg-transparent">
                 <TabsTrigger value="order-book" className="rounded-none border-0 text-sm">Order Book</TabsTrigger>
                 <TabsTrigger value="trades" className="rounded-none border-0 text-sm">Trades</TabsTrigger>
                 <TabsTrigger value="positions" className="rounded-none border-0 text-sm">Positions</TabsTrigger>
                 <TabsTrigger value="orders" className="rounded-none border-0 text-sm">Orders</TabsTrigger>
               </TabsList>
+              
+              <TabsContent value="order-book" className="mt-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {/* Emir defteri */}
+                  <div className="col-span-1">
+                    <div className="text-xs text-[#848E9C] flex justify-between mb-2">
+                      <span>Price (USDT)</span>
+                      <span>Amount ({safeCountry.countryCode})</span>
+                      <span>Total</span>
+                    </div>
+                    
+                    <div className="space-y-1">
+                      {/* Satış emirleri - kırmızı */}
+                      {Array.from({ length: 8 }).map((_, i) => {
+                        const price = parseFloat(safeCountry.currentPrice || "0") * (1 + (0.01 * (8 - i)));
+                        const amount = Math.random() * 10 + 0.1;
+                        return (
+                          <div key={`sell-${i}`} className="grid grid-cols-3 text-xs relative">
+                            <div className="z-10 text-red-500">${price.toFixed(5)}</div>
+                            <div className="z-10 text-right">{amount.toFixed(4)}</div>
+                            <div className="z-10 text-right">${(price * amount).toFixed(2)}</div>
+                            <div className="absolute right-0 h-full bg-red-500/10" style={{ width: `${amount * 10}%` }}></div>
+                          </div>
+                        );
+                      })}
+                      
+                      {/* Orta fiyat */}
+                      <div className="py-1 text-center text-sm font-semibold">${parseFloat(safeCountry.currentPrice || "0").toFixed(5)}</div>
+                      
+                      {/* Alış emirleri - yeşil */}
+                      {Array.from({ length: 8 }).map((_, i) => {
+                        const price = parseFloat(safeCountry.currentPrice || "0") * (1 - (0.01 * (i + 1)));
+                        const amount = Math.random() * 10 + 0.1;
+                        return (
+                          <div key={`buy-${i}`} className="grid grid-cols-3 text-xs relative">
+                            <div className="z-10 text-green-500">${price.toFixed(5)}</div>
+                            <div className="z-10 text-right">{amount.toFixed(4)}</div>
+                            <div className="z-10 text-right">${(price * amount).toFixed(2)}</div>
+                            <div className="absolute right-0 h-full bg-green-500/10" style={{ width: `${amount * 10}%` }}></div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  
+                  {/* Piyasa bilgileri */}
+                  <div className="col-span-1 lg:col-span-2">
+                    <h3 className="text-sm font-medium mb-3">Market Information</h3>
+                    
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-3">
+                      <div className="space-y-3 text-xs">
+                        <div className="flex justify-between">
+                          <span className="text-[#848E9C]">Country Code:</span>
+                          <span>{safeCountry.countryCode}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-[#848E9C]">Country Name:</span>
+                          <span>{safeCountry.countryName}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-[#848E9C]">Current Price:</span>
+                          <span>${parseFloat(safeCountry.currentPrice || "0").toFixed(5)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-[#848E9C]">24h Change:</span>
+                          <span className={parseFloat(safeCountry.currentPrice || "0") > parseFloat(safeCountry.previousPrice || "0") ? 'text-green-500' : 'text-red-500'}>
+                            {parseFloat(safeCountry.currentPrice || "0") > parseFloat(safeCountry.previousPrice || "0") ? '+' : '-'}
+                            {Math.abs(((parseFloat(safeCountry.currentPrice || "0") - parseFloat(safeCountry.previousPrice || "0")) / parseFloat(safeCountry.previousPrice || "1")) * 100).toFixed(2)}%
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-3 text-xs">
+                        <div className="flex justify-between">
+                          <span className="text-[#848E9C]">24h High:</span>
+                          <span>${(parseFloat(safeCountry.currentPrice || "0") * 1.05).toFixed(5)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-[#848E9C]">24h Low:</span>
+                          <span>${(parseFloat(safeCountry.currentPrice || "0") * 0.95).toFixed(5)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-[#848E9C]">24h Volume:</span>
+                          <span>{Math.floor(Math.random() * 500000 + 100000).toLocaleString()} {safeCountry.countryCode}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-[#848E9C]">Market Cap:</span>
+                          <span>${(parseFloat(safeCountry.currentPrice || "0") * 10000000).toLocaleString()}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="lg:col-span-2 pt-3 mt-3 border-t border-[#2B2F36]">
+                        <a 
+                          href={`https://en.wikipedia.org/wiki/${safeCountry.countryName.replace(/ /g, '_')}`}
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-primary hover:underline flex items-center"
+                        >
+                          Learn more about {safeCountry.countryName}
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="trades" className="mt-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Son işlemler */}
+                  <div className="col-span-1">
+                    <div className="text-xs text-[#848E9C] flex justify-between mb-2">
+                      <span>Price (USDT)</span>
+                      <span>Amount ({safeCountry.countryCode})</span>
+                      <span>Time</span>
+                    </div>
+                    
+                    <div className="space-y-1">
+                      {Array.from({ length: 20 }).map((_, i) => {
+                        const isBuy = Math.random() > 0.5;
+                        const price = parseFloat(safeCountry.currentPrice || "0") * (1 + (isBuy ? 1 : -1) * (Math.random() * 0.01));
+                        const amount = Math.random() * 5 + 0.1;
+                        const minutes = Math.floor(Math.random() * 60);
+                        const seconds = Math.floor(Math.random() * 60);
+                        return (
+                          <div key={`trade-${i}`} className="grid grid-cols-3 text-xs">
+                            <div className={isBuy ? 'text-green-500' : 'text-red-500'}>${price.toFixed(5)}</div>
+                            <div className="text-right">{amount.toFixed(4)}</div>
+                            <div className="text-right text-[#848E9C]">{minutes.toString().padStart(2, '0')}:{seconds.toString().padStart(2, '0')}</div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="positions" className="mt-4">
+                <div className="flex flex-col items-center justify-center py-8">
+                  <div className="text-[#848E9C] mb-2">No open positions</div>
+                  <p className="text-xs text-[#848E9C] max-w-md text-center">
+                    You don't have any open positions. Buy or sell {safeCountry.countryCode} to start trading.
+                  </p>
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="orders" className="mt-4">
+                <div className="flex flex-col items-center justify-center py-8">
+                  <div className="text-[#848E9C] mb-2">No active orders</div>
+                  <p className="text-xs text-[#848E9C] max-w-md text-center">
+                    You don't have any active orders. Place a limit order to buy or sell {safeCountry.countryCode}.
+                  </p>
+                </div>
+              </TabsContent>
             </Tabs>
-            
-            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Emir defteri */}
-              <div className="col-span-1">
-                <div className="text-xs text-[#848E9C] flex justify-between mb-2">
-                  <span>Price (USDT)</span>
-                  <span>Amount ({safeCountry.countryCode})</span>
-                  <span>Total</span>
-                </div>
-                
-                <div className="space-y-1">
-                  {/* Satış emirleri - kırmızı */}
-                  {Array.from({ length: 8 }).map((_, i) => {
-                    const price = parseFloat(safeCountry.currentPrice || "0") * (1 + (0.01 * (8 - i)));
-                    const amount = Math.random() * 10 + 0.1;
-                    return (
-                      <div key={`sell-${i}`} className="grid grid-cols-3 text-xs relative">
-                        <div className="z-10 text-red-500">${price.toFixed(5)}</div>
-                        <div className="z-10 text-right">{amount.toFixed(4)}</div>
-                        <div className="z-10 text-right">${(price * amount).toFixed(2)}</div>
-                        <div className="absolute right-0 h-full bg-red-500/10" style={{ width: `${amount * 10}%` }}></div>
-                      </div>
-                    );
-                  })}
-                  
-                  {/* Orta fiyat */}
-                  <div className="py-1 text-center text-sm font-semibold">${parseFloat(safeCountry.currentPrice || "0").toFixed(5)}</div>
-                  
-                  {/* Alış emirleri - yeşil */}
-                  {Array.from({ length: 8 }).map((_, i) => {
-                    const price = parseFloat(safeCountry.currentPrice || "0") * (1 - (0.01 * (i + 1)));
-                    const amount = Math.random() * 10 + 0.1;
-                    return (
-                      <div key={`buy-${i}`} className="grid grid-cols-3 text-xs relative">
-                        <div className="z-10 text-green-500">${price.toFixed(5)}</div>
-                        <div className="z-10 text-right">{amount.toFixed(4)}</div>
-                        <div className="z-10 text-right">${(price * amount).toFixed(2)}</div>
-                        <div className="absolute right-0 h-full bg-green-500/10" style={{ width: `${amount * 10}%` }}></div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-              
-              {/* Son işlemler */}
-              <div className="col-span-1">
-                <div className="text-xs text-[#848E9C] flex justify-between mb-2">
-                  <span>Price (USDT)</span>
-                  <span>Amount ({safeCountry.countryCode})</span>
-                  <span>Time</span>
-                </div>
-                
-                <div className="space-y-1">
-                  {Array.from({ length: 20 }).map((_, i) => {
-                    const isBuy = Math.random() > 0.5;
-                    const price = parseFloat(safeCountry.currentPrice || "0") * (1 + (isBuy ? 1 : -1) * (Math.random() * 0.01));
-                    const amount = Math.random() * 5 + 0.1;
-                    const minutes = Math.floor(Math.random() * 60);
-                    const seconds = Math.floor(Math.random() * 60);
-                    return (
-                      <div key={`trade-${i}`} className="grid grid-cols-3 text-xs">
-                        <div className={isBuy ? 'text-green-500' : 'text-red-500'}>${price.toFixed(5)}</div>
-                        <div className="text-right">{amount.toFixed(4)}</div>
-                        <div className="text-right text-[#848E9C]">{minutes.toString().padStart(2, '0')}:{seconds.toString().padStart(2, '0')}</div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-              
-              {/* Piyasa bilgileri */}
-              <div className="col-span-1">
-                <h3 className="text-sm font-medium mb-3">Market Information</h3>
-                
-                <div className="space-y-3 text-xs">
-                  <div className="flex justify-between">
-                    <span className="text-[#848E9C]">Country Code:</span>
-                    <span>{safeCountry.countryCode}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[#848E9C]">Country Name:</span>
-                    <span>{safeCountry.countryName}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[#848E9C]">Current Price:</span>
-                    <span>${parseFloat(safeCountry.currentPrice || "0").toFixed(5)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[#848E9C]">24h Change:</span>
-                    <span className={parseFloat(safeCountry.currentPrice || "0") > parseFloat(safeCountry.previousPrice || "0") ? 'text-green-500' : 'text-red-500'}>
-                      {parseFloat(safeCountry.currentPrice || "0") > parseFloat(safeCountry.previousPrice || "0") ? '+' : '-'}
-                      {Math.abs(((parseFloat(safeCountry.currentPrice || "0") - parseFloat(safeCountry.previousPrice || "0")) / parseFloat(safeCountry.previousPrice || "1")) * 100).toFixed(2)}%
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[#848E9C]">24h High:</span>
-                    <span>${(parseFloat(safeCountry.currentPrice || "0") * 1.05).toFixed(5)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[#848E9C]">24h Low:</span>
-                    <span>${(parseFloat(safeCountry.currentPrice || "0") * 0.95).toFixed(5)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[#848E9C]">24h Volume:</span>
-                    <span>{Math.floor(Math.random() * 500000 + 100000).toLocaleString()} {safeCountry.countryCode}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[#848E9C]">Market Cap:</span>
-                    <span>${(parseFloat(safeCountry.currentPrice || "0") * 10000000).toLocaleString()}</span>
-                  </div>
-                  
-                  <div className="pt-3 mt-3 border-t border-[#2B2F36]">
-                    <a 
-                      href={`https://en.wikipedia.org/wiki/${safeCountry.countryName.replace(/ /g, '_')}`}
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-primary hover:underline flex items-center"
-                    >
-                      Learn more about {safeCountry.countryName}
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </main>
