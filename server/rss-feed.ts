@@ -264,11 +264,11 @@ export function scheduleNewsFeedUpdates() {
   // Initial fetch
   fetchAllNewsFeeds();
   
-  // Set up interval for subsequent fetches (her 30 saniyede bir - çok daha sık güncelleme)
-  setInterval(fetchAllNewsFeeds, 30 * 1000);
+  // Set up interval for subsequent fetches (her 5 dakikada bir güncelleme - sistem yükünü azaltmak için)
+  setInterval(fetchAllNewsFeeds, 5 * 60 * 1000);
 
-  // Her 3 saniyede bir haberleri tekrar işle ve ülke fiyatlarını sürekli değişecek şekilde güncelle
-  // Bu, mevcut haberleri yeniden analiz ederek sürekli fiyat hareketliliği yaratır
+  // Her 20 saniyede bir haberleri tekrar işle ve ülke fiyatlarını sürekli değişecek şekilde güncelle
+  // Bu, mevcut haberleri yeniden analiz ederek sürekli fiyat hareketliliği yaratır, ancak sistem yükünü azaltmak için daha uzun aralıkla
   setInterval(async () => {
     try {
       const storage = (await import('./storage')).storage;
@@ -326,7 +326,7 @@ export function scheduleNewsFeedUpdates() {
     } catch (error) {
       console.error('Haber yeniden analiz hatası:', error);
     }
-  }, 3 * 1000);
+  }, 20 * 1000);
   
   // Initialize price history for all countries
   initializePriceHistory();

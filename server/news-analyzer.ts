@@ -249,11 +249,26 @@ export async function processNewsAndUpdateCountries(newsItems: any[]) {
   // Değişim yüzdesi büyütme çarpanı - 0.02% → 2% şeklinde göstermek için
   const DISPLAY_MULTIPLIER = PRICE_CHANGE_DISPLAY_MULTIPLIER;
   
+  // Sadece yeni haberleri işleyeceğiz, son 5 dakika içinde gelenleri
+  const fiveMinutesAgo = new Date();
+  fiveMinutesAgo.setMinutes(fiveMinutesAgo.getMinutes() - 5);
+  
+  // Yeni haberleri filtreleyelim
+  const newItems = newsItems.filter(item => {
+    const pubDate = item.pubDate ? new Date(item.pubDate) : new Date();
+    return pubDate > fiveMinutesAgo;
+  });
+  
+  // Eğer yeni haber yoksa, işlem yapma
+  if (newItems.length === 0) {
+    return [];
+  }
+  
   const countries = await storage.getAllCountries();
   const updatedCountries: any[] = [];
   
-  // Her haber için analiz yap
-  for (const newsItem of newsItems) {
+  // Sadece yeni haberler için analiz yap
+  for (const newsItem of newItems) {
     const categoryScores = analyzeNewsCategories(newsItem.title + ' ' + (newsItem.content || ''));
     
     // Doğrudan ilişkili ülke varsa, o ülkeye daha yüksek etki
