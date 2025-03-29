@@ -173,100 +173,89 @@ export default function RadioPage() {
           </div>
         </div>
         
-        {/* Radio Player Area - Nostalgic Radio Design */}
-        <div className="relative rounded-lg overflow-hidden mb-8">
-          <div className="bg-gradient-to-b from-rose-200 to-rose-300 rounded-lg shadow-xl p-6">
-            {/* Radio Cabinet */}
-            <div className="bg-rose-100 rounded-lg border-4 border-amber-800 shadow-inner p-4 flex flex-col items-center">
-              
-              {/* Radio Handle */}
-              <div className="w-24 h-6 -mt-9 mb-4 rounded-t-full bg-amber-800"></div>
-              
-              {/* Radio Display and Controls */}
-              <div className="flex w-full gap-4">
-                {/* Speaker Grille */}
-                <div className="flex-1 bg-amber-900 rounded p-3 grid grid-cols-6 gap-1">
-                  {Array(30).fill(0).map((_, i) => (
-                    <div key={i} className="h-2 bg-amber-950 rounded-full"></div>
-                  ))}
+        {/* Modern Radio Player Design */}
+        <div className="relative rounded-xl overflow-hidden mb-8 bg-gradient-to-r from-slate-900 to-blue-800">
+          <div className="p-6">
+            {/* Radio Header with Logo */}
+            <div className="flex justify-between items-center mb-4">
+              <div className="flex items-center">
+                <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center">
+                  <RadioIcon className="h-6 w-6 text-white" />
                 </div>
-                
-                {/* Control Panel */}
-                <div className="w-1/3 flex flex-col items-center space-y-4">
-                  {/* Tuning Dial */}
-                  <div className="w-24 h-24 rounded-full bg-amber-100 border-4 border-amber-800 flex items-center justify-center shadow-inner relative">
-                    <div className="absolute inset-0 rounded-full flex items-center justify-center">
-                      <div className="h-3/4 w-3/4 rounded-full bg-rose-50 border-2 border-amber-700 flex items-center justify-center">
-                        <div className="absolute w-1 h-10 bg-amber-800 rotate-45 bottom-6 origin-bottom"></div>
-                        <div className="w-4 h-4 rounded-full bg-amber-800"></div>
-                      </div>
-                    </div>
-                    <div className="absolute h-full w-full rounded-full">
-                      {/* Dial Markings */}
-                      {Array(12).fill(0).map((_, i) => (
-                        <div 
-                          key={i} 
-                          className="absolute w-1 h-2 bg-amber-950"
-                          style={{ 
-                            transform: `rotate(${i * 30}deg) translateY(-32px)`,
-                            transformOrigin: 'center bottom',
-                            left: 'calc(50% - 1px)'
-                          }}
-                        ></div>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  {/* Control Buttons */}
-                  <div className="flex gap-2">
-                    <button className="w-6 h-6 rounded-full bg-amber-800 shadow-sm flex items-center justify-center">
-                      <Power className="h-3 w-3 text-rose-100" />
-                    </button>
-                    <button className="w-6 h-6 rounded-full bg-amber-800 shadow-sm flex items-center justify-center">
-                      <VolumeX className="h-3 w-3 text-rose-100" />
-                    </button>
-                    <button className="w-6 h-6 rounded-full bg-amber-800 shadow-sm flex items-center justify-center">
-                      <Volume2 className="h-3 w-3 text-rose-100" />
-                    </button>
-                  </div>
-                  
-                  {/* BBC Logo */}
-                  <div className="text-center">
-                    <p className="font-serif font-bold text-amber-950 text-xs">SEKANCE</p>
-                    <p className="font-serif font-bold text-amber-950 text-[9px]">WORLD RADIO</p>
-                  </div>
+                <div className="ml-3">
+                  <h3 className="text-white font-bold">SEKANCE RADIO</h3>
+                  <p className="text-blue-200 text-xs">BBC World Service</p>
                 </div>
               </div>
               
-              {/* Radio Footer */}
-              <div className="mt-4 w-full flex justify-between items-center text-amber-950">
-                <div className="flex items-center">
-                  <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse mr-2"></span>
-                  <p className="text-xs font-serif font-bold">LIVE</p>
-                </div>
-                <p className="text-xs font-medium">BBC World Service</p>
-              </div>
-
-              {/* Hidden iframe for audio */}
-              <div className="hidden">
-                <iframe 
-                  src="https://www.bbc.co.uk/sounds/player/live:bbc_world_service" 
-                  width="1" 
-                  height="1"
-                  allow="autoplay"
-                ></iframe>
+              <div className="flex items-center">
+                <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse mr-2"></span>
+                <span className="text-white text-xs uppercase tracking-wider">Live</span>
               </div>
             </div>
-          </div>
+            
+            {/* Radio Display */}
+            <div className="bg-slate-800 rounded-lg p-4 mb-4">
+              <div className="flex justify-between items-center mb-3">
+                <div className="text-white font-medium">Now Playing</div>
+                <div className="text-blue-300 text-sm">BBC World Service</div>
+              </div>
+              
+              {/* Radio Controls */}
+              <div className="flex space-x-4 justify-center mb-4">
+                <button className="w-12 h-12 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center transition-colors">
+                  <Play className="h-6 w-6 text-white" />
+                </button>
+                <button className="w-12 h-12 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center transition-colors">
+                  <Pause className="h-6 w-6 text-white" />
+                </button>
+                <button className="w-12 h-12 bg-slate-700 hover:bg-slate-800 rounded-full flex items-center justify-center transition-colors">
+                  <Volume2 className="h-6 w-6 text-white" />
+                </button>
+              </div>
+              
+              {/* Volume Slider */}
+              <div className="w-full bg-slate-700 h-2 rounded-full overflow-hidden">
+                <div className="bg-blue-500 h-full w-3/4"></div>
+              </div>
+              
+              {/* Frequency Display */}
+              <div className="mt-4 flex justify-between items-center">
+                <span className="text-slate-400 text-xs">88</span>
+                <div className="flex-1 mx-2 h-1 bg-slate-700 relative">
+                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-4 bg-blue-500"></div>
+                </div>
+                <span className="text-slate-400 text-xs">108</span>
+              </div>
+              
+              {/* Station Frequency */}
+              <div className="text-center mt-2">
+                <span className="text-blue-300 font-bold">92.5 FM</span>
+              </div>
+            </div>
+            
+            {/* Latest News Headline */}
+            <div className="bg-slate-800/50 p-3 rounded-lg">
+              <h4 className="text-white font-medium text-sm mb-2">Breaking News</h4>
+              <p className="text-blue-100 text-sm mb-1">
+                {news.title}
+              </p>
+              <p className="text-slate-300 text-xs">
+                {news.content.substring(0, 120)}...
+              </p>
+            </div>
 
-          {/* News Display Under Radio */}
-          <div className="mt-4 bg-black/10 backdrop-blur-sm rounded-lg p-3 border border-amber-800/30">
-            <p className="text-amber-950 font-medium text-sm mb-1">
-              {news.title.substring(0, 60)}...
-            </p>
-            <p className="text-amber-800/80 text-xs">
-              {news.content.substring(0, 120)}...
-            </p>
+            {/* BBC Radio Iframe */}
+            <div className="mt-4 rounded-lg overflow-hidden">
+              <audio 
+                controls
+                autoPlay
+                className="w-full"
+                src="https://stream.live.vc.bbcmedia.co.uk/bbc_world_service"
+              >
+                Your browser does not support the audio element.
+              </audio>
+            </div>
           </div>
         </div>
         
@@ -312,11 +301,11 @@ export default function RadioPage() {
                   <div>
                     <CardTitle>
                       <span className="flex items-center">
-                        {t('tv.liveNow')}
+                        Sekance Radio Live
                         <span className="ml-2 h-2 w-2 rounded-full bg-red-500 animate-pulse"></span>
                       </span>
                     </CardTitle>
-                    <CardDescription>{t('tv.channels')}</CardDescription>
+                    <CardDescription>BBC World Service</CardDescription>
                   </div>
                   <div className="w-full max-w-sm">
                     <div className="relative">
@@ -334,11 +323,11 @@ export default function RadioPage() {
               <CardContent>
                 <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab}>
                   <TabsList className="w-full justify-start mb-4 overflow-auto">
-                    <TabsTrigger value="all">{t('tv.allChannels')}</TabsTrigger>
-                    <TabsTrigger value="financial">{t('tv.financial')}</TabsTrigger>
-                    <TabsTrigger value="economic">{t('tv.economic')}</TabsTrigger>
-                    <TabsTrigger value="market">{t('tv.market')}</TabsTrigger>
-                    <TabsTrigger value="global">{t('tv.global')}</TabsTrigger>
+                    <TabsTrigger value="all">All Broadcasts</TabsTrigger>
+                    <TabsTrigger value="financial">Financial</TabsTrigger>
+                    <TabsTrigger value="economic">Economic</TabsTrigger>
+                    <TabsTrigger value="market">Market</TabsTrigger>
+                    <TabsTrigger value="global">Global</TabsTrigger>
                   </TabsList>
                   
                   <TabsContent value="all" className="mt-0">
@@ -383,8 +372,8 @@ export default function RadioPage() {
           <div>
             <Card>
               <CardHeader>
-                <CardTitle>{t('tv.relatedNews')}</CardTitle>
-                <CardDescription>{t('tv.latest')}</CardDescription>
+                <CardTitle>Related News</CardTitle>
+                <CardDescription>Latest updates from around the world</CardDescription>
               </CardHeader>
               <CardContent>
                 {isLoading ? (
@@ -428,7 +417,7 @@ export default function RadioPage() {
                 )}
                 
                 <div className="mt-4 pt-4 border-t">
-                  <h3 className="font-medium mb-3">{t('tv.trending')}</h3>
+                  <h3 className="font-medium mb-3">Trending News</h3>
                   {isLoading ? (
                     Array(3).fill(0).map((_, i) => (
                       <div key={i} className="mb-3">
