@@ -38,7 +38,7 @@ const RadioPlayer = ({ isOpen, onClose }: RadioPlayerProps) => {
   if (!isOpen) return null;
 
   return (
-    <div className={`fixed ${isMinimized ? 'bottom-4 right-4 z-50' : 'inset-0 bg-black/50 flex items-center justify-center z-50'}`}>
+    <div className={`fixed ${isMinimized ? 'bottom-4 right-4 z-50' : 'inset-0 bg-black/50 flex items-center justify-center z-50'}`} onClick={isMinimized ? undefined : (e) => e.target === e.currentTarget && onClose()}>
       {isMinimized ? (
         // Minimized state
         <Button 
@@ -50,7 +50,7 @@ const RadioPlayer = ({ isOpen, onClose }: RadioPlayerProps) => {
         </Button>
       ) : (
         // Expanded state
-        <div className="relative max-w-sm w-full p-4">
+        <div className="relative max-w-sm w-full p-4" onClick={(e) => e.stopPropagation()}>
           <Card className="bg-gradient-to-r from-slate-900 to-blue-800 text-white rounded-xl overflow-hidden shadow-2xl">
             <div className="p-4">
               <div className="flex justify-between items-center mb-4">
