@@ -164,7 +164,7 @@ export default function TradePage() {
               />
               <span className="font-semibold">{safeCountry.countryCode}/USDT</span>
             </div>
-            <span className="text-lg font-semibold">${parseFloat(safeCountry.currentPrice || "0").toFixed(5)}</span>
+            <span className="text-lg font-semibold">${parseFloat(safeCountry.currentPrice || "0").toFixed(2)}</span>
             
             <PriceChange current={safeCountry.currentPrice || "0"} previous={safeCountry.previousPrice || "0"} />
           </div>
@@ -248,7 +248,7 @@ export default function TradePage() {
                     />
                     <span>{c.countryCode}</span>
                   </div>
-                  <div className="col-span-4 text-right">${parseFloat(c.currentPrice || "0").toFixed(5)}</div>
+                  <div className="col-span-4 text-right">${parseFloat(c.currentPrice || "0").toFixed(2)}</div>
                   <div className={`col-span-3 text-right ${parseFloat(c.currentPrice || "0") >= parseFloat(c.previousPrice || "0") ? 'text-green-500' : 'text-red-500'}`}>
                     {c.previousPrice && parseFloat(c.previousPrice || "0") > 0 
                       ? `${parseFloat(c.currentPrice || "0") >= parseFloat(c.previousPrice || "0") ? '+' : ''}${Math.abs(((parseFloat(c.currentPrice || "0") - parseFloat(c.previousPrice || "0")) / parseFloat(c.previousPrice || "0")) * 100).toFixed(2)}%` 
@@ -315,7 +315,7 @@ export default function TradePage() {
                           <div className="grid grid-cols-2 gap-4 text-sm">
                             <div className="flex justify-between">
                               <span className="text-[#848E9C]">Current Price:</span>
-                              <span>${parseFloat(safeCountry.currentPrice || "0").toFixed(5)}</span>
+                              <span>${parseFloat(safeCountry.currentPrice || "0").toFixed(2)}</span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-[#848E9C]">24h Change:</span>
@@ -326,11 +326,11 @@ export default function TradePage() {
                             </div>
                             <div className="flex justify-between">
                               <span className="text-[#848E9C]">24h High:</span>
-                              <span>${(parseFloat(safeCountry.currentPrice || "0") * 1.05).toFixed(5)}</span>
+                              <span>${(parseFloat(safeCountry.currentPrice || "0") * 1.05).toFixed(2)}</span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-[#848E9C]">24h Low:</span>
-                              <span>${(parseFloat(safeCountry.currentPrice || "0") * 0.95).toFixed(5)}</span>
+                              <span>${(parseFloat(safeCountry.currentPrice || "0") * 0.95).toFixed(2)}</span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-[#848E9C]">24h Volume (Bonds):</span>
@@ -360,11 +360,11 @@ export default function TradePage() {
                             </div>
                             <div className="flex justify-between">
                               <span className="text-[#848E9C]">All-Time High:</span>
-                              <span>${(parseFloat(safeCountry.currentPrice || "0") * 1.25).toFixed(5)}</span>
+                              <span>${(parseFloat(safeCountry.currentPrice || "0") * 1.25).toFixed(2)}</span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-[#848E9C]">All-Time Low:</span>
-                              <span>${(parseFloat(safeCountry.currentPrice || "0") * 0.75).toFixed(5)}</span>
+                              <span>${(parseFloat(safeCountry.currentPrice || "0") * 0.75).toFixed(2)}</span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-[#848E9C]">Price at Launch:</span>
@@ -637,7 +637,7 @@ export default function TradePage() {
                 <div className="space-y-2">
                   <div className="flex justify-between text-[#848E9C]">
                     <span>Price:</span>
-                    <span className="text-white">${parseFloat(safeCountry.currentPrice || "0").toFixed(5)}</span>
+                    <span className="text-white">${parseFloat(safeCountry.currentPrice || "0").toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-[#848E9C]">
                     <span>Fee:</span>
@@ -691,7 +691,7 @@ export default function TradePage() {
                         const amount = Math.random() * 10 + 0.1;
                         return (
                           <div key={`sell-${i}`} className="grid grid-cols-3 text-xs relative">
-                            <div className="z-10 text-red-500">${price.toFixed(5)}</div>
+                            <div className="z-10 text-red-500">${price.toFixed(2)}</div>
                             <div className="z-10 text-right">{amount.toFixed(4)}</div>
                             <div className="z-10 text-right">${(price * amount).toFixed(2)}</div>
                             <div className="absolute right-0 h-full bg-red-500/10" style={{ width: `${amount * 10}%` }}></div>
@@ -700,7 +700,7 @@ export default function TradePage() {
                       })}
                       
                       {/* Orta fiyat */}
-                      <div className="py-1 text-center text-sm font-semibold">${parseFloat(safeCountry.currentPrice || "0").toFixed(5)}</div>
+                      <div className="py-1 text-center text-sm font-semibold">${parseFloat(safeCountry.currentPrice || "0").toFixed(2)}</div>
                       
                       {/* Alış emirleri - yeşil */}
                       {Array.from({ length: 8 }).map((_, i) => {
@@ -708,7 +708,7 @@ export default function TradePage() {
                         const amount = Math.random() * 10 + 0.1;
                         return (
                           <div key={`buy-${i}`} className="grid grid-cols-3 text-xs relative">
-                            <div className="z-10 text-green-500">${price.toFixed(5)}</div>
+                            <div className="z-10 text-green-500">${price.toFixed(2)}</div>
                             <div className="z-10 text-right">{amount.toFixed(4)}</div>
                             <div className="z-10 text-right">${(price * amount).toFixed(2)}</div>
                             <div className="absolute right-0 h-full bg-green-500/10" style={{ width: `${amount * 10}%` }}></div>
@@ -734,7 +734,7 @@ export default function TradePage() {
                         </div>
                         <div className="flex justify-between">
                           <span className="text-[#848E9C]">Current Price:</span>
-                          <span>${parseFloat(safeCountry.currentPrice || "0").toFixed(5)}</span>
+                          <span>${parseFloat(safeCountry.currentPrice || "0").toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-[#848E9C]">24h Change:</span>
@@ -748,11 +748,11 @@ export default function TradePage() {
                       <div className="space-y-3 text-xs">
                         <div className="flex justify-between">
                           <span className="text-[#848E9C]">24h High:</span>
-                          <span>${(parseFloat(safeCountry.currentPrice || "0") * 1.05).toFixed(5)}</span>
+                          <span>${(parseFloat(safeCountry.currentPrice || "0") * 1.05).toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-[#848E9C]">24h Low:</span>
-                          <span>${(parseFloat(safeCountry.currentPrice || "0") * 0.95).toFixed(5)}</span>
+                          <span>${(parseFloat(safeCountry.currentPrice || "0") * 0.95).toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-[#848E9C]">24h Volume:</span>
@@ -801,7 +801,7 @@ export default function TradePage() {
                         const seconds = Math.floor(Math.random() * 60);
                         return (
                           <div key={`trade-${i}`} className="grid grid-cols-3 text-xs">
-                            <div className={isBuy ? 'text-green-500' : 'text-red-500'}>${price.toFixed(5)}</div>
+                            <div className={isBuy ? 'text-green-500' : 'text-red-500'}>${price.toFixed(2)}</div>
                             <div className="text-right">{amount.toFixed(4)}</div>
                             <div className="text-right text-[#848E9C]">{minutes.toString().padStart(2, '0')}:{seconds.toString().padStart(2, '0')}</div>
                           </div>

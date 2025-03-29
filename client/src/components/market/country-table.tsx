@@ -159,7 +159,7 @@ export default function CountryTable({
                           </div>
                         </div>
                       </td>
-                      <td className="py-4 px-6 font-medium font-mono">${parseFloat(country.currentPrice).toFixed(3)}</td>
+                      <td className="py-4 px-6 font-medium font-mono">${parseFloat(country.currentPrice).toFixed(2)}</td>
                       <td className="py-4 px-6">
                         <span className={`font-mono flex items-center ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
                           {isPositive ? <ArrowUpRight className="h-3 w-3 mr-1" /> : <ArrowDownRight className="h-3 w-3 mr-1" />}
