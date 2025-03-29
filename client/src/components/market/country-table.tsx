@@ -65,7 +65,18 @@ export default function CountryTable({
     const currentValue = parseFloat(current);
     const previousValue = parseFloat(previous);
     const change = ((currentValue - previousValue) / previousValue) * 100;
-    return change.toFixed(2);
+    
+    // Implement the new display rule for percentage changes
+    if (change < 0) {
+      // For negative changes, show as whole numbers (e.g., -5%)
+      return Math.round(Math.abs(change)).toString();
+    } else if (change > 0) {
+      // For positive changes, ensure they start from 1% and show only whole numbers
+      return Math.max(1, Math.round(change)).toString();
+    } else {
+      // For zero change
+      return "0";
+    }
   };
 
   const isPositiveChange = (current: string, previous: string) => {
@@ -152,7 +163,7 @@ export default function CountryTable({
                       <td className="py-4 px-6">
                         <span className={`font-mono flex items-center ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
                           {isPositive ? <ArrowUpRight className="h-3 w-3 mr-1" /> : <ArrowDownRight className="h-3 w-3 mr-1" />}
-                          {isPositive ? '+' : ''}{changePercent}%
+                          {isPositive ? '+' : '-'}{changePercent}%
                         </span>
                       </td>
                       <td className="py-4 px-6 font-mono hidden md:table-cell">{formattedMarketCap}</td>
