@@ -28,16 +28,8 @@ export default function HeroSection() {
           </div>
         </div>
       </div>
-      {/* World Map Background - Using SVG for better performance */}
-      <div className="absolute inset-0 z-0 opacity-30">
-        <img 
-          src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5ce?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80" 
-          className="w-full h-full object-cover" 
-          alt="World map" 
-          loading="lazy"
-        />
-      </div>
-      {/* We'll add an interactive map in the Explore World Markets section instead */}
+      {/* Background gradient instead of world map */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900"></div>
     </section>
   );
 }
