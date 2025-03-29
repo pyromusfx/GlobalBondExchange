@@ -1,6 +1,7 @@
 import { pgTable, text, serial, integer, decimal, boolean, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+import session from "express-session";
 
 // Users table
 export const users = pgTable("users", {
@@ -174,6 +175,67 @@ export type InsertAffiliateCommission = z.infer<typeof insertAffiliateCommission
 
 export type BonusClaim = typeof bonusClaims.$inferSelect;
 export type InsertBonusClaim = z.infer<typeof insertBonusClaimSchema>;
+
+// Site Settings
+export const siteSettings = pgTable("site_settings", {
+  id: serial("id").primaryKey(),
+  settingKey: text("setting_key").notNull().unique(),
+  settingValue: text("setting_value"),
+  category: text("category").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Footer Links
+export const footerLinks = pgTable("footer_links", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  url: text("url").notNull(),
+  category: text("category").notNull(),
+  order: integer("order").notNull(),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Social Links
+export const socialLinks = pgTable("social_links", {
+  id: serial("id").primaryKey(),
+  platform: text("platform").notNull(),
+  url: text("url").notNull(),
+  icon: text("icon"),
+  order: integer("order").notNull(),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertSiteSettingsSchema = createInsertSchema(siteSettings).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertFooterLinksSchema = createInsertSchema(footerLinks).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertSocialLinksSchema = createInsertSchema(socialLinks).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type SiteSetting = typeof siteSettings.$inferSelect;
+export type InsertSiteSetting = z.infer<typeof insertSiteSettingsSchema>;
+
+export type FooterLink = typeof footerLinks.$inferSelect;
+export type InsertFooterLink = z.infer<typeof insertFooterLinksSchema>;
+
+export type SocialLink = typeof socialLinks.$inferSelect;
+export type InsertSocialLink = z.infer<typeof insertSocialLinksSchema>;
 
 // Login type
 export type LoginCredentials = Pick<InsertUser, "username" | "password">;

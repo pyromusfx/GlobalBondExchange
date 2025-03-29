@@ -10,11 +10,115 @@ import {
   insertUserHoldingsSchema,
   insertAffiliateCommissionSchema,
   insertBonusClaimSchema,
-  insertUserSchema
+  insertUserSchema,
+  insertSiteSettingsSchema,
+  insertFooterLinksSchema,
+  insertSocialLinksSchema
 } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Setup API routes for site settings
+  app.get("/api/site-settings", async (req, res) => {
+    const settings = await storage.getSiteSettingsByCategory("general");
+    res.json(settings);
+  });
+  
+  app.get("/api/site-settings/:key", async (req, res) => {
+    const setting = await storage.getSiteSetting(req.params.key);
+    if (!setting) return res.status(404).send("Setting not found");
+    res.json(setting);
+  });
+  
+  app.post("/api/site-settings", async (req, res) => {
+    try {
+      const validatedData = insertSiteSettingsSchema.parse(req.body);
+      const setting = await storage.createSiteSetting(validatedData);
+      res.status(201).json(setting);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Validation error", errors: error.errors });
+      }
+      res.status(500).json({ message: "Error creating site setting" });
+    }
+  });
+  
+  app.put("/api/site-settings/:key", async (req, res) => {
+    const setting = await storage.updateSiteSetting(req.params.key, req.body.value);
+    if (!setting) return res.status(404).send("Setting not found");
+    res.json(setting);
+  });
+  
+  // Footer Links API
+  app.get("/api/footer-links", async (req, res) => {
+    const links = await storage.getFooterLinks();
+    res.json(links);
+  });
+  
+  app.get("/api/footer-links/category/:category", async (req, res) => {
+    const links = await storage.getFooterLinksByCategory(req.params.category);
+    res.json(links);
+  });
+  
+  app.post("/api/footer-links", async (req, res) => {
+    try {
+      const validatedData = insertFooterLinksSchema.parse(req.body);
+      const link = await storage.createFooterLink(validatedData);
+      res.status(201).json(link);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Validation error", errors: error.errors });
+      }
+      res.status(500).json({ message: "Error creating footer link" });
+    }
+  });
+  
+  app.put("/api/footer-links/:id", async (req, res) => {
+    const id = parseInt(req.params.id);
+    const link = await storage.updateFooterLink(id, req.body);
+    if (!link) return res.status(404).send("Footer link not found");
+    res.json(link);
+  });
+  
+  app.delete("/api/footer-links/:id", async (req, res) => {
+    const id = parseInt(req.params.id);
+    const success = await storage.deleteFooterLink(id);
+    if (!success) return res.status(404).send("Footer link not found");
+    res.sendStatus(204);
+  });
+  
+  // Social Links API
+  app.get("/api/social-links", async (req, res) => {
+    const links = await storage.getSocialLinks();
+    res.json(links);
+  });
+  
+  app.post("/api/social-links", async (req, res) => {
+    try {
+      const validatedData = insertSocialLinksSchema.parse(req.body);
+      const link = await storage.createSocialLink(validatedData);
+      res.status(201).json(link);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Validation error", errors: error.errors });
+      }
+      res.status(500).json({ message: "Error creating social link" });
+    }
+  });
+  
+  app.put("/api/social-links/:id", async (req, res) => {
+    const id = parseInt(req.params.id);
+    const link = await storage.updateSocialLink(id, req.body);
+    if (!link) return res.status(404).send("Social link not found");
+    res.json(link);
+  });
+  
+  app.delete("/api/social-links/:id", async (req, res) => {
+    const id = parseInt(req.params.id);
+    const success = await storage.deleteSocialLink(id);
+    if (!success) return res.status(404).send("Social link not found");
+    res.sendStatus(204);
+  });
   // Set up authentication routes
   setupAuth(app);
 

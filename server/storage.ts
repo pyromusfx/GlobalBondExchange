@@ -7,6 +7,9 @@ import {
   newsItems,
   affiliateCommissions,
   bonusClaims,
+  siteSettings,
+  footerLinks,
+  socialLinks,
   type User, 
   type InsertUser, 
   type KycInfo, 
@@ -22,7 +25,13 @@ import {
   type AffiliateCommission,
   type InsertAffiliateCommission,
   type BonusClaim,
-  type InsertBonusClaim
+  type InsertBonusClaim,
+  type SiteSetting,
+  type InsertSiteSetting,
+  type FooterLink,
+  type InsertFooterLink,
+  type SocialLink,
+  type InsertSocialLink
 } from "@shared/schema";
 import createMemoryStore from "memorystore";
 import session from "express-session";
@@ -75,6 +84,25 @@ export interface IStorage {
   claimBonus(bonus: InsertBonusClaim): Promise<BonusClaim>;
   getUserBonusClaims(userId: number): Promise<BonusClaim[]>;
   
+  // Site Settings operations
+  getSiteSetting(key: string): Promise<SiteSetting | undefined>;
+  getSiteSettingsByCategory(category: string): Promise<SiteSetting[]>;
+  createSiteSetting(setting: InsertSiteSetting): Promise<SiteSetting>;
+  updateSiteSetting(key: string, value: string): Promise<SiteSetting | undefined>;
+  
+  // Footer Links operations
+  getFooterLinks(): Promise<FooterLink[]>;
+  getFooterLinksByCategory(category: string): Promise<FooterLink[]>;
+  createFooterLink(link: InsertFooterLink): Promise<FooterLink>;
+  updateFooterLink(id: number, updates: Partial<FooterLink>): Promise<FooterLink | undefined>;
+  deleteFooterLink(id: number): Promise<boolean>;
+  
+  // Social Links operations
+  getSocialLinks(): Promise<SocialLink[]>;
+  createSocialLink(link: InsertSocialLink): Promise<SocialLink>;
+  updateSocialLink(id: number, updates: Partial<SocialLink>): Promise<SocialLink | undefined>;
+  deleteSocialLink(id: number): Promise<boolean>;
+  
   // Session store
   sessionStore: session.SessionStore;
 }
@@ -89,6 +117,9 @@ export class MemStorage implements IStorage {
   private newsMap: Map<number, NewsItem>;
   private affiliateCommissionsMap: Map<number, AffiliateCommission>;
   private bonusClaimsMap: Map<number, BonusClaim>;
+  private siteSettingsMap: Map<string, SiteSetting>;
+  private footerLinksMap: Map<number, FooterLink>;
+  private socialLinksMap: Map<number, SocialLink>;
   
   sessionStore: session.SessionStore;
   
@@ -110,6 +141,9 @@ export class MemStorage implements IStorage {
     this.newsMap = new Map();
     this.affiliateCommissionsMap = new Map();
     this.bonusClaimsMap = new Map();
+    this.siteSettingsMap = new Map();
+    this.footerLinksMap = new Map();
+    this.socialLinksMap = new Map();
     
     const MemoryStore = createMemoryStore(session);
     this.sessionStore = new MemoryStore({
@@ -487,6 +521,151 @@ export class MemStorage implements IStorage {
     return Array.from(this.bonusClaimsMap.values())
       .filter(claim => claim.userId === userId)
       .sort((a, b) => b.claimDate.getTime() - a.claimDate.getTime());
+  }
+  
+  // Site Settings operations
+  async getSiteSetting(key: string): Promise<SiteSetting | undefined> {
+    return Array.from(this.siteSettingsMap.values())
+      .find(setting => setting.settingKey === key);
+  }
+  
+  async getSiteSettingsByCategory(category: string): Promise<SiteSetting[]> {
+    return Array.from(this.siteSettingsMap.values())
+      .filter(setting => setting.category === category);
+  }
+  
+  async createSiteSetting(setting: InsertSiteSetting): Promise<SiteSetting> {
+    const id = 1; // Increment in actual implementation
+    const now = new Date();
+    
+    const siteSetting: SiteSetting = {
+      ...setting,
+      id,
+      createdAt: now,
+      updatedAt: now
+    };
+    
+    this.siteSettingsMap.set(setting.settingKey, siteSetting);
+    return siteSetting;
+  }
+  
+  async updateSiteSetting(key: string, value: string): Promise<SiteSetting | undefined> {
+    const setting = await this.getSiteSetting(key);
+    if (setting) {
+      const now = new Date();
+      const updatedSetting: SiteSetting = {
+        ...setting,
+        settingValue: value,
+        updatedAt: now
+      };
+      
+      this.siteSettingsMap.set(key, updatedSetting);
+      return updatedSetting;
+    }
+    
+    return undefined;
+  }
+  
+  // Footer Links operations
+  async getFooterLinks(): Promise<FooterLink[]> {
+    return Array.from(this.footerLinksMap.values())
+      .filter(link => link.isActive)
+      .sort((a, b) => a.order - b.order);
+  }
+  
+  async getFooterLinksByCategory(category: string): Promise<FooterLink[]> {
+    return Array.from(this.footerLinksMap.values())
+      .filter(link => link.category === category && link.isActive)
+      .sort((a, b) => a.order - b.order);
+  }
+  
+  async createFooterLink(link: InsertFooterLink): Promise<FooterLink> {
+    const id = 1; // Increment in actual implementation
+    const now = new Date();
+    
+    const footerLink: FooterLink = {
+      ...link,
+      id,
+      createdAt: now,
+      updatedAt: now
+    };
+    
+    this.footerLinksMap.set(id, footerLink);
+    return footerLink;
+  }
+  
+  async updateFooterLink(id: number, updates: Partial<FooterLink>): Promise<FooterLink | undefined> {
+    const link = this.footerLinksMap.get(id);
+    if (link) {
+      const now = new Date();
+      const updatedLink: FooterLink = {
+        ...link,
+        ...updates,
+        updatedAt: now
+      };
+      
+      this.footerLinksMap.set(id, updatedLink);
+      return updatedLink;
+    }
+    
+    return undefined;
+  }
+  
+  async deleteFooterLink(id: number): Promise<boolean> {
+    const exists = this.footerLinksMap.has(id);
+    if (exists) {
+      this.footerLinksMap.delete(id);
+      return true;
+    }
+    return false;
+  }
+  
+  // Social Links operations
+  async getSocialLinks(): Promise<SocialLink[]> {
+    return Array.from(this.socialLinksMap.values())
+      .filter(link => link.isActive)
+      .sort((a, b) => a.order - b.order);
+  }
+  
+  async createSocialLink(link: InsertSocialLink): Promise<SocialLink> {
+    const id = 1; // Increment in actual implementation
+    const now = new Date();
+    
+    const socialLink: SocialLink = {
+      ...link,
+      id,
+      createdAt: now,
+      updatedAt: now
+    };
+    
+    this.socialLinksMap.set(id, socialLink);
+    return socialLink;
+  }
+  
+  async updateSocialLink(id: number, updates: Partial<SocialLink>): Promise<SocialLink | undefined> {
+    const link = this.socialLinksMap.get(id);
+    if (link) {
+      const now = new Date();
+      const updatedLink: SocialLink = {
+        ...link,
+        ...updates,
+        updatedAt: now
+      };
+      
+      this.socialLinksMap.set(id, updatedLink);
+      return updatedLink;
+    }
+    
+    return undefined;
+  }
+  
+  async deleteSocialLink(id: number): Promise<boolean> {
+    const exists = this.socialLinksMap.has(id);
+    if (exists) {
+      this.socialLinksMap.delete(id);
+      return true;
+    }
+    return false;
   }
 }
 
