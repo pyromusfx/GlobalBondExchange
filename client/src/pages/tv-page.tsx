@@ -125,72 +125,16 @@ export default function TvPage() {
     return "news";
   };
 
-  // Define radio stations with audio sources - using reliable streaming URLs
-  const radioStations = [
-    { 
-      id: "bloomberg", 
-      name: "Bloomberg Radio", 
-      audioSrc: "https://bloomberg-bnr-radio.akamaized.net/hls/live/2939500/bnrlivetestfdi/master.m3u8", // Bloomberg Radio stream
-      logoSrc: "/icons/bloomberg.svg" 
-    },
-    { 
-      id: "bbc", 
-      name: "BBC World Service", 
-      audioSrc: "https://stream.live.vc.bbcmedia.co.uk/bbc_world_service", // BBC World Service audio stream
-      logoSrc: "/icons/bbc.svg" 
-    },
-    { 
-      id: "cnbc", 
-      name: "CNBC Business News", 
-      audioSrc: "http://tunein.streamguys1.com/cnbc", // CNBC audio stream
-      logoSrc: "/icons/cnbc.svg" 
-    },
-    { 
-      id: "reuters", 
-      name: "Reuters News", 
-      audioSrc: "https://tunein.streamguys1.com/reuters-english", // Reuters audio stream
-      logoSrc: "/icons/reuters.svg" 
-    }
-  ];
-
-  // Audio player state
-  const [isPlayingAudio, setIsPlayingAudio] = useState<boolean>(true); // Auto-play by default
-  const [isMuted, setIsMuted] = useState<boolean>(false);
-  const [audioProgress, setAudioProgress] = useState<number>(0);
-  const [selectedStation, setSelectedStation] = useState<string>("bloomberg");
-  const audioTimerRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Simulate radio progress
-  useEffect(() => {
-    if (isPlayingAudio) {
-      audioTimerRef.current = setInterval(() => {
-        setAudioProgress(prev => {
-          if (prev >= 100) {
-            // When audio ends, start another news clip
-            handleNextNews();
-            return 0;
-          }
-          return prev + 0.5;
-        });
-      }, 100);
-    } else if (audioTimerRef.current) {
-      clearInterval(audioTimerRef.current);
-    }
-
-    return () => {
-      if (audioTimerRef.current) {
-        clearInterval(audioTimerRef.current);
-      }
-    };
-  }, [isPlayingAudio]);
-
-  const toggleAudioPlay = () => {
-    setIsPlayingAudio(prev => !prev);
+  // BBC World Service stream
+  const bbcWorldService = { 
+    id: "bbc", 
+    name: "BBC World Service", 
+    audioSrc: "https://stream.live.vc.bbcmedia.co.uk/bbc_world_service", // BBC World Service audio stream
+    logoSrc: "/icons/bbc.svg",
+    description: "24/7 global news, analysis and features from the BBC World Service Radio"
   };
 
-  const toggleMute = () => {
-    setIsMuted(prev => !prev);
-  };
+  // Not using audio controls anymore as we're using BBC's embedded player
 
   const renderActiveNews = () => {
     if (!filteredNews.length) {
@@ -205,7 +149,6 @@ export default function TvPage() {
     }
     
     const news = filteredNews[activeNewsIndex];
-    const currentStation = radioStations.find(station => station.id === selectedStation) || radioStations[0];
     
     return (
       <div className="space-y-4">
@@ -233,108 +176,34 @@ export default function TvPage() {
         {/* Radio Player Area */}
         <div className="relative rounded-lg overflow-hidden bg-gradient-to-r from-slate-900 to-blue-900 aspect-video mb-4">
           {/* Audio Stream */}
-          <ReactPlayer
-            url={currentStation.audioSrc}
-            playing={isPlayingAudio}
-            muted={isMuted}
-            width="100%"
+          <iframe 
+            src="https://www.bbc.co.uk/sounds/player/live:bbc_world_service" 
+            width="100%" 
             height="100%"
-            controls={false}
-            style={{ display: 'none' }} // Hidden audio player
-            onError={(e) => {
-              console.error("Audio playback error:", e);
-            }}
-          />
+            allow="autoplay"
+            className="absolute inset-0 h-full w-full border-0"
+          ></iframe>
           
-          {/* Radio visualization */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <div className="w-full max-w-md flex flex-col items-center">
-              <Avatar className="h-20 w-20 mb-4 shadow-lg">
-                <AvatarImage src={currentStation.logoSrc} alt={currentStation.name} />
-                <AvatarFallback>{currentStation.name.substring(0, 2)}</AvatarFallback>
-              </Avatar>
-              
-              <h3 className="text-xl font-bold text-white mb-2">{currentStation.name}</h3>
-              <div className="flex justify-center items-center space-x-1 mb-6">
-                <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse"></span>
-                <span className="text-xs font-bold text-white uppercase tracking-wider">LIVE</span>
-              </div>
-              
-              {/* Audio visualization bars */}
-              <div className="flex items-end justify-center space-x-1 h-16 mb-6">
-                {Array(12).fill(0).map((_, i) => {
-                  const height = isPlayingAudio ? Math.random() * 100 : 15;
-                  return (
-                    <div 
-                      key={i} 
-                      className={`w-2 bg-white/80 rounded-t transition-all duration-150 ${isPlayingAudio ? 'animate-pulse' : ''}`}
-                      style={{ height: `${height}%` }}
-                    ></div>
-                  );
-                })}
-              </div>
-              
-              <div className="text-center">
-                <p className="text-white/90 text-sm mb-4 max-w-xs">
-                  {t('tv.nowPlaying')}: {news.title.substring(0, 60)}...
-                </p>
-              </div>
+          {/* Radio overlay */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="absolute top-0 left-0 m-4 bg-black/50 px-3 py-1 rounded-full flex items-center">
+              <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse mr-2"></span>
+              <span className="text-xs font-bold text-white uppercase tracking-wider">LIVE</span>
             </div>
             
-            {/* Audio Controls */}
-            <div className="absolute bottom-4 left-0 right-0 px-6">
-              <Progress className="mb-3" value={audioProgress} />
-              <div className="flex justify-between items-center">
-                <div className="flex space-x-2">
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="text-white hover:bg-white/20"
-                    onClick={toggleAudioPlay}
-                  >
-                    {isPlayingAudio ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
-                  </Button>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="text-white hover:bg-white/20"
-                    onClick={toggleMute}
-                  >
-                    {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
-                  </Button>
-                </div>
-                <div className="flex items-center">
-                  <Radio className="h-4 w-4 mr-2 text-white/80" />
-                  <span className="text-xs text-white">
-                    {Math.floor(audioProgress / 100 * 120)}s / 120s
-                  </span>
-                </div>
-              </div>
+            <div className="absolute top-0 right-0 m-4 bg-black/50 px-3 py-1 rounded-full">
+              <span className="text-xs font-bold text-white">BBC World Service</span>
+            </div>
+            
+            <div className="text-center bg-black/30 rounded-lg p-4 mb-32 backdrop-blur-sm max-w-sm">
+              <p className="text-white/90 text-sm mb-2">
+                {news.title.substring(0, 60)}...
+              </p>
+              <p className="text-xs text-white/70">
+                {news.content.substring(0, 120)}...
+              </p>
             </div>
           </div>
-        </div>
-        
-        {/* Radio Station Selection */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
-          {radioStations.map(station => (
-            <Button 
-              key={station.id}
-              variant={selectedStation === station.id ? "default" : "outline"}
-              size="sm"
-              className="flex items-center justify-center py-2"
-              onClick={() => {
-                setSelectedStation(station.id);
-                setAudioProgress(0);
-                setIsPlayingAudio(true);
-              }}
-            >
-              <Avatar className="h-5 w-5 mr-2">
-                <AvatarImage src={station.logoSrc} />
-                <AvatarFallback>{station.name.substring(0, 2)}</AvatarFallback>
-              </Avatar>
-              <span className="text-xs">{station.name}</span>
-            </Button>
-          ))}
         </div>
         
         <h2 className="text-2xl font-bold">{news.title}</h2>
