@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="100px" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <title>Reuters Logo</title>
+    <g id="Reuters-Logo" fill="#000000">
+        <path d="M10,20 L90,20 L90,30 L60,30 L60,80 L40,80 L40,30 L10,30 L10,20 Z" id="T-Shape"></path>
+        <path d="M20,50 C20,39 29,30 40,30 L40,80 C29,80 20,71 20,60 L20,50 Z" id="R-Left-Shape"></path>
+        <path d="M40,50 L50,50 C55.5228475,50 60,54.4771525 60,60 L60,80 L50,80 L50,60 L40,60 L40,50 Z" id="R-Right-Shape"></path>
+        <rect id="Rectangle" x="60" y="50" width="20" height="30"></rect>
+        <circle id="Reuters-Dot" cx="85" cy="65" r="5"></circle>
+    </g>
+</svg>

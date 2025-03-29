@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="100px" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <title>News Icon</title>
+    <g id="News-Icon" fill="#000000">
+        <path d="M20,20 L80,20 C85.5228475,20 90,24.4771525 90,30 L90,70 C90,75.5228475 85.5228475,80 80,80 L20,80 C14.4771525,80 10,75.5228475 10,70 L10,30 C10,24.4771525 14.4771525,20 20,20 Z M20,30 L20,70 L80,70 L80,30 L20,30 Z" id="Outline"></path>
+        <rect id="Header" x="30" y="40" width="40" height="5"></rect>
+        <rect id="Paragraph-1" x="30" y="50" width="40" height="3"></rect>
+        <rect id="Paragraph-2" x="30" y="55" width="40" height="3"></rect>
+        <rect id="Paragraph-3" x="30" y="60" width="30" height="3"></rect>
+    </g>
+</svg>

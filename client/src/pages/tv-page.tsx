@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,10 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Layout from "@/components/layout/layout";
 import { NewsItem } from "@shared/schema";
-import { Loader2, ExternalLink, ChevronLeft, ChevronRight, Search, Share, Bookmark, ArrowUpRight } from "lucide-react";
+import { Loader2, ExternalLink, ChevronLeft, ChevronRight, Search, Share, Bookmark, ArrowUpRight, Play, Volume2, VolumeX, Maximize, MinusCircle } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Progress } from "@/components/ui/progress";
 
 export default function TvPage() {
   const { t } = useTranslation();
@@ -122,6 +123,73 @@ export default function TvPage() {
     return "news";
   };
 
+  // Define broadcast channels with video sources
+  const broadcastChannels = [
+    { 
+      id: "bloomberg", 
+      name: "Bloomberg TV", 
+      videoSrc: "https://www.bloomberg.com/media-manifest/streams/us.m3u8",
+      logoSrc: "/icons/bloomberg.svg" 
+    },
+    { 
+      id: "bbc", 
+      name: "BBC World News", 
+      videoSrc: "https://www.bbc.co.uk/news/av/business-12686570",
+      logoSrc: "/icons/bbc.svg" 
+    },
+    { 
+      id: "cnbc", 
+      name: "CNBC", 
+      videoSrc: "https://www.cnbc.com/live-tv/",
+      logoSrc: "/icons/cnbc.svg" 
+    },
+    { 
+      id: "reuters", 
+      name: "Reuters TV", 
+      videoSrc: "https://www.reuters.tv/",
+      logoSrc: "/icons/reuters.svg" 
+    }
+  ];
+
+  // Video player state
+  const [isPlayingVideo, setIsPlayingVideo] = useState<boolean>(false);
+  const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [videoProgress, setVideoProgress] = useState<number>(0);
+  const [selectedChannel, setSelectedChannel] = useState<string>("bloomberg");
+  const videoTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Simulate video progress
+  useEffect(() => {
+    if (isPlayingVideo) {
+      videoTimerRef.current = setInterval(() => {
+        setVideoProgress(prev => {
+          if (prev >= 100) {
+            // When video ends, start another news clip
+            handleNextNews();
+            return 0;
+          }
+          return prev + 0.5;
+        });
+      }, 100);
+    } else if (videoTimerRef.current) {
+      clearInterval(videoTimerRef.current);
+    }
+
+    return () => {
+      if (videoTimerRef.current) {
+        clearInterval(videoTimerRef.current);
+      }
+    };
+  }, [isPlayingVideo]);
+
+  const toggleVideoPlay = () => {
+    setIsPlayingVideo(prev => !prev);
+  };
+
+  const toggleMute = () => {
+    setIsMuted(prev => !prev);
+  };
+
   const renderActiveNews = () => {
     if (!filteredNews.length) {
       return (
@@ -135,6 +203,7 @@ export default function TvPage() {
     }
     
     const news = filteredNews[activeNewsIndex];
+    const currentChannel = broadcastChannels.find(channel => channel.id === selectedChannel) || broadcastChannels[0];
     
     return (
       <div className="space-y-4">
@@ -157,6 +226,85 @@ export default function TvPage() {
               <Share className="h-4 w-4" />
             </Button>
           </div>
+        </div>
+        
+        {/* Video Player Area */}
+        <div className="relative rounded-lg overflow-hidden bg-black aspect-video mb-4">
+          <div className="absolute inset-0 flex items-center justify-center">
+            {/* Placeholder for video that would come from a real streaming source */}
+            <div className="flex flex-col items-center justify-center text-white">
+              <Avatar className="h-16 w-16 mb-2">
+                <AvatarImage src={currentChannel.logoSrc} alt={currentChannel.name} />
+                <AvatarFallback>{currentChannel.name.substring(0, 2)}</AvatarFallback>
+              </Avatar>
+              <h3 className="text-xl font-bold mb-1">{currentChannel.name}</h3>
+              <p className="text-sm opacity-80 mb-4">
+                {news.title}
+              </p>
+              
+              {/* LIVE indicator */}
+              <div className="flex items-center bg-red-600 px-3 py-1 rounded-full mb-4">
+                <span className="h-2 w-2 rounded-full bg-white animate-pulse mr-2"></span>
+                <span className="text-xs font-bold">LIVE</span>
+              </div>
+            </div>
+          </div>
+          
+          {/* Video Controls Overlay */}
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+            <Progress className="mb-2" value={videoProgress} />
+            <div className="flex justify-between items-center">
+              <div className="flex space-x-2">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="text-white hover:bg-white/20"
+                  onClick={toggleVideoPlay}
+                >
+                  {isPlayingVideo ? <MinusCircle className="h-5 w-5" /> : <Play className="h-5 w-5" />}
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="text-white hover:bg-white/20"
+                  onClick={toggleMute}
+                >
+                  {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
+                </Button>
+              </div>
+              <div className="flex items-center">
+                <span className="text-xs text-white mr-2">
+                  {Math.floor(videoProgress / 100 * 120)}s / 120s
+                </span>
+                <Button variant="ghost" size="icon" className="text-white hover:bg-white/20">
+                  <Maximize className="h-5 w-5" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Channel Selection */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
+          {broadcastChannels.map(channel => (
+            <Button 
+              key={channel.id}
+              variant={selectedChannel === channel.id ? "default" : "outline"}
+              size="sm"
+              className="flex items-center justify-center py-2"
+              onClick={() => {
+                setSelectedChannel(channel.id);
+                setVideoProgress(0);
+                setIsPlayingVideo(true);
+              }}
+            >
+              <Avatar className="h-5 w-5 mr-2">
+                <AvatarImage src={channel.logoSrc} />
+                <AvatarFallback>{channel.name.substring(0, 2)}</AvatarFallback>
+              </Avatar>
+              <span className="text-xs">{channel.name}</span>
+            </Button>
+          ))}
         </div>
         
         <h2 className="text-2xl font-bold">{news.title}</h2>
