@@ -33,15 +33,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Country code is required" });
       }
       
-      // Import functions from news-analyzer.ts
-      const { getPriceHistoryForCountry, generatePriceHistoryForCountry } = require('./news-analyzer');
+      // Import'ları direkt tanımlayarak kullanıyoruz
+      const { generatePriceHistoryForCountry } = await import('./news-analyzer');
+      const { getPriceHistoryForCountry, savePriceHistoryForCountry } = await import('./news-analyzer-utils');
       
-      // Try to get existing price history
+      // Fiyat geçmişi ver
       let priceHistory = getPriceHistoryForCountry(countryCode);
       
-      // If no price history exists, generate one
+      // Eğer fiyat geçmişi yoksa, oluştur ve kaydet
       if (!priceHistory || priceHistory.length === 0) {
         priceHistory = generatePriceHistoryForCountry(countryCode);
+        await savePriceHistoryForCountry(countryCode, priceHistory);
       }
       
       return res.status(200).json(priceHistory);
@@ -261,12 +263,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Get price history for a country
+  // Price history API endpoint
   app.get("/api/price-history/:countryCode", async (req, res) => {
     try {
       const { countryCode } = req.params;
       
-      // Import'ları direkt tanımlayarak kullanıyoruz
+      if (!countryCode) {
+        return res.status(400).json({ message: "Country code is required" });
+      }
+      
+      // Import'ları direkt tanımlayarak kullanıyoruz - burada "await import" kullanıyoruz "require" yerine
       const { generatePriceHistoryForCountry } = await import('./news-analyzer');
       const { getPriceHistoryForCountry, savePriceHistoryForCountry } = await import('./news-analyzer-utils');
       
@@ -274,14 +280,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let priceHistory = getPriceHistoryForCountry(countryCode);
       
       // Eğer fiyat geçmişi yoksa, oluştur ve kaydet
-      if (priceHistory.length === 0) {
+      if (!priceHistory || priceHistory.length === 0) {
         priceHistory = generatePriceHistoryForCountry(countryCode);
         await savePriceHistoryForCountry(countryCode, priceHistory);
       }
       
       return res.status(200).json(priceHistory);
     } catch (error) {
-      console.error('Error getting price history:', error);
+      console.error("Error fetching price history:", error);
       return res.status(500).json({ message: "Error fetching price history" });
     }
   });
