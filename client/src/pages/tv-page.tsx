@@ -13,6 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
+import ReactPlayer from "react-player";
 
 export default function TvPage() {
   const { t } = useTranslation();
@@ -124,30 +125,30 @@ export default function TvPage() {
     return "news";
   };
 
-  // Define broadcast channels with video sources
+  // Define broadcast channels with video sources - using open and free HLS streams
   const broadcastChannels = [
     { 
       id: "bloomberg", 
       name: "Bloomberg TV", 
-      videoSrc: "https://www.bloomberg.com/media-manifest/streams/us.m3u8",
+      videoSrc: "https://d1hd0ww6piyb43.cloudfront.net/out/v1/36fc62d1c08f4baa97f547b6bda1b43e/index.m3u8", // Free Bloomberg HLS stream
       logoSrc: "/icons/bloomberg.svg" 
     },
     { 
       id: "bbc", 
       name: "BBC World News", 
-      videoSrc: "https://www.bbc.co.uk/news/av/business-12686570",
+      videoSrc: "https://cdnuk001.broadcastcdn.net/KUK-BBCNEWSHD/index.m3u8", // Open BBC news-like stream
       logoSrc: "/icons/bbc.svg" 
     },
     { 
       id: "cnbc", 
       name: "CNBC", 
-      videoSrc: "https://www.cnbc.com/live-tv/",
+      videoSrc: "https://dai2.xumo.com/amagi_hls_data_xumo1212A-xumo-nbcnewsnow/CDN/playlist.m3u8", // NBC News stream
       logoSrc: "/icons/cnbc.svg" 
     },
     { 
       id: "reuters", 
       name: "Reuters TV", 
-      videoSrc: "https://www.reuters.tv/",
+      videoSrc: "https://reuters-reutersnow-1.plex.wurl.com/manifest/playlist.m3u8", // Reuters stream
       logoSrc: "/icons/reuters.svg" 
     }
   ];
@@ -231,23 +232,45 @@ export default function TvPage() {
         
         {/* Video Player Area */}
         <div className="relative rounded-lg overflow-hidden bg-black aspect-video mb-4">
-          <div className="absolute inset-0 flex items-center justify-center">
-            {/* Placeholder for video that would come from a real streaming source */}
-            <div className="flex flex-col items-center justify-center text-white w-full h-full">
-              <Avatar className="h-24 w-24 mb-4">
-                <AvatarImage src={currentChannel.logoSrc} alt={currentChannel.name} />
-                <AvatarFallback>{currentChannel.name.substring(0, 2)}</AvatarFallback>
-              </Avatar>
-              <h3 className="text-2xl font-bold mb-2">{currentChannel.name}</h3>
-              <p className="text-base opacity-90 mb-6 max-w-md text-center">
-                {news.title}
-              </p>
-              
-              {/* LIVE indicator */}
-              <div className="flex items-center bg-red-600 px-4 py-2 rounded-full mb-6">
-                <span className="h-3 w-3 rounded-full bg-white animate-pulse mr-2"></span>
-                <span className="text-sm font-bold">LIVE</span>
-              </div>
+          {/* Live Video Stream */}
+          <ReactPlayer
+            url={currentChannel.videoSrc}
+            playing={isPlayingVideo}
+            muted={isMuted}
+            width="100%"
+            height="100%"
+            controls={false}
+            style={{ position: 'absolute', top: 0, left: 0 }}
+            onError={(e) => {
+              console.error("Video playback error:", e);
+            }}
+            config={{
+              file: {
+                forceHLS: true,
+                hlsOptions: {
+                  lowLatencyMode: true,
+                }
+              }
+            }}
+          />
+          
+          {/* LIVE indicator */}
+          <div className="absolute top-4 right-4 z-10">
+            <div className="flex items-center bg-red-600 px-3 py-1 rounded-full">
+              <span className="h-2 w-2 rounded-full bg-white animate-pulse mr-2"></span>
+              <span className="text-xs font-bold text-white">LIVE</span>
+            </div>
+          </div>
+          
+          {/* Channel Info Overlay */}
+          <div className="absolute top-4 left-4 z-10 flex items-center">
+            <Avatar className="h-8 w-8 mr-2">
+              <AvatarImage src={currentChannel.logoSrc} alt={currentChannel.name} />
+              <AvatarFallback>{currentChannel.name.substring(0, 2)}</AvatarFallback>
+            </Avatar>
+            <div>
+              <h3 className="text-sm font-bold text-white">{currentChannel.name}</h3>
+              <p className="text-xs text-white/80">{news.title.substring(0, 30)}...</p>
             </div>
           </div>
           
@@ -275,7 +298,7 @@ export default function TvPage() {
               </div>
               <div className="flex items-center">
                 <span className="text-xs text-white mr-2">
-                  {Math.floor(videoProgress / 100 * 120)}s / 120s
+                  LIVE
                 </span>
                 <Button variant="ghost" size="icon" className="text-white hover:bg-white/20" onClick={() => setIsPlayingVideo(true)}>
                   <Maximize className="h-5 w-5" />
