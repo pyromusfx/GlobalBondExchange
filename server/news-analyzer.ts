@@ -217,19 +217,19 @@ export function calculateNewsImpact(categoryScores: Record<string, number>, coun
   let totalImpact = 0;
   let totalWeight = 0;
   
-  // Her kategori için ağırlıklı etki puanı hesapla - daha büyük etki için çarpanları artır
+  // Her kategori için ağırlıklı etki puanı hesapla - aşırı dalgalanmayı önlemek için çarpanları düşürdük
   for (const [category, score] of Object.entries(categoryScores)) {
     if (score > 0 && sensitivity[category] !== undefined) {
-      // Daha güçlü etki için arttırılmış etki değeri (ortalama %50 daha fazla etki)
-      const multiplier = 1.5;  
-      const impact = (sensitivity[category] / 5) * score * multiplier; // -1.5 ile 1.5 arası değer verebilir
+      // Daha dengeli etki için düşürülmüş etki değeri
+      const multiplier = 0.75;  // 1.5'ten 0.75'e düşürüldü 
+      const impact = (sensitivity[category] / 5) * score * multiplier; // -0.75 ile 0.75 arası değer verebilir
       totalImpact += impact;
       totalWeight += score;
     }
   }
   
-  // Rastgele ek volatilite (gürültü) ekle - %30-60 arası rastgele etki
-  const noiseLevel = 0.3 + (Math.random() * 0.3); // 0.3 ile 0.6 arası
+  // Rastgele ek volatilite (gürültü) ekle - %10-20 arası rastgele etki (düşürüldü)
+  const noiseLevel = 0.1 + (Math.random() * 0.1); // 0.1 ile 0.2 arası (düşürüldü)
   const noiseImpact = (Math.random() > 0.5 ? 1 : -1) * noiseLevel;
   
   // Toplam ağırlık 0 ise sadece gürültü etkisi kullan
@@ -266,27 +266,31 @@ export async function processNewsAndUpdateCountries(newsItems: any[]) {
       const currentPrice = parseFloat(targetCountry.currentPrice || "0");
       const previousPrice = currentPrice;
       
-      // Etki (impact) -1 ile 1 arasında, fiyat değişimini +/- %5 ile %15 arasında (DAHA FAZLA arttırılmış volatilite)
-      const priceChangePercent = impact * (Math.random() * 10 + 5) * 1.5; // %50 daha fazla etki
-      const newPrice = currentPrice * (1 + priceChangePercent / 100);
+      // Etki (impact) -1 ile 1 arasında, fiyat değişimini sınırlandırıyoruz
+      const priceChangePercent = impact * (Math.random() * 5 + 2) * 0.75; // Çarpanı 1.5'ten 0.75'e indiriyoruz
       
-      // Fiyatın $0.05'in altına düşmesini önle
-      const minPrice = 0.05;
-      const adjustedPrice = Math.max(newPrice, minPrice);
+      // Aşırı fiyat dalgalanmalarını sınırla (%5'ten fazla değişimi sınırlandır)
+      const cappedChangePercent = Math.max(-5, Math.min(5, priceChangePercent));
+      const newPrice = currentPrice * (1 + cappedChangePercent / 100);
       
-      // Güncellenmiş değerleri kaydet
+      // Fiyatın $0.50'nin altına düşmesini ve $2.00'nin üstüne çıkmasını önle
+      const minPrice = 0.50;
+      const maxPrice = 2.00;
+      const adjustedPrice = Math.max(minPrice, Math.min(maxPrice, newPrice));
+      
+      // Güncellenmiş değerleri kaydet (adjustedPrice kullanıyoruz)
       await storage.updateCountry(targetCountry.countryCode, {
         previousPrice: previousPrice.toString(),
-        currentPrice: newPrice.toFixed(4)
+        currentPrice: adjustedPrice.toFixed(4)
       });
       
       updatedCountries.push({
         countryCode: targetCountry.countryCode,
         countryName: targetCountry.countryName,
         previousPrice: previousPrice.toString(),
-        currentPrice: newPrice.toFixed(4),
-        change: priceChangePercent.toFixed(2),
-        changeDirection: priceChangePercent >= 0 ? 'up' : 'down',
+        currentPrice: adjustedPrice.toFixed(4),
+        change: cappedChangePercent.toFixed(2),
+        changeDirection: cappedChangePercent >= 0 ? 'up' : 'down',
         newsTitle: newsItem.title
       });
     }
@@ -306,23 +310,31 @@ export async function processNewsAndUpdateCountries(newsItems: any[]) {
       const currentPrice = parseFloat(country.currentPrice || "0");
       const previousPrice = currentPrice;
       
-      // Düşük etki için orta seviyede fiyat değişimi (ikincil etkiler için 1-3% arası)
-      const priceChangePercent = impact * (Math.random() * 2 + 1);
-      const newPrice = currentPrice * (1 + priceChangePercent / 100);
+      // Düşük etki için çok daha az fiyat değişimi (ikincil etkiler için 0.5-1.5% arası)
+      const priceChangePercent = impact * (Math.random() * 1 + 0.5);
       
-      // Güncellenmiş değerleri kaydet
+      // Fiyat değişimini sınırla (%1.5'ten fazla olmasını engelle)
+      const cappedChangePercent = Math.max(-1.5, Math.min(1.5, priceChangePercent));
+      const newPrice = currentPrice * (1 + cappedChangePercent / 100);
+      
+      // Fiyatın $0.50'nin altına düşmesini ve $2.00'nin üstüne çıkmasını önle
+      const minPrice = 0.50;
+      const maxPrice = 2.00;
+      const adjustedPrice = Math.max(minPrice, Math.min(maxPrice, newPrice));
+      
+      // Güncellenmiş değerleri kaydet (adjustedPrice kullanıyoruz)
       await storage.updateCountry(country.countryCode, {
         previousPrice: previousPrice.toString(),
-        currentPrice: newPrice.toFixed(4)
+        currentPrice: adjustedPrice.toFixed(4)
       });
       
       updatedCountries.push({
         countryCode: country.countryCode,
         countryName: country.countryName,
         previousPrice: previousPrice.toString(),
-        currentPrice: newPrice.toFixed(4),
-        change: priceChangePercent.toFixed(2),
-        changeDirection: priceChangePercent >= 0 ? 'up' : 'down',
+        currentPrice: adjustedPrice.toFixed(4),
+        change: cappedChangePercent.toFixed(2),
+        changeDirection: cappedChangePercent >= 0 ? 'up' : 'down',
         newsTitle: newsItem.title
       });
     }
@@ -340,6 +352,7 @@ export async function processNewsAndUpdateCountries(newsItems: any[]) {
 export function generatePriceHistoryForCountry(countryCode: string, days: number = 30) {
   const priceHistory = [];
   // Başlangıç fiyatı $1.0 (yeni fiyat politikamız)
+  // Tüm ülkeler için sabit fiyat kullanıyoruz
   let basePrice = 1.0;
   const now = new Date();
   
