@@ -1,5 +1,6 @@
 import nlp from 'compromise';
 import { storage } from './storage';
+import { PRICE_CHANGE_DISPLAY_MULTIPLIER } from './enhance-price-display';
 
 // Haber kategorileri ve anahtar kelimeleri
 const newsCategories = {
@@ -245,6 +246,9 @@ export function calculateNewsImpact(categoryScores: Record<string, number>, coun
  * @returns Güncellenen ülkeler ve değerleri
  */
 export async function processNewsAndUpdateCountries(newsItems: any[]) {
+  // Değişim yüzdesi büyütme çarpanı - 0.02% → 2% şeklinde göstermek için
+  const DISPLAY_MULTIPLIER = PRICE_CHANGE_DISPLAY_MULTIPLIER;
+  
   const countries = await storage.getAllCountries();
   const updatedCountries: any[] = [];
   
@@ -298,7 +302,7 @@ export async function processNewsAndUpdateCountries(newsItems: any[]) {
         countryName: targetCountry.countryName,
         previousPrice: previousPrice.toString(),
         currentPrice: newPrice.toFixed(4),
-        change: priceChangePercent.toFixed(2),
+        change: (priceChangePercent * DISPLAY_MULTIPLIER).toFixed(2),
         changeDirection: priceChangePercent >= 0 ? 'up' : 'down',
         newsTitle: newsItem.title
       });
@@ -349,7 +353,7 @@ export async function processNewsAndUpdateCountries(newsItems: any[]) {
         countryName: country.countryName,
         previousPrice: previousPrice.toString(),
         currentPrice: newPrice.toFixed(4),
-        change: priceChangePercent.toFixed(2),
+        change: (priceChangePercent * DISPLAY_MULTIPLIER).toFixed(2),
         changeDirection: priceChangePercent >= 0 ? 'up' : 'down',
         newsTitle: newsItem.title
       });
