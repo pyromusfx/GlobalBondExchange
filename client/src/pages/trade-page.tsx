@@ -357,7 +357,7 @@ export default function TradePage() {
                 <div className="space-y-1">
                   {/* Satış emirleri - kırmızı */}
                   {Array.from({ length: 8 }).map((_, i) => {
-                    const price = parseFloat(country.currentPrice) * (1 + (0.01 * (8 - i)));
+                    const price = parseFloat(safeCountry.currentPrice || "0") * (1 + (0.01 * (8 - i)));
                     const amount = Math.random() * 10 + 0.1;
                     return (
                       <div key={`sell-${i}`} className="grid grid-cols-3 text-xs relative">
@@ -370,11 +370,11 @@ export default function TradePage() {
                   })}
                   
                   {/* Orta fiyat */}
-                  <div className="py-1 text-center text-sm font-semibold">${parseFloat(country.currentPrice).toFixed(5)}</div>
+                  <div className="py-1 text-center text-sm font-semibold">${parseFloat(safeCountry.currentPrice || "0").toFixed(5)}</div>
                   
                   {/* Alış emirleri - yeşil */}
                   {Array.from({ length: 8 }).map((_, i) => {
-                    const price = parseFloat(country.currentPrice) * (1 - (0.01 * (i + 1)));
+                    const price = parseFloat(safeCountry.currentPrice || "0") * (1 - (0.01 * (i + 1)));
                     const amount = Math.random() * 10 + 0.1;
                     return (
                       <div key={`buy-${i}`} className="grid grid-cols-3 text-xs relative">
@@ -392,14 +392,14 @@ export default function TradePage() {
               <div className="col-span-1">
                 <div className="text-xs text-[#848E9C] flex justify-between mb-2">
                   <span>Price (USDT)</span>
-                  <span>Amount ({country.countryCode})</span>
+                  <span>Amount ({safeCountry.countryCode})</span>
                   <span>Time</span>
                 </div>
                 
                 <div className="space-y-1">
                   {Array.from({ length: 20 }).map((_, i) => {
                     const isBuy = Math.random() > 0.5;
-                    const price = parseFloat(country.currentPrice) * (1 + (isBuy ? 1 : -1) * (Math.random() * 0.01));
+                    const price = parseFloat(safeCountry.currentPrice || "0") * (1 + (isBuy ? 1 : -1) * (Math.random() * 0.01));
                     const amount = Math.random() * 5 + 0.1;
                     const minutes = Math.floor(Math.random() * 60);
                     const seconds = Math.floor(Math.random() * 60);
@@ -421,48 +421,48 @@ export default function TradePage() {
                 <div className="space-y-3 text-xs">
                   <div className="flex justify-between">
                     <span className="text-[#848E9C]">Country Code:</span>
-                    <span>{country.countryCode}</span>
+                    <span>{safeCountry.countryCode}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-[#848E9C]">Country Name:</span>
-                    <span>{country.countryName}</span>
+                    <span>{safeCountry.countryName}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-[#848E9C]">Current Price:</span>
-                    <span>${parseFloat(country.currentPrice).toFixed(5)}</span>
+                    <span>${parseFloat(safeCountry.currentPrice || "0").toFixed(5)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-[#848E9C]">24h Change:</span>
-                    <span className={parseFloat(country.currentPrice) > parseFloat(country.previousPrice || "0") ? 'text-green-500' : 'text-red-500'}>
-                      {parseFloat(country.currentPrice) > parseFloat(country.previousPrice || "0") ? '+' : '-'}
-                      {Math.abs(((parseFloat(country.currentPrice) - parseFloat(country.previousPrice || "0")) / parseFloat(country.previousPrice || "1")) * 100).toFixed(2)}%
+                    <span className={parseFloat(safeCountry.currentPrice || "0") > parseFloat(safeCountry.previousPrice || "0") ? 'text-green-500' : 'text-red-500'}>
+                      {parseFloat(safeCountry.currentPrice || "0") > parseFloat(safeCountry.previousPrice || "0") ? '+' : '-'}
+                      {Math.abs(((parseFloat(safeCountry.currentPrice || "0") - parseFloat(safeCountry.previousPrice || "0")) / parseFloat(safeCountry.previousPrice || "1")) * 100).toFixed(2)}%
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-[#848E9C]">24h High:</span>
-                    <span>${(parseFloat(country.currentPrice) * 1.05).toFixed(5)}</span>
+                    <span>${(parseFloat(safeCountry.currentPrice || "0") * 1.05).toFixed(5)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-[#848E9C]">24h Low:</span>
-                    <span>${(parseFloat(country.currentPrice) * 0.95).toFixed(5)}</span>
+                    <span>${(parseFloat(safeCountry.currentPrice || "0") * 0.95).toFixed(5)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-[#848E9C]">24h Volume:</span>
-                    <span>{Math.floor(Math.random() * 500000 + 100000).toLocaleString()} {country.countryCode}</span>
+                    <span>{Math.floor(Math.random() * 500000 + 100000).toLocaleString()} {safeCountry.countryCode}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-[#848E9C]">Market Cap:</span>
-                    <span>${(parseFloat(country.currentPrice) * 10000000).toLocaleString()}</span>
+                    <span>${(parseFloat(safeCountry.currentPrice || "0") * 10000000).toLocaleString()}</span>
                   </div>
                   
                   <div className="pt-3 mt-3 border-t border-[#2B2F36]">
                     <a 
-                      href={`https://en.wikipedia.org/wiki/${country.countryName.replace(/ /g, '_')}`}
+                      href={`https://en.wikipedia.org/wiki/${safeCountry.countryName.replace(/ /g, '_')}`}
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="text-primary hover:underline flex items-center"
                     >
-                      Learn more about {country.countryName}
+                      Learn more about {safeCountry.countryName}
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                       </svg>
