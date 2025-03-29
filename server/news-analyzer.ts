@@ -266,31 +266,40 @@ export async function processNewsAndUpdateCountries(newsItems: any[]) {
       const currentPrice = parseFloat(targetCountry.currentPrice || "0");
       const previousPrice = currentPrice;
       
-      // Etki (impact) -1 ile 1 arasında, fiyat değişimini sınırlandırıyoruz
-      const priceChangePercent = impact * (Math.random() * 5 + 2) * 0.75; // Çarpanı 1.5'ten 0.75'e indiriyoruz
+      // Haber etkisinin ciddiyetine göre fiyat değişim yüzdesini belirle
+      // Haberin etkisi ve okunma oranı ile doğru orantılı
+      const impactMagnitude = Math.abs(impact);
       
-      // Aşırı fiyat dalgalanmalarını sınırla (%5'ten fazla değişimi sınırlandır)
-      const cappedChangePercent = Math.max(-5, Math.min(5, priceChangePercent));
-      const newPrice = currentPrice * (1 + cappedChangePercent / 100);
+      // Haberin önemine göre değişim yüzdesini belirle (0.5% - 3%)
+      const baseChangePercent = impactMagnitude * 3; 
       
-      // Fiyatın $0.50'nin altına düşmesini ve $2.00'nin üstüne çıkmasını önle
-      const minPrice = 0.50;
-      const maxPrice = 2.00;
-      const adjustedPrice = Math.max(minPrice, Math.min(maxPrice, newPrice));
+      // Geçmiş 24 saat içindeki fiyat hareketini hesaba katarak aşırı oynaklığı azalt
+      // Önceki değişim büyükse, yeni değişimi azalt (piyasa stabilizasyonu)
+      const prevChangeRatio = Math.abs(parseFloat(targetCountry.previousPrice || "1.0") - currentPrice) / currentPrice;
       
-      // Güncellenmiş değerleri kaydet (adjustedPrice kullanıyoruz)
+      // Geçmiş fiyat hareketi çok büyükse, şimdiki değişimi daha az etkile
+      const marketStabilityFactor = prevChangeRatio > 0.05 ? 0.5 : 1;
+      
+      // Fiyat değişimini hesapla
+      const directionSign = impact > 0 ? 1 : -1;
+      const priceChangePercent = directionSign * baseChangePercent * marketStabilityFactor;
+      
+      // Son durumda fiyatı güncelle
+      const newPrice = currentPrice * (1 + priceChangePercent / 100);
+      
+      // Güncellenmiş değerleri kaydet (aralık sınırlaması olmadan doğrudan newPrice kullanıyoruz)
       await storage.updateCountry(targetCountry.countryCode, {
         previousPrice: previousPrice.toString(),
-        currentPrice: adjustedPrice.toFixed(4)
+        currentPrice: newPrice.toFixed(4)
       });
       
       updatedCountries.push({
         countryCode: targetCountry.countryCode,
         countryName: targetCountry.countryName,
         previousPrice: previousPrice.toString(),
-        currentPrice: adjustedPrice.toFixed(4),
-        change: cappedChangePercent.toFixed(2),
-        changeDirection: cappedChangePercent >= 0 ? 'up' : 'down',
+        currentPrice: newPrice.toFixed(4),
+        change: priceChangePercent.toFixed(2),
+        changeDirection: priceChangePercent >= 0 ? 'up' : 'down',
         newsTitle: newsItem.title
       });
     }
@@ -310,31 +319,38 @@ export async function processNewsAndUpdateCountries(newsItems: any[]) {
       const currentPrice = parseFloat(country.currentPrice || "0");
       const previousPrice = currentPrice;
       
-      // Düşük etki için çok daha az fiyat değişimi (ikincil etkiler için 0.5-1.5% arası)
-      const priceChangePercent = impact * (Math.random() * 1 + 0.5);
+      // Haber etkisinin ciddiyetine göre fiyat değişim yüzdesini belirle
+      const impactMagnitude = Math.abs(impact);
       
-      // Fiyat değişimini sınırla (%1.5'ten fazla olmasını engelle)
-      const cappedChangePercent = Math.max(-1.5, Math.min(1.5, priceChangePercent));
-      const newPrice = currentPrice * (1 + cappedChangePercent / 100);
+      // Haberin önemine göre değişim yüzdesini belirle (0.2% - 1.5%)
+      const baseChangePercent = impactMagnitude * 1.5; 
       
-      // Fiyatın $0.50'nin altına düşmesini ve $2.00'nin üstüne çıkmasını önle
-      const minPrice = 0.50;
-      const maxPrice = 2.00;
-      const adjustedPrice = Math.max(minPrice, Math.min(maxPrice, newPrice));
+      // Geçmiş fiyat hareketini hesaba katarak aşırı oynaklığı azalt
+      const prevChangeRatio = Math.abs(parseFloat(country.previousPrice || "1.0") - currentPrice) / currentPrice;
       
-      // Güncellenmiş değerleri kaydet (adjustedPrice kullanıyoruz)
+      // Geçmiş fiyat hareketi çok büyükse, şimdiki değişimi daha az etkile
+      const marketStabilityFactor = prevChangeRatio > 0.03 ? 0.4 : 1;
+      
+      // Fiyat değişimini hesapla
+      const directionSign = impact > 0 ? 1 : -1;
+      const priceChangePercent = directionSign * baseChangePercent * marketStabilityFactor;
+      
+      // Son durumda fiyatı güncelle
+      const newPrice = currentPrice * (1 + priceChangePercent / 100);
+      
+      // Güncellenmiş değerleri kaydet (doğrudan newPrice kullanıyoruz)
       await storage.updateCountry(country.countryCode, {
         previousPrice: previousPrice.toString(),
-        currentPrice: adjustedPrice.toFixed(4)
+        currentPrice: newPrice.toFixed(4)
       });
       
       updatedCountries.push({
         countryCode: country.countryCode,
         countryName: country.countryName,
         previousPrice: previousPrice.toString(),
-        currentPrice: adjustedPrice.toFixed(4),
-        change: cappedChangePercent.toFixed(2),
-        changeDirection: cappedChangePercent >= 0 ? 'up' : 'down',
+        currentPrice: newPrice.toFixed(4),
+        change: priceChangePercent.toFixed(2),
+        changeDirection: priceChangePercent >= 0 ? 'up' : 'down',
         newsTitle: newsItem.title
       });
     }
