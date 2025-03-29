@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
+import { useRadio } from "@/context/RadioContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -125,7 +126,7 @@ export default function RadioPage() {
     return "news";
   };
 
-  // BBC World Service stream
+  // BBC World Service stream info
   const bbcWorldService = { 
     id: "bbc", 
     name: "BBC World Service", 
@@ -133,9 +134,12 @@ export default function RadioPage() {
     logoSrc: "/icons/bbc.svg",
     description: "24/7 global news, analysis and features from the BBC World Service Radio"
   };
+  
+  // Using the RadioContext for floating player instead of embedded audio
 
-  // Not using audio controls anymore as we're using BBC's embedded player
-
+  // Get the radio context for toggling the radio player
+  const { toggleRadio } = useRadio();
+  
   const renderActiveNews = () => {
     if (!filteredNews.length) {
       return (
@@ -245,16 +249,19 @@ export default function RadioPage() {
               </p>
             </div>
 
-            {/* BBC Radio Iframe */}
-            <div className="mt-4 rounded-lg overflow-hidden">
-              <audio 
-                controls
-                autoPlay
-                className="w-full"
-                src="https://stream.live.vc.bbcmedia.co.uk/bbc_world_service"
+            {/* BBC Radio Stream */}
+            <div className="mt-4 flex items-center justify-center">
+              <Button 
+                className="bg-blue-600 hover:bg-blue-700 text-white rounded-full py-3 px-6 flex items-center space-x-2"
+                onClick={() => {
+                  // Use the RadioContext to open the floating player
+                  toggleRadio();
+                  window.location.href = "/";
+                }}
               >
-                Your browser does not support the audio element.
-              </audio>
+                <RadioIcon className="h-5 w-5 mr-2" />
+                <span>Listen in Background</span>
+              </Button>
             </div>
           </div>
         </div>

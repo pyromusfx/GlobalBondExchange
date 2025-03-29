@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
+import { useRadio } from "@/context/RadioContext";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,13 +9,14 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
+import { Menu, Radio } from "lucide-react";
 import LanguageSwitcher from "./language-switcher";
 import WalletConnectButton from "@/components/wallet/wallet-connect-button";
 
 export default function Header() {
   const [location] = useLocation();
   const { user, logoutMutation } = useAuth();
+  const { toggleRadio } = useRadio();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { t } = useTranslation();
 
@@ -84,6 +86,16 @@ export default function Header() {
         </div>
 
         <div className="flex items-center space-x-4">
+          <Button
+            variant="outline"
+            size="icon"
+            className="text-primary hover:text-primary hover:bg-primary/5"
+            onClick={toggleRadio}
+            title={t('header.radio')}
+          >
+            <Radio className="h-5 w-5" />
+          </Button>
+          
           <LanguageSwitcher />
           
           {/* Wallet Connect Butonu */}
@@ -183,6 +195,21 @@ export default function Header() {
                 {/* Mobil görünümde Wallet Connect */}
                 <div className="py-2">
                   <WalletConnectButton />
+                </div>
+                
+                {/* Mobile Radio Button */}
+                <div className="py-2">
+                  <Button
+                    variant="outline"
+                    className="w-full flex items-center justify-center space-x-2"
+                    onClick={() => {
+                      toggleRadio();
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    <Radio className="h-5 w-5 mr-2" />
+                    <span>{t('header.radio')}</span>
+                  </Button>
                 </div>
                 
                 {user ? (

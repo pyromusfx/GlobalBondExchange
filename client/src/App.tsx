@@ -3,12 +3,14 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from "@/hooks/use-auth";
+import { RadioProvider, useRadio } from "@/context/RadioContext";
 import { ProtectedRoute } from "./lib/protected-route";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 // Components
 import LiveSupport from "@/components/support/live-support";
+import RadioPlayer from "@/components/media/RadioPlayer";
 
 // Pages
 import HomePage from "@/pages/home-page";
@@ -43,6 +45,7 @@ function Router() {
 
 function AppContent() {
   const { i18n } = useTranslation();
+  const { isRadioOpen, closeRadio } = useRadio();
 
   // RTL veya LTR ayarı
   useEffect(() => {
@@ -59,6 +62,7 @@ function AppContent() {
   return (
     <AuthProvider>
       <Router />
+      <RadioPlayer isOpen={isRadioOpen} onClose={closeRadio} />
       <LiveSupport />
       <Toaster />
     </AuthProvider>
@@ -68,7 +72,9 @@ function AppContent() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AppContent />
+      <RadioProvider>
+        <AppContent />
+      </RadioProvider>
     </QueryClientProvider>
   );
 }
