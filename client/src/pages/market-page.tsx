@@ -82,8 +82,8 @@ export default function MarketPage() {
               </div>
               
               <div>
-                <h3 className="text-sm text-muted-foreground mb-1">Pre-Sale Status</h3>
-                <p className="font-medium text-primary">Active (14 days left)</p>
+                <h3 className="text-sm text-muted-foreground mb-1">Fixed Price Status</h3>
+                <p className="font-medium text-primary">Active ($1.00 per share)</p>
               </div>
               
               <div>
@@ -95,8 +95,8 @@ export default function MarketPage() {
             <div className="mt-6 text-sm text-muted-foreground">
               <p className="mb-2">Trading hours: 24/7</p>
               <p>
-                All country bonds are priced in USD. Pre-sale countries are available at a fixed price of $0.50 per share.
-                Regular market trading includes variable pricing based on supply and demand.
+                All country bonds are priced in USD with a fixed price of $1.00 per share.
+                Market prices will fluctuate based on news and global events affecting each country.
               </p>
             </div>
           </div>

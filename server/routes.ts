@@ -420,34 +420,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
 // Initialize country data
 async function initializeCountryData() {
   try {
-    // Check if countries already exist
+    // Mevcut ülkeleri al
     const existingCountries = await storage.getAllCountries();
     
-    if (existingCountries.length === 0) {
-      // Initialize countries with default values
+    // Tüm ülkeleri 1 dolar sabit fiyata ayarla
+    if (existingCountries.length > 0) {
+      // Mevcut ülkeleri güncelle, her ülkenin fiyatını 1 dolara ayarla ve pre-sale'i kaldır
+      for (const country of existingCountries) {
+        await storage.updateCountry(country.countryCode, {
+          currentPrice: "1.00",  // Fiyatı 1 dolara ayarla
+          previousPrice: "1.00", // Önceki fiyatı da 1 dolar olarak ayarla
+          isPreSale: false,     // Pre-sale'i kaldır
+          preSaleProgress: "100" // Pre-sale tamamlandı olarak işaretle
+        });
+      }
+      console.log(`All ${existingCountries.length} countries reset to $1.00 fixed price and pre-sale disabled.`);
+    } else {
+      // Hiç ülke yoksa, ülkeleri yeni fiyatlarla ekle
       for (const country of countries) {
         await storage.addCountry({
           countryCode: country.code,
           countryName: country.name,
           totalShares: 10000000,
           availableShares: 10000000,
-          currentPrice: "0.5",
-          previousPrice: "0.5",
-          isPreSale: true,
-          preSaleProgress: "0"
+          currentPrice: "1.00",  // Fiyatı 1 dolara ayarla
+          previousPrice: "1.00", // Önceki fiyatı da 1 dolar olarak ayarla
+          isPreSale: false,     // Pre-sale'i kaldır
+          preSaleProgress: "100" // Pre-sale tamamlandı olarak işaretle
         });
       }
-
-      // Set pre-sale progress for featured countries
-      for (const featured of featuredCountries) {
-        const progress = (featured.preSaleProgress / 100).toString();
-        const availableShares = Math.floor(10000000 * (1 - featured.preSaleProgress / 100));
-        
-        await storage.updateCountry(featured.code, {
-          preSaleProgress: progress,
-          availableShares
-        });
-      }
+      console.log(`Initialized ${countries.length} countries with $1.00 fixed price and pre-sale disabled.`);
     }
 
     // Initialize news feed if empty

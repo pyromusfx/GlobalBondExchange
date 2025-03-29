@@ -5,7 +5,7 @@ import MobileNavigation from "@/components/layout/mobile-navigation";
 import Footer from "@/components/layout/footer";
 import NewsTicker from "@/components/layout/news-ticker";
 import HeroSection from "@/components/home/hero-section";
-import PreSaleSection from "@/components/home/pre-sale-section";
+// import PreSaleSection from "@/components/home/pre-sale-section"; // Artık Pre-Sale kullanılmıyor
 import MarketSection from "@/components/home/market-section";
 import MapSection from "@/components/home/map-section";
 import FeaturesSection from "@/components/home/features-section";
@@ -25,7 +25,7 @@ export default function HomePage() {
       
       <main className="flex-grow">
         <HeroSection />
-        <PreSaleSection />
+        {/* <PreSaleSection /> */} {/* Pre-sale kaldırıldı, artık tüm ülkeler 1$ sabit fiyat */}
         <HotColdBondsSection />
         <MarketSection />
         <MapSection />
