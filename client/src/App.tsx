@@ -19,19 +19,21 @@ import PresalePage from "@/pages/presale-page";
 import KycPage from "@/pages/kyc-page";
 import BonusPage from "@/pages/bonus-page";
 import AffiliatePage from "@/pages/affiliate-page";
+import ProfilePage from "@/pages/profile-page";
 import NotFound from "@/pages/not-found";
 
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={HomePage} />
+      <ProtectedRoute path="/" component={HomePage} />
       <Route path="/auth" component={AuthPage} />
-      <Route path="/market" component={MarketPage} />
+      <ProtectedRoute path="/market" component={MarketPage} />
       <ProtectedRoute path="/trade/:countryCode?" component={TradePage} />
-      <Route path="/presale" component={PresalePage} />
+      <ProtectedRoute path="/presale" component={PresalePage} />
       <ProtectedRoute path="/kyc" component={KycPage} />
       <ProtectedRoute path="/bonus" component={BonusPage} />
       <ProtectedRoute path="/affiliate" component={AffiliatePage} />
+      <ProtectedRoute path="/profile" component={ProfilePage} />
       <Route component={NotFound} />
     </Switch>
   );
