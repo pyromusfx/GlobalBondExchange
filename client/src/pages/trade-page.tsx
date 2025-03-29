@@ -235,10 +235,10 @@ export default function TradePage() {
                     />
                     <span>{c.countryCode}</span>
                   </div>
-                  <div className="col-span-4 text-right">${parseFloat(c.currentPrice).toFixed(5)}</div>
-                  <div className={`col-span-3 text-right ${parseFloat(c.currentPrice) >= parseFloat(c.previousPrice || "0") ? 'text-green-500' : 'text-red-500'}`}>
-                    {c.previousPrice && parseFloat(c.previousPrice) > 0 
-                      ? `${parseFloat(c.currentPrice) >= parseFloat(c.previousPrice) ? '+' : ''}${Math.abs(((parseFloat(c.currentPrice) - parseFloat(c.previousPrice)) / parseFloat(c.previousPrice)) * 100).toFixed(2)}%` 
+                  <div className="col-span-4 text-right">${parseFloat(c.currentPrice || "0").toFixed(5)}</div>
+                  <div className={`col-span-3 text-right ${parseFloat(c.currentPrice || "0") >= parseFloat(c.previousPrice || "0") ? 'text-green-500' : 'text-red-500'}`}>
+                    {c.previousPrice && parseFloat(c.previousPrice || "0") > 0 
+                      ? `${parseFloat(c.currentPrice || "0") >= parseFloat(c.previousPrice || "0") ? '+' : ''}${Math.abs(((parseFloat(c.currentPrice || "0") - parseFloat(c.previousPrice || "0")) / parseFloat(c.previousPrice || "0")) * 100).toFixed(2)}%` 
                       : '0.00%'}
                   </div>
                 </button>

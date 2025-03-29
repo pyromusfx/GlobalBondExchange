@@ -263,34 +263,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Price history API endpoint
-  app.get("/api/price-history/:countryCode", async (req, res) => {
-    try {
-      const { countryCode } = req.params;
-      
-      if (!countryCode) {
-        return res.status(400).json({ message: "Country code is required" });
-      }
-      
-      // Import'ları direkt tanımlayarak kullanıyoruz - burada "await import" kullanıyoruz "require" yerine
-      const { generatePriceHistoryForCountry } = await import('./news-analyzer');
-      const { getPriceHistoryForCountry, savePriceHistoryForCountry } = await import('./news-analyzer-utils');
-      
-      // Fiyat geçmişi ver
-      let priceHistory = getPriceHistoryForCountry(countryCode);
-      
-      // Eğer fiyat geçmişi yoksa, oluştur ve kaydet
-      if (!priceHistory || priceHistory.length === 0) {
-        priceHistory = generatePriceHistoryForCountry(countryCode);
-        await savePriceHistoryForCountry(countryCode, priceHistory);
-      }
-      
-      return res.status(200).json(priceHistory);
-    } catch (error) {
-      console.error("Error fetching price history:", error);
-      return res.status(500).json({ message: "Error fetching price history" });
-    }
-  });
+
   
   // Affiliate system routes
   
