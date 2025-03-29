@@ -1,47 +1,61 @@
-import React, { useEffect, useRef } from 'react';
-import { usePriceChart } from '@/hooks/use-price-chart';
+import React, { useEffect, useRef, useState } from 'react';
 import { CountryShare } from '@shared/schema';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Loader2 } from "lucide-react";
+import { apiRequest } from '@/lib/queryClient';
+import CandlestickChart from '@/components/ui/chart';
 
 interface CountryChartProps {
   country: CountryShare;
   className?: string;
 }
 
+// Basitleştirilmiş, doğrudan çalışması gereken grafiği oluşturan component
 export default function CountryChart({ country, className }: CountryChartProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  // Son işlenen fiyatı takip etmek için bir ref tanımlıyoruz (Component üst seviyesinde)
-  const lastProcessedPrice = useRef<string | null>(null);
-  const uniqueChartId = useRef(`chart-${country.countryCode}-${Math.random().toString(36).substring(2, 9)}`);
+  const [chartData, setChartData] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   
-  const { chartData, isLoading, error, appendNewPrice } = usePriceChart(containerRef, country.countryCode, {
-    width: 670, // Sabit genişlik
-    height: 400, // Sabit yükseklik
-    colors: {
-      upColor: '#4caf50',
-      downColor: '#ef5350',
-      borderUpColor: '#4caf50',
-      borderDownColor: '#ef5350',
-      wickUpColor: '#4caf50',
-      wickDownColor: '#ef5350',
-    }
-  });
-
-  // Yeni fiyat geldiğinde grafiği güncelle
+  const lastProcessedPrice = useRef<string | null>(null);
+  
+  // Yeni veri çekme yaklaşımı
   useEffect(() => {
-    if (country.currentPrice && chartData.length > 0) {
-      // Sadece fiyat değiştiyse güncelle, aynı fiyatı tekrar tekrar ekleme
-      if (country.currentPrice !== lastProcessedPrice.current) {
-        const price = parseFloat(country.currentPrice);
-        if (!isNaN(price)) {
-          appendNewPrice(price);
-          lastProcessedPrice.current = country.currentPrice;
+    async function fetchData() {
+      if (!country.countryCode) return;
+      
+      setIsLoading(true);
+      try {
+        const response = await apiRequest('GET', `/api/price-history/${country.countryCode}`);
+        const data = await response.json();
+        
+        // API'den gelen veriyi doğrudan kullan
+        if (data && Array.isArray(data) && data.length > 0) {
+          console.log(`${country.countryCode} için ${data.length} veri noktası alındı`);
+          console.log("Örnek veri:", data[0]);
+          setChartData(data);
+        } else {
+          setError("Veri bulunamadı");
+          console.error("API'den veri alınamadı veya veri boş");
         }
+      } catch (err) {
+        console.error("Veri çekerken hata:", err);
+        setError("Veri çekilemedi");
+      } finally {
+        setIsLoading(false);
       }
     }
-  }, [country.currentPrice, appendNewPrice, chartData.length]);
+    
+    fetchData();
+  }, [country.countryCode]);
+  
+  // Yeni fiyat güncellemesi
+  useEffect(() => {
+    if (country.currentPrice && country.currentPrice !== lastProcessedPrice.current) {
+      lastProcessedPrice.current = country.currentPrice;
+      // Burada yeni fiyat güncellemesi yapılabilir
+    }
+  }, [country.currentPrice]);
 
   return (
     <Card className={`overflow-hidden ${className || ''}`}>
@@ -87,16 +101,15 @@ export default function CountryChart({ country, className }: CountryChartProps) 
           </TabsList>
         </div>
         
-        <CardContent className="p-0 pt-4">
-          {/* Only show one chart container, all tabs use the same data */}
-          <div className="w-full h-[400px] relative p-2">
+        <CardContent className="p-4">
+          <div className="w-full relative" style={{ height: '400px' }}>
             {isLoading ? (
               <div className="absolute inset-0 flex items-center justify-center">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
               </div>
             ) : error ? (
               <div className="absolute inset-0 flex items-center justify-center">
-                <p className="text-red-500">Şu anda grafik verisi çekilemiyor. Lütfen daha sonra tekrar deneyin.</p>
+                <p className="text-red-500">Şu anda grafik verisi çekilemiyor: {error}</p>
               </div>
             ) : chartData.length === 0 ? (
               <div className="absolute inset-0 flex flex-col items-center justify-center">
@@ -104,11 +117,17 @@ export default function CountryChart({ country, className }: CountryChartProps) 
                 <p className="text-sm text-muted-foreground">Veriler yakında güncellenecektir.</p>
               </div>
             ) : (
-              <div 
-                id={uniqueChartId.current}
-                ref={containerRef} 
-                className="w-full h-full" 
-                style={{ minHeight: '400px' }}
+              // Ana grafik komponentini doğrudan kullan
+              <CandlestickChart 
+                data={chartData}
+                height={400}
+                colors={{
+                  backgroundColor: '#131722',
+                  textColor: '#D9D9D9',
+                  lineColor: 'rgba(42, 46, 57, 0.5)',
+                  upColor: '#26a69a',
+                  downColor: '#ef5350',
+                }}
               />
             )}
           </div>
