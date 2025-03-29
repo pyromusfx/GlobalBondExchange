@@ -4,6 +4,7 @@
     "market": "Piyasa",
     "trade": "İşlem",
     "presale": "Ön Satış",
+    "tv": "Sekance TV",
     "kyc": "KYC",
     "balance": "Bakiye",
     "login": "Giriş Yap",
@@ -251,5 +252,27 @@
     "of": "ülkesinden:",
     "claimNow": "Şimdi Talep Et",
     "alreadyClaimed": "Bugünkü bonusunuzu zaten aldınız"
+  },
+  "tv": {
+    "title": "Sekance TV",
+    "subtitle": "En güncel finans haberlerini takip edin",
+    "liveNow": "Şimdi Canlı",
+    "channels": "Kanallar",
+    "allChannels": "Tüm Kanallar",
+    "financial": "Finans",
+    "economic": "Ekonomi",
+    "market": "Piyasa",
+    "global": "Küresel",
+    "latest": "En Son Haberler",
+    "trending": "Trend Haberler",
+    "watchNow": "Şimdi İzle",
+    "source": "Kaynak",
+    "publishedAt": "Yayın Tarihi",
+    "relatedNews": "İlgili Haberler",
+    "watchLater": "Daha Sonra İzle",
+    "share": "Paylaş",
+    "next": "Sonraki",
+    "previous": "Önceki",
+    "loadMore": "Daha Fazla Yükle"
   }
 }

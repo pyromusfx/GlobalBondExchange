@@ -54,6 +54,11 @@ export default function Header() {
                 {t('header.presale')}
               </div>
             </Link>
+            <Link href="/tv">
+              <div className={`mx-3 hover:text-primary transition cursor-pointer ${isActive("/tv") ? "text-white" : "text-muted-foreground"}`}>
+                {t('header.tv')}
+              </div>
+            </Link>
             {user && (
               <>
                 {!user.isKycVerified && (
@@ -146,6 +151,11 @@ export default function Header() {
                 <Link href="/presale">
                   <div className="text-lg py-2 hover:text-primary cursor-pointer" onClick={() => setMobileMenuOpen(false)}>
                     {t('header.presale')}
+                  </div>
+                </Link>
+                <Link href="/tv">
+                  <div className="text-lg py-2 hover:text-primary cursor-pointer" onClick={() => setMobileMenuOpen(false)}>
+                    {t('header.tv')}
                   </div>
                 </Link>
                 {user && (

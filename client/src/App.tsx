@@ -20,6 +20,7 @@ import KycPage from "@/pages/kyc-page";
 import BonusPage from "@/pages/bonus-page";
 import AffiliatePage from "@/pages/affiliate-page";
 import ProfilePage from "@/pages/profile-page";
+import TvPage from "@/pages/tv-page";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -30,6 +31,7 @@ function Router() {
       <Route path="/market" component={MarketPage} />
       <Route path="/trade/:countryCode?" component={TradePage} />
       <Route path="/presale" component={PresalePage} />
+      <Route path="/tv" component={TvPage} />
       <Route path="/kyc" component={KycPage} />
       <Route path="/bonus" component={BonusPage} />
       <Route path="/affiliate" component={AffiliatePage} />
