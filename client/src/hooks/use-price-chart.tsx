@@ -102,34 +102,73 @@ export function usePriceChart(containerRef: React.RefObject<HTMLDivElement>, cou
     function generateDemoData() {
       const now = new Date();
       const data: PricePoint[] = [];
-      let basePrice = 1.0; // $1.00 ile başla (sabit fiyat güncellemesi)
+      
+      // Başlangıç fiyatı $1.0 olarak ayarla (sabit fiyat politikası)
+      let basePrice = 1.0;
+      
+      // Ülkeye özgü deterministik bir patern oluştur
+      // countryCode'un ilk harfini alıp ASCII değerine göre trend belirle
+      const firstCharCode = countryCode.charCodeAt(0);
+      // Trend: -0.5 ile +0.5 arası
+      const trendFactor = ((firstCharCode % 10) - 5) / 10;
+      
+      // Ülkeye özgü volatilite (0.03 ile 0.08 arası)
+      const volatility = 0.03 + (firstCharCode % 5) * 0.01;
+      
+      // Patern uzunluğu (5-10 gün arası)
+      const patternLength = 5 + (firstCharCode % 5);
+      let patternDay = 0;
+      let patternDir = trendFactor > 0 ? 1 : -1;
       
       // Son 30 günlük veriyi oluştur
       for (let i = 30; i >= 0; i--) {
         const date = new Date(now);
         date.setDate(date.getDate() - i);
         
-        // Volatiliteye göre günlük fiyat değişimi - daha yüksek volatilite
-        const dailyChange = (Math.random() * 2 - 1) * 0.08; // +/- %8 değişim
-        basePrice = basePrice * (1 + dailyChange);
+        // Her patern uzunluğunda trendi değiştir
+        if (patternDay >= patternLength) {
+          patternDay = 0;
+          // 40% ihtimalle yön değiştir
+          if (Math.random() < 0.4) {
+            patternDir *= -1;
+          }
+        }
         
-        // OHLC (Open, High, Low, Close) veriler - daha geniş fiyat aralıkları
+        // Günlük fiyat değişimi: trend + rastgele volatilite
+        const trendComponent = patternDir * volatility * 0.5;
+        const randomComponent = (Math.random() * 2 - 1) * volatility;
+        const dailyChange = trendComponent + randomComponent;
+        
+        // Fiyatı güncelle (0.8-1.2 arası sınırla)
+        basePrice = Math.max(0.8, Math.min(1.2, basePrice * (1 + dailyChange)));
+        
+        // O günün açılış, yüksek, düşük ve kapanış değerleri
         const open = basePrice;
-        const high = open * (1 + Math.random() * 0.07); // %7 yukarı hareket potansiyeli
-        const low = open * (1 - Math.random() * 0.07);  // %7 aşağı hareket potansiyeli
-        const close = (high + low) / 2 + (Math.random() * 0.03 - 0.015); // Daha geniş rastgele kapanış
         
-        // UTC zaman damgası (milisaniye cinsinden)
+        // Gün içi hareketler
+        const dayVolatility = volatility * 0.7;
+        const high = open * (1 + Math.random() * dayVolatility * (patternDir > 0 ? 1.2 : 0.8));
+        const low = open * (1 - Math.random() * dayVolatility * (patternDir < 0 ? 1.2 : 0.8));
+        
+        // Trend yönüne göre kapanış daha olası
+        const trendBias = (patternDir + 1) / 2; // 0-1 arası
+        const closePosition = Math.random() * 0.6 + trendBias * 0.4; // Trende doğru eğilimli
+        const close = low + (high - low) * closePosition;
+        
+        // Unix timestamp (saniye cinsinden)
         const timestamp = Math.floor(date.getTime() / 1000);
         
+        // Veri noktasını ekle
         data.push({
           time: timestamp as Time,
-          open,
-          high,
-          low,
-          close,
-          volume: Math.floor(Math.random() * 10000) + 1000
+          open: parseFloat(open.toFixed(4)), 
+          high: parseFloat(high.toFixed(4)),
+          low: parseFloat(low.toFixed(4)),
+          close: parseFloat(close.toFixed(4)),
+          volume: Math.floor((1000 + Math.random() * 4000) * (1 + Math.abs(dailyChange) * 10))
         });
+        
+        patternDay++;
       }
       
       if (isMounted) {

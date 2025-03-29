@@ -339,45 +339,94 @@ export async function processNewsAndUpdateCountries(newsItems: any[]) {
  */
 export function generatePriceHistoryForCountry(countryCode: string, days: number = 30) {
   const priceHistory = [];
-  // Ülkenin duyarlılık değerlerini al veya varsayılanı kullan
-  const sensitivity = countrySensitivity[countryCode] || defaultSensitivity;
-  
-  // Ülkenin volatilitesini duyarlılıklarından hesapla
-  const volatilityFactors = Object.values(sensitivity).map(Math.abs);
-  const avgVolatility = volatilityFactors.reduce((sum, val) => sum + val, 0) / volatilityFactors.length;
-  
-  // Başlangıç fiyatı $0.5
-  let basePrice = 0.5;
+  // Başlangıç fiyatı $1.0 (yeni fiyat politikamız)
+  let basePrice = 1.0;
   const now = new Date();
+  
+  // Ülkeye özgü trend ve volatilite tanımla
+  // Ülke kodunun ASCII değerlerinin toplamına göre trend belirle (deterministik)
+  let trendFactor = 0;
+  for (let i = 0; i < countryCode.length; i++) {
+    trendFactor += countryCode.charCodeAt(i) % 10;
+  }
+  
+  // -5 ila +5 arasında bir trend faktörü oluştur
+  trendFactor = (trendFactor % 10) - 5;
+  
+  // Volatilite ülke kodunun son karakterine göre belirle (0.03 - 0.08 arası)
+  const lastChar = countryCode.charCodeAt(countryCode.length - 1);
+  const volatility = 0.03 + (lastChar % 5) * 0.01;
+  
+  // Başlangıç trendinden devam eden bir dizi volatilite paterni tanımla
+  // Bu patern belirli aralıklarla fiyat hareketinin yönünü değiştirir
+  const patternDuration = Math.max(3, days / 5); // En az 3 gün, en fazla 1/5 gün
+  let patternCounter = 0;
+  let currentTrendDirection = trendFactor > 0 ? 1 : -1;
   
   for (let i = days; i >= 0; i--) {
     const date = new Date(now);
     date.setDate(date.getDate() - i);
     
-    // Volatiliteye göre günlük fiyat değişimi - Daha yüksek volatilite için katsayı arttırıldı
-    const dailyChange = (Math.random() * 2 - 1) * (avgVolatility / 5);
-    basePrice = basePrice * (1 + dailyChange);
+    // Patern değişimi - her patternDuration periyodunda trend yönünü değiştir
+    if (patternCounter >= patternDuration) {
+      patternCounter = 0;
+      // %40 ihtimalle trendi tersine çevir, %60 ihtimalle devam ettir
+      if (Math.random() < 0.4) {
+        currentTrendDirection *= -1;
+      }
+    }
     
-    // OHLC (Open, High, Low, Close) verileri - Daha yüksek intraday volatilite
+    // Günlük değişimi hesapla (trend + rastgele volatilite)
+    const trendChange = (currentTrendDirection * volatility * 0.5); // Trendden gelen değişim
+    const randomChange = (Math.random() * 2 - 1) * volatility;      // Rastgele volatilite
+    const dailyChange = trendChange + randomChange;
+    
+    // Fiyatı güncelle
+    basePrice = Math.max(0.8, Math.min(1.2, basePrice * (1 + dailyChange))); // Fiyat sınırları 0.8-1.2 arası
+    
+    // OHLC (Open, High, Low, Close) değerleri
     const open = basePrice;
-    const high = open * (1 + Math.random() * 0.05); // 5% olası yukarı hareket
-    const low = open * (1 - Math.random() * 0.05);  // 5% olası aşağı hareket
-    const close = (high + low) / 2 + (Math.random() * 0.02 - 0.01); // Biraz daha rastgele kapanış
     
-    // UTC zaman damgası (milisaniye cinsinden)
-    const timestamp = date.getTime() / 1000;
+    // Gün içi volatilite, şu anki volatilite değeriyle orantılı olsun
+    const intradayVolatility = volatility * 0.8;
+    
+    // Trend yönüne göre high/low değerlerini daha gerçekçi belirle
+    const high = open * (1 + Math.random() * intradayVolatility * (currentTrendDirection > 0 ? 1.2 : 0.8));
+    const low = open * (1 - Math.random() * intradayVolatility * (currentTrendDirection < 0 ? 1.2 : 0.8));
+    
+    // Kapanış değerini trendin yönüyle ilişkilendir
+    // Trend yukarıysa yüksek kapanış, aşağıysa düşük kapanış olasılığı daha yüksek
+    const trendBias = (currentTrendDirection + 1) / 2; // 0-1 arası değer (negatif trend: 0, pozitif trend: 1)
+    const closePosition = Math.random() * 0.5 + trendBias * 0.5; // 0-1 arası, trend yönüne eğilimli
+    
+    // Kapanış değerini high ve low arasında trend yönüne doğru eğilimli belirle
+    const close = low + (high - low) * closePosition;
+    
+    // Hacim, fiyat hareketinin büyüklüğüyle orantılı olsun
+    const priceMovement = Math.abs(close - open) / open;
+    const volume = Math.floor((1000 + Math.random() * 4000) * (1 + priceMovement * 10));
+    
+    // UTC zaman damgası (saniye cinsinden)
+    const timestamp = Math.floor(date.getTime() / 1000);
     
     priceHistory.push({
       time: timestamp,
-      open: open,
-      high: high,
-      low: low,
-      close: close,
-      volume: Math.floor(Math.random() * 10000) + 1000
+      open: parseFloat(open.toFixed(4)),
+      high: parseFloat(high.toFixed(4)),
+      low: parseFloat(low.toFixed(4)),
+      close: parseFloat(close.toFixed(4)),
+      volume: volume
     });
+    
+    patternCounter++;
   }
   
   return priceHistory;
+}
+
+// Global değişken type tanımı
+declare global {
+  var countryPriceHistory: Record<string, any[]>;
 }
 
 // Fiyat geçmişi verilerini kaydetmek için
@@ -407,31 +456,71 @@ export function getPriceHistoryForCountry(countryCode: string) {
 export function appendLatestPriceForCountry(countryCode: string, price: number) {
   global.countryPriceHistory = global.countryPriceHistory || {};
   
-  if (!global.countryPriceHistory[countryCode]) {
-    return false;
+  // Eğer fiyat geçmişi yoksa, yeni oluştur
+  if (!global.countryPriceHistory[countryCode] || global.countryPriceHistory[countryCode].length === 0) {
+    global.countryPriceHistory[countryCode] = generatePriceHistoryForCountry(countryCode);
   }
   
   const history = global.countryPriceHistory[countryCode];
   const lastPoint = history[history.length - 1];
   
-  // Eğer aynı günse, sadece close değerini ve high/low değerlerini güncelle
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime() / 1000;
+  // Fiyatı formatlı bir sayıya dönüştür
+  price = parseFloat(price.toFixed(4));
   
-  if (lastPoint.time === today) {
+  // Eğer son veri noktası bugüne aitse, güncelle
+  const now = new Date();
+  const today = Math.floor(new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime() / 1000);
+  
+  if (Math.floor(lastPoint.time) === today) {
+    // Son mum verisini güncelle
     lastPoint.close = price;
-    if (price > lastPoint.high) lastPoint.high = price;
-    if (price < lastPoint.low) lastPoint.low = price;
+    
+    // Gün içi high ve low değerlerini güncelle
+    if (price > lastPoint.high) {
+      lastPoint.high = price;
+    }
+    if (price < lastPoint.low) {
+      lastPoint.low = price;
+    }
+    
+    // Hacmi arttır, fiyat değişimi büyükse daha fazla artış olsun
+    const priceChange = Math.abs(price - lastPoint.open) / lastPoint.open;
+    lastPoint.volume += Math.floor(Math.random() * 1000) * (1 + priceChange * 10);
   } else {
-    // Yeni bir gün ise, yeni bir veri noktası ekle
+    // Yeni bir gün için yeni veri noktası oluştur
+    // Açılış, önceki kapanışla aynı olsun
+    const open = lastPoint.close;
+    
+    // Açılış ile yeni fiyat arasında %1'lik rastgele sapma ekle
+    const volatility = 0.01;
+    const randomFactor = 1 + (Math.random() * 2 - 1) * volatility;
+    
+    // Açılış fiyatına rastgele bir sapma ekle (daha gerçekçi olması için)
+    const adjustedOpen = parseFloat((open * randomFactor).toFixed(4));
+    
+    // Gün içi high ve low değerlerini belirle
+    const high = Math.max(adjustedOpen, price) * (1 + Math.random() * 0.005); // %0.5 yukarı sapma
+    const low = Math.min(adjustedOpen, price) * (1 - Math.random() * 0.005);  // %0.5 aşağı sapma
+    
+    // Hacim, fiyat değişiminin büyüklüğüne göre daha yüksek olsun
+    const volumeBase = 2000 + Math.random() * 3000;
+    const priceChangeFactor = Math.abs(price - adjustedOpen) / adjustedOpen;
+    const volume = Math.floor(volumeBase * (1 + priceChangeFactor * 15));
+    
+    // Yeni mum verisini ekle
     history.push({
       time: today,
-      open: lastPoint.close,
-      high: Math.max(price, lastPoint.close),
-      low: Math.min(price, lastPoint.close),
+      open: adjustedOpen,
+      high: parseFloat(high.toFixed(4)),
+      low: parseFloat(low.toFixed(4)),
       close: price,
-      volume: Math.floor(Math.random() * 10000) + 1000
+      volume: volume
     });
+    
+    // Veri setini makul bir boyuta kırp (son 90 gün)
+    if (history.length > 90) {
+      history.splice(0, history.length - 90);
+    }
   }
   
   return true;
