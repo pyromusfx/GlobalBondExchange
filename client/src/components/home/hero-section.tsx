@@ -33,7 +33,7 @@ export default function HeroSection() {
         <img 
           src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5ce?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80" 
           className="w-full h-full object-cover" 
-          alt={t('common.worldMapBackground')} 
+          alt="World map" 
           loading="lazy"
         />
       </div>

@@ -96,7 +96,12 @@ export default function CountryChart({ country, className }: CountryChartProps) 
               </div>
             ) : error ? (
               <div className="absolute inset-0 flex items-center justify-center">
-                <p className="text-red-500">{error}</p>
+                <p className="text-red-500">Şu anda grafik verisi çekilemiyor. Lütfen daha sonra tekrar deneyin.</p>
+              </div>
+            ) : chartData.length === 0 ? (
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <p className="text-amber-500 mb-2">Grafik verisi bulunamadı.</p>
+                <p className="text-sm text-muted-foreground">Veriler yakında güncellenecektir.</p>
               </div>
             ) : (
               <div 

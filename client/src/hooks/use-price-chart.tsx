@@ -95,7 +95,7 @@ export function usePriceChart(containerRef: React.RefObject<HTMLDivElement>, cou
     function generateDemoData() {
       const now = new Date();
       const data: PricePoint[] = [];
-      let basePrice = 0.5; // $0.50 ile başla
+      let basePrice = 1.0; // $1.00 ile başla (sabit fiyat güncellemesi)
       
       // Son 30 günlük veriyi oluştur
       for (let i = 30; i >= 0; i--) {
