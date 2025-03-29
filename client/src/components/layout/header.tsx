@@ -54,9 +54,9 @@ export default function Header() {
                 {t('header.presale')}
               </div>
             </Link>
-            <Link href="/tv">
-              <div className={`mx-3 hover:text-primary transition cursor-pointer ${isActive("/tv") ? "text-white" : "text-muted-foreground"}`}>
-                {t('header.tv')}
+            <Link href="/radio">
+              <div className={`mx-3 hover:text-primary transition cursor-pointer ${isActive("/radio") ? "text-white" : "text-muted-foreground"}`}>
+                {t('header.radio')}
               </div>
             </Link>
             {user && (
@@ -153,9 +153,9 @@ export default function Header() {
                     {t('header.presale')}
                   </div>
                 </Link>
-                <Link href="/tv">
+                <Link href="/radio">
                   <div className="text-lg py-2 hover:text-primary cursor-pointer" onClick={() => setMobileMenuOpen(false)}>
-                    {t('header.tv')}
+                    {t('header.radio')}
                   </div>
                 </Link>
                 {user && (

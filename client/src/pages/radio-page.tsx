@@ -8,14 +8,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Layout from "@/components/layout/layout";
 import { NewsItem } from "@shared/schema";
-import { Loader2, ExternalLink, ChevronLeft, ChevronRight, Search, Share, Bookmark, ArrowUpRight, Play, Volume2, VolumeX, Pause, Radio, Music, Rss } from "lucide-react";
+import { Loader2, ExternalLink, ChevronLeft, ChevronRight, Search, Share, Bookmark, ArrowUpRight, Play, Volume2, VolumeX, Pause, Radio as RadioIcon, Music, Rss, Power } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
 import ReactPlayer from "react-player";
 
-export default function TvPage() {
+export default function RadioPage() {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<string>("all");
   const [activeNewsIndex, setActiveNewsIndex] = useState<number>(0);
@@ -173,36 +173,100 @@ export default function TvPage() {
           </div>
         </div>
         
-        {/* Radio Player Area */}
-        <div className="relative rounded-lg overflow-hidden bg-gradient-to-r from-slate-900 to-blue-900 aspect-video mb-4">
-          {/* Audio Stream */}
-          <iframe 
-            src="https://www.bbc.co.uk/sounds/player/live:bbc_world_service" 
-            width="100%" 
-            height="100%"
-            allow="autoplay"
-            className="absolute inset-0 h-full w-full border-0"
-          ></iframe>
-          
-          {/* Radio overlay */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="absolute top-0 left-0 m-4 bg-black/50 px-3 py-1 rounded-full flex items-center">
-              <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse mr-2"></span>
-              <span className="text-xs font-bold text-white uppercase tracking-wider">LIVE</span>
+        {/* Radio Player Area - Nostalgic Radio Design */}
+        <div className="relative rounded-lg overflow-hidden mb-8">
+          <div className="bg-gradient-to-b from-rose-200 to-rose-300 rounded-lg shadow-xl p-6">
+            {/* Radio Cabinet */}
+            <div className="bg-rose-100 rounded-lg border-4 border-amber-800 shadow-inner p-4 flex flex-col items-center">
+              
+              {/* Radio Handle */}
+              <div className="w-24 h-6 -mt-9 mb-4 rounded-t-full bg-amber-800"></div>
+              
+              {/* Radio Display and Controls */}
+              <div className="flex w-full gap-4">
+                {/* Speaker Grille */}
+                <div className="flex-1 bg-amber-900 rounded p-3 grid grid-cols-6 gap-1">
+                  {Array(30).fill(0).map((_, i) => (
+                    <div key={i} className="h-2 bg-amber-950 rounded-full"></div>
+                  ))}
+                </div>
+                
+                {/* Control Panel */}
+                <div className="w-1/3 flex flex-col items-center space-y-4">
+                  {/* Tuning Dial */}
+                  <div className="w-24 h-24 rounded-full bg-amber-100 border-4 border-amber-800 flex items-center justify-center shadow-inner relative">
+                    <div className="absolute inset-0 rounded-full flex items-center justify-center">
+                      <div className="h-3/4 w-3/4 rounded-full bg-rose-50 border-2 border-amber-700 flex items-center justify-center">
+                        <div className="absolute w-1 h-10 bg-amber-800 rotate-45 bottom-6 origin-bottom"></div>
+                        <div className="w-4 h-4 rounded-full bg-amber-800"></div>
+                      </div>
+                    </div>
+                    <div className="absolute h-full w-full rounded-full">
+                      {/* Dial Markings */}
+                      {Array(12).fill(0).map((_, i) => (
+                        <div 
+                          key={i} 
+                          className="absolute w-1 h-2 bg-amber-950"
+                          style={{ 
+                            transform: `rotate(${i * 30}deg) translateY(-32px)`,
+                            transformOrigin: 'center bottom',
+                            left: 'calc(50% - 1px)'
+                          }}
+                        ></div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* Control Buttons */}
+                  <div className="flex gap-2">
+                    <button className="w-6 h-6 rounded-full bg-amber-800 shadow-sm flex items-center justify-center">
+                      <Power className="h-3 w-3 text-rose-100" />
+                    </button>
+                    <button className="w-6 h-6 rounded-full bg-amber-800 shadow-sm flex items-center justify-center">
+                      <VolumeX className="h-3 w-3 text-rose-100" />
+                    </button>
+                    <button className="w-6 h-6 rounded-full bg-amber-800 shadow-sm flex items-center justify-center">
+                      <Volume2 className="h-3 w-3 text-rose-100" />
+                    </button>
+                  </div>
+                  
+                  {/* BBC Logo */}
+                  <div className="text-center">
+                    <p className="font-serif font-bold text-amber-950 text-xs">SEKANCE</p>
+                    <p className="font-serif font-bold text-amber-950 text-[9px]">WORLD RADIO</p>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Radio Footer */}
+              <div className="mt-4 w-full flex justify-between items-center text-amber-950">
+                <div className="flex items-center">
+                  <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse mr-2"></span>
+                  <p className="text-xs font-serif font-bold">LIVE</p>
+                </div>
+                <p className="text-xs font-medium">BBC World Service</p>
+              </div>
+
+              {/* Hidden iframe for audio */}
+              <div className="hidden">
+                <iframe 
+                  src="https://www.bbc.co.uk/sounds/player/live:bbc_world_service" 
+                  width="1" 
+                  height="1"
+                  allow="autoplay"
+                ></iframe>
+              </div>
             </div>
-            
-            <div className="absolute top-0 right-0 m-4 bg-black/50 px-3 py-1 rounded-full">
-              <span className="text-xs font-bold text-white">BBC World Service</span>
-            </div>
-            
-            <div className="text-center bg-black/30 rounded-lg p-4 mb-32 backdrop-blur-sm max-w-sm">
-              <p className="text-white/90 text-sm mb-2">
-                {news.title.substring(0, 60)}...
-              </p>
-              <p className="text-xs text-white/70">
-                {news.content.substring(0, 120)}...
-              </p>
-            </div>
+          </div>
+
+          {/* News Display Under Radio */}
+          <div className="mt-4 bg-black/10 backdrop-blur-sm rounded-lg p-3 border border-amber-800/30">
+            <p className="text-amber-950 font-medium text-sm mb-1">
+              {news.title.substring(0, 60)}...
+            </p>
+            <p className="text-amber-800/80 text-xs">
+              {news.content.substring(0, 120)}...
+            </p>
           </div>
         </div>
         
@@ -236,8 +300,8 @@ export default function TvPage() {
     <Layout>
       <div className="container mx-auto py-8">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold">{t('tv.title')}</h1>
-          <p className="text-muted-foreground mt-2">{t('tv.subtitle')}</p>
+          <h1 className="text-3xl font-bold">Sekance Radio</h1>
+          <p className="text-muted-foreground mt-2">BBC World Service Radio Streaming Live</p>
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
