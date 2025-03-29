@@ -61,6 +61,7 @@ export function usePriceChart(containerRef: React.RefObject<HTMLDivElement>, cou
   // Ülkenin fiyat verilerini API'den alma
   useEffect(() => {
     let isMounted = true;
+    let timer: NodeJS.Timeout;
     
     async function fetchPriceData() {
       if (!countryCode) return;
@@ -69,23 +70,29 @@ export function usePriceChart(containerRef: React.RefObject<HTMLDivElement>, cou
       setError(null);
       
       try {
-        // Burada gerçek API isteği yapılacak
+        // Fiyat geçmişi API isteği yap
         const response = await apiRequest('GET', `/api/price-history/${countryCode}`);
         
         if (!response.ok) {
-          console.log("API endpoint is not ready yet, using demo data");
-          generateDemoData();
-        } else {
-          const data = await response.json();
-          if (isMounted) {
+          throw new Error(`API error: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log(`Fetched price history for ${countryCode}:`, data.length);
+        
+        if (isMounted) {
+          if (data && data.length > 0) {
             setChartData(data);
-            setIsLoading(false);
+          } else {
+            console.log("No data from API, generating demo data");
+            generateDemoData();
           }
+          setIsLoading(false);
         }
       } catch (err) {
         console.error("Error fetching price data:", err);
-        // API isteklerini sonra ekleyeceğiz, şimdilik demo veri kullanıyoruz
         if (isMounted) {
+          setError("Failed to load chart data");
           generateDemoData();
         }
       }

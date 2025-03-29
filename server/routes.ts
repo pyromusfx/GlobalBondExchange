@@ -23,6 +23,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Start BBC news feed updates
   scheduleNewsFeedUpdates();
+  
+  // Price history API endpoint
+  app.get("/api/price-history/:countryCode", async (req, res) => {
+    try {
+      const { countryCode } = req.params;
+      
+      if (!countryCode) {
+        return res.status(400).json({ message: "Country code is required" });
+      }
+      
+      // Import functions from news-analyzer.ts
+      const { getPriceHistoryForCountry, generatePriceHistoryForCountry } = require('./news-analyzer');
+      
+      // Try to get existing price history
+      let priceHistory = getPriceHistoryForCountry(countryCode);
+      
+      // If no price history exists, generate one
+      if (!priceHistory || priceHistory.length === 0) {
+        priceHistory = generatePriceHistoryForCountry(countryCode);
+      }
+      
+      return res.status(200).json(priceHistory);
+    } catch (error) {
+      console.error("Error fetching price history:", error);
+      return res.status(500).json({ message: "Error fetching price history" });
+    }
+  });
 
   // KYC submission route
   app.post("/api/kyc", async (req, res, next) => {
@@ -177,7 +204,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Check if user has enough shares
       const userHolding = await storage.getUserHolding(req.user.id, countryCode);
-      if (!userHolding || userHolding.shares < parseFloat(shares)) {
+      if (!userHolding || parseFloat(userHolding.shares) < parseFloat(shares)) {
         return res.status(400).json({ message: "Insufficient shares" });
       }
 
