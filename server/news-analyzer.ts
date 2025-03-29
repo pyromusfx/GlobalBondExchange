@@ -274,8 +274,8 @@ export async function processNewsAndUpdateCountries(newsItems: any[]) {
       // Haberin etkisi ve okunma oranı ile doğru orantılı
       const impactMagnitude = Math.abs(impact);
       
-      // Haberin önemine göre değişim yüzdesini belirle (0.5% - 3%)
-      const baseChangePercent = impactMagnitude * 3; 
+      // Haberin önemine göre değişim yüzdesini belirle (1% - 8%) - daha dramatik fiyat hareketleri için
+      const baseChangePercent = impactMagnitude * 8; 
       
       // Geçmiş 24 saat içindeki fiyat hareketini hesaba katarak aşırı oynaklığı azalt
       // Önceki değişim büyükse, yeni değişimi azalt (piyasa stabilizasyonu)
@@ -313,11 +313,11 @@ export async function processNewsAndUpdateCountries(newsItems: any[]) {
       // Zaten hedef ülke olarak işlendiyse atla
       if (targetCountry && country.countryCode === targetCountry.countryCode) continue;
       
-      // Düşük etki hesapla (normal etkinin 1/5'i)
-      const impact = calculateNewsImpact(categoryScores, country.countryCode) * 0.2;
+      // Düşük etki hesapla (normal etkinin 1/3'ü) - daha fazla etki için 1/5 -> 1/3 olarak güncellendi
+      const impact = calculateNewsImpact(categoryScores, country.countryCode) * 0.33;
       
-      // Etkinin çok düşük olduğu durumlarda işlem yapma
-      if (Math.abs(impact) < 0.01) continue;
+      // Etkinin çok düşük olduğu durumlarda işlem yapma - eşiği düşürerek daha fazla ülkenin etkilenmesini sağla
+      if (Math.abs(impact) < 0.005) continue;
       
       // Mevcut fiyatı güncelle
       const currentPrice = parseFloat(country.currentPrice || "0");
@@ -326,8 +326,8 @@ export async function processNewsAndUpdateCountries(newsItems: any[]) {
       // Haber etkisinin ciddiyetine göre fiyat değişim yüzdesini belirle
       const impactMagnitude = Math.abs(impact);
       
-      // Haberin önemine göre değişim yüzdesini belirle (0.2% - 1.5%)
-      const baseChangePercent = impactMagnitude * 1.5; 
+      // Haberin önemine göre değişim yüzdesini belirle (0.5% - 2.5%) - daha yüksek fiyat değişimleri için
+      const baseChangePercent = impactMagnitude * 2.5; 
       
       // Geçmiş fiyat hareketini hesaba katarak aşırı oynaklığı azalt
       const prevChangeRatio = Math.abs(parseFloat(country.previousPrice || "1.0") - currentPrice) / currentPrice;
