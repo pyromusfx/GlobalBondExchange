@@ -36,43 +36,43 @@ export default function Footer() {
   // Footer kategorileri
   const categories = [
     {
-      title: t('footer.products.title'),
+      title: "Ürünler",
       links: [
-        { title: t('footer.products.countryBonds'), url: '/market', isExternal: false },
-        { title: t('footer.products.preSale'), url: '/presale', isExternal: false },
-        { title: t('footer.products.leverageTrading'), url: '/trade', isExternal: false },
-        { title: t('footer.products.marketData'), url: '/market', isExternal: false },
-        { title: t('footer.products.affiliate'), url: '/affiliate', isExternal: false },
+        { title: "Ülke Tahvilleri", url: '/market', isExternal: false },
+        { title: "Ön Satış", url: '/presale', isExternal: false },
+        { title: "Kaldıraçlı İşlemler", url: '/trade', isExternal: false },
+        { title: "Piyasa Verileri", url: '/market', isExternal: false },
+        { title: "Referans Programı", url: '/affiliate', isExternal: false },
       ]
     },
     {
-      title: t('footer.support.title'),
+      title: "Destek",
       links: [
-        { title: t('footer.support.helpCenter'), url: '#', isExternal: true },
-        { title: t('footer.support.kycGuide'), url: '/kyc', isExternal: false },
-        { title: t('footer.support.tradingRules'), url: '#', isExternal: true },
-        { title: t('footer.support.contactUs'), url: '#', isExternal: true },
-        { title: t('footer.support.liveChat'), url: '#', isExternal: true },
+        { title: "Yardım Merkezi", url: '#', isExternal: true },
+        { title: "KYC Rehberi", url: '/kyc', isExternal: false },
+        { title: "İşlem Kuralları", url: '#', isExternal: true },
+        { title: "İletişime Geç", url: '#', isExternal: true },
+        { title: "Canlı Destek", url: '#', isExternal: true },
       ]
     },
     {
-      title: t('footer.legal.title'),
+      title: "Yasal",
       links: [
-        { title: t('footer.legal.terms'), url: '#', isExternal: true },
-        { title: t('footer.legal.privacy'), url: '#', isExternal: true },
-        { title: t('footer.legal.riskDisclosure'), url: '#', isExternal: true },
-        { title: t('footer.legal.tradingPolicy'), url: '#', isExternal: true },
-        { title: t('footer.legal.cookies'), url: '#', isExternal: true },
+        { title: "Kullanım Şartları", url: '#', isExternal: true },
+        { title: "Gizlilik Politikası", url: '#', isExternal: true },
+        { title: "Risk Bildirimi", url: '#', isExternal: true },
+        { title: "İşlem Politikası", url: '#', isExternal: true },
+        { title: "Çerezler", url: '#', isExternal: true },
       ]
     },
     {
-      title: t('footer.community.title'),
+      title: "Topluluk",
       links: [
-        { title: t('footer.community.blog'), url: '#', isExternal: true },
-        { title: t('footer.community.news'), url: '#', isExternal: true },
-        { title: t('footer.community.events'), url: '#', isExternal: true },
-        { title: t('footer.community.careers'), url: '#', isExternal: true },
-        { title: t('footer.community.partners'), url: '#', isExternal: true },
+        { title: "Blog", url: '#', isExternal: true },
+        { title: "Haberler", url: '#', isExternal: true },
+        { title: "Etkinlikler", url: '#', isExternal: true },
+        { title: "Kariyer", url: '#', isExternal: true },
+        { title: "Ortaklıklar", url: '#', isExternal: true },
       ]
     }
   ];
@@ -84,7 +84,7 @@ export default function Footer() {
           <div className="md:col-span-1">
             <h3 className="text-xl font-bold text-white mb-4">Sekance</h3>
             <p className="text-muted-foreground mb-6">
-              {t('footer.description')}
+              Güvenli ve profesyonel ülke tahvili alım satım platformu
             </p>
             <div className="flex flex-wrap gap-4">
               <a href="#" className="text-muted-foreground hover:text-primary transition">
@@ -137,7 +137,7 @@ export default function Footer() {
         
         <div className="border-t border-border pt-6 flex flex-col md:flex-row justify-between items-center">
           <div className="text-muted-foreground text-sm mb-4 md:mb-0">
-            {t('footer.copyright', { year: new Date().getFullYear() })}
+            © {new Date().getFullYear()} Sekance. Tüm hakları saklıdır.
           </div>
           <div className="text-muted-foreground text-sm flex items-center">
             <div className="flex items-center space-x-3 mr-4">
