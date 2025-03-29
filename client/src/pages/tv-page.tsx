@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Layout from "@/components/layout/layout";
 import { NewsItem } from "@shared/schema";
-import { Loader2, ExternalLink, ChevronLeft, ChevronRight, Search, Share, Bookmark, ArrowUpRight, Play, Volume2, VolumeX, Maximize, MinusCircle } from "lucide-react";
+import { Loader2, ExternalLink, ChevronLeft, ChevronRight, Search, Share, Bookmark, ArrowUpRight, Play, Volume2, VolumeX, Pause, Radio, Music, Rss } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -125,67 +125,67 @@ export default function TvPage() {
     return "news";
   };
 
-  // Define broadcast channels with video sources - using open and free HLS streams
-  const broadcastChannels = [
+  // Define radio stations with audio sources - using reliable streaming URLs
+  const radioStations = [
     { 
       id: "bloomberg", 
-      name: "Bloomberg TV", 
-      videoSrc: "https://d1hd0ww6piyb43.cloudfront.net/out/v1/36fc62d1c08f4baa97f547b6bda1b43e/index.m3u8", // Free Bloomberg HLS stream
+      name: "Bloomberg Radio", 
+      audioSrc: "https://bloomberg-bnr-radio.akamaized.net/hls/live/2939500/bnrlivetestfdi/master.m3u8", // Bloomberg Radio stream
       logoSrc: "/icons/bloomberg.svg" 
     },
     { 
       id: "bbc", 
-      name: "BBC World News", 
-      videoSrc: "https://cdnuk001.broadcastcdn.net/KUK-BBCNEWSHD/index.m3u8", // Open BBC news-like stream
+      name: "BBC World Service", 
+      audioSrc: "https://stream.live.vc.bbcmedia.co.uk/bbc_world_service", // BBC World Service audio stream
       logoSrc: "/icons/bbc.svg" 
     },
     { 
       id: "cnbc", 
-      name: "CNBC", 
-      videoSrc: "https://dai2.xumo.com/amagi_hls_data_xumo1212A-xumo-nbcnewsnow/CDN/playlist.m3u8", // NBC News stream
+      name: "CNBC Business News", 
+      audioSrc: "http://tunein.streamguys1.com/cnbc", // CNBC audio stream
       logoSrc: "/icons/cnbc.svg" 
     },
     { 
       id: "reuters", 
-      name: "Reuters TV", 
-      videoSrc: "https://reuters-reutersnow-1.plex.wurl.com/manifest/playlist.m3u8", // Reuters stream
+      name: "Reuters News", 
+      audioSrc: "https://tunein.streamguys1.com/reuters-english", // Reuters audio stream
       logoSrc: "/icons/reuters.svg" 
     }
   ];
 
-  // Video player state
-  const [isPlayingVideo, setIsPlayingVideo] = useState<boolean>(true); // Auto-play by default
+  // Audio player state
+  const [isPlayingAudio, setIsPlayingAudio] = useState<boolean>(true); // Auto-play by default
   const [isMuted, setIsMuted] = useState<boolean>(false);
-  const [videoProgress, setVideoProgress] = useState<number>(0);
-  const [selectedChannel, setSelectedChannel] = useState<string>("bloomberg");
-  const videoTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const [audioProgress, setAudioProgress] = useState<number>(0);
+  const [selectedStation, setSelectedStation] = useState<string>("bloomberg");
+  const audioTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Simulate video progress
+  // Simulate radio progress
   useEffect(() => {
-    if (isPlayingVideo) {
-      videoTimerRef.current = setInterval(() => {
-        setVideoProgress(prev => {
+    if (isPlayingAudio) {
+      audioTimerRef.current = setInterval(() => {
+        setAudioProgress(prev => {
           if (prev >= 100) {
-            // When video ends, start another news clip
+            // When audio ends, start another news clip
             handleNextNews();
             return 0;
           }
           return prev + 0.5;
         });
       }, 100);
-    } else if (videoTimerRef.current) {
-      clearInterval(videoTimerRef.current);
+    } else if (audioTimerRef.current) {
+      clearInterval(audioTimerRef.current);
     }
 
     return () => {
-      if (videoTimerRef.current) {
-        clearInterval(videoTimerRef.current);
+      if (audioTimerRef.current) {
+        clearInterval(audioTimerRef.current);
       }
     };
-  }, [isPlayingVideo]);
+  }, [isPlayingAudio]);
 
-  const toggleVideoPlay = () => {
-    setIsPlayingVideo(prev => !prev);
+  const toggleAudioPlay = () => {
+    setIsPlayingAudio(prev => !prev);
   };
 
   const toggleMute = () => {
@@ -205,7 +205,7 @@ export default function TvPage() {
     }
     
     const news = filteredNews[activeNewsIndex];
-    const currentChannel = broadcastChannels.find(channel => channel.id === selectedChannel) || broadcastChannels[0];
+    const currentStation = radioStations.find(station => station.id === selectedStation) || radioStations[0];
     
     return (
       <div className="space-y-4">
@@ -230,103 +230,109 @@ export default function TvPage() {
           </div>
         </div>
         
-        {/* Video Player Area */}
-        <div className="relative rounded-lg overflow-hidden bg-black aspect-video mb-4">
-          {/* Live Video Stream */}
+        {/* Radio Player Area */}
+        <div className="relative rounded-lg overflow-hidden bg-gradient-to-r from-slate-900 to-blue-900 aspect-video mb-4">
+          {/* Audio Stream */}
           <ReactPlayer
-            url={currentChannel.videoSrc}
-            playing={isPlayingVideo}
+            url={currentStation.audioSrc}
+            playing={isPlayingAudio}
             muted={isMuted}
             width="100%"
             height="100%"
             controls={false}
-            style={{ position: 'absolute', top: 0, left: 0 }}
+            style={{ display: 'none' }} // Hidden audio player
             onError={(e) => {
-              console.error("Video playback error:", e);
-            }}
-            config={{
-              file: {
-                forceHLS: true,
-                hlsOptions: {
-                  lowLatencyMode: true,
-                }
-              }
+              console.error("Audio playback error:", e);
             }}
           />
           
-          {/* LIVE indicator */}
-          <div className="absolute top-4 right-4 z-10">
-            <div className="flex items-center bg-red-600 px-3 py-1 rounded-full">
-              <span className="h-2 w-2 rounded-full bg-white animate-pulse mr-2"></span>
-              <span className="text-xs font-bold text-white">LIVE</span>
-            </div>
-          </div>
-          
-          {/* Channel Info Overlay */}
-          <div className="absolute top-4 left-4 z-10 flex items-center">
-            <Avatar className="h-8 w-8 mr-2">
-              <AvatarImage src={currentChannel.logoSrc} alt={currentChannel.name} />
-              <AvatarFallback>{currentChannel.name.substring(0, 2)}</AvatarFallback>
-            </Avatar>
-            <div>
-              <h3 className="text-sm font-bold text-white">{currentChannel.name}</h3>
-              <p className="text-xs text-white/80">{news.title.substring(0, 30)}...</p>
-            </div>
-          </div>
-          
-          {/* Video Controls Overlay */}
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-            <Progress className="mb-2" value={videoProgress} />
-            <div className="flex justify-between items-center">
-              <div className="flex space-x-2">
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="text-white hover:bg-white/20"
-                  onClick={toggleVideoPlay}
-                >
-                  {isPlayingVideo ? <MinusCircle className="h-5 w-5" /> : <Play className="h-5 w-5" />}
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="text-white hover:bg-white/20"
-                  onClick={toggleMute}
-                >
-                  {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
-                </Button>
+          {/* Radio visualization */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <div className="w-full max-w-md flex flex-col items-center">
+              <Avatar className="h-20 w-20 mb-4 shadow-lg">
+                <AvatarImage src={currentStation.logoSrc} alt={currentStation.name} />
+                <AvatarFallback>{currentStation.name.substring(0, 2)}</AvatarFallback>
+              </Avatar>
+              
+              <h3 className="text-xl font-bold text-white mb-2">{currentStation.name}</h3>
+              <div className="flex justify-center items-center space-x-1 mb-6">
+                <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse"></span>
+                <span className="text-xs font-bold text-white uppercase tracking-wider">LIVE</span>
               </div>
-              <div className="flex items-center">
-                <span className="text-xs text-white mr-2">
-                  LIVE
-                </span>
-                <Button variant="ghost" size="icon" className="text-white hover:bg-white/20" onClick={() => setIsPlayingVideo(true)}>
-                  <Maximize className="h-5 w-5" />
-                </Button>
+              
+              {/* Audio visualization bars */}
+              <div className="flex items-end justify-center space-x-1 h-16 mb-6">
+                {Array(12).fill(0).map((_, i) => {
+                  const height = isPlayingAudio ? Math.random() * 100 : 15;
+                  return (
+                    <div 
+                      key={i} 
+                      className={`w-2 bg-white/80 rounded-t transition-all duration-150 ${isPlayingAudio ? 'animate-pulse' : ''}`}
+                      style={{ height: `${height}%` }}
+                    ></div>
+                  );
+                })}
+              </div>
+              
+              <div className="text-center">
+                <p className="text-white/90 text-sm mb-4 max-w-xs">
+                  {t('tv.nowPlaying')}: {news.title.substring(0, 60)}...
+                </p>
+              </div>
+            </div>
+            
+            {/* Audio Controls */}
+            <div className="absolute bottom-4 left-0 right-0 px-6">
+              <Progress className="mb-3" value={audioProgress} />
+              <div className="flex justify-between items-center">
+                <div className="flex space-x-2">
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="text-white hover:bg-white/20"
+                    onClick={toggleAudioPlay}
+                  >
+                    {isPlayingAudio ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="text-white hover:bg-white/20"
+                    onClick={toggleMute}
+                  >
+                    {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
+                  </Button>
+                </div>
+                <div className="flex items-center">
+                  <Radio className="h-4 w-4 mr-2 text-white/80" />
+                  <span className="text-xs text-white">
+                    {Math.floor(audioProgress / 100 * 120)}s / 120s
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
         
-        {/* Channel Selection */}
+        {/* Radio Station Selection */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
-          {broadcastChannels.map(channel => (
+          {radioStations.map(station => (
             <Button 
-              key={channel.id}
-              variant={selectedChannel === channel.id ? "default" : "outline"}
+              key={station.id}
+              variant={selectedStation === station.id ? "default" : "outline"}
               size="sm"
               className="flex items-center justify-center py-2"
               onClick={() => {
-                setSelectedChannel(channel.id);
-                setVideoProgress(0);
-                setIsPlayingVideo(true);
+                setSelectedStation(station.id);
+                setAudioProgress(0);
+                setIsPlayingAudio(true);
               }}
             >
               <Avatar className="h-5 w-5 mr-2">
-                <AvatarImage src={channel.logoSrc} />
-                <AvatarFallback>{channel.name.substring(0, 2)}</AvatarFallback>
+                <AvatarImage src={station.logoSrc} />
+                <AvatarFallback>{station.name.substring(0, 2)}</AvatarFallback>
               </Avatar>
-              <span className="text-xs">{channel.name}</span>
+              <span className="text-xs">{station.name}</span>
             </Button>
           ))}
         </div>
