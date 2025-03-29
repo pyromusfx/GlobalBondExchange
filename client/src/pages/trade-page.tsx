@@ -57,6 +57,8 @@ export default function TradePage() {
   
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredCountries, setFilteredCountries] = useState<CountryShare[]>([]);
+  // Force rerender when country code changes
+  const [currentCountryCode, setCurrentCountryCode] = useState<string | undefined>(countryCode);
 
   // Set page title
   useEffect(() => {
@@ -109,6 +111,13 @@ export default function TradePage() {
     }
   }, [error, country, allCountries, setLocation]);
   
+  // Update currentCountryCode when countryCode changes
+  useEffect(() => {
+    if (countryCode && countryCode !== currentCountryCode) {
+      setCurrentCountryCode(countryCode);
+    }
+  }, [countryCode, currentCountryCode]);
+  
   // Tüm hook çağrıları tamamlandıktan sonra, yükleme kontrolü yapabiliriz
   if (isLoading || !allCountries.length) {
     return (
@@ -123,6 +132,10 @@ export default function TradePage() {
   }
   
   // TypeScript için varsayılan değerlerle güvenli bir country objesi oluşturalım
+  // Force component to update when country code changes
+  // This helps ensure that the UI reflects the latest country data
+  const countryKey = currentCountryCode || 'default';
+  
   const safeCountry = country || allCountries[0] || {
     id: 0,
     countryCode: 'US',
