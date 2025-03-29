@@ -78,44 +78,63 @@ export default function TradePage() {
     }
   }, [searchQuery, allCountries]);
   
-  // If no country code is provided, redirect to the market page to select a country
+  // Varsayılan olarak ABD'ye git (veya kullanılabilir ilk ülke)  
   useEffect(() => {
-    if (!match && !countryCode) {
-      setLocation('/market');
+    const setDefaultCountry = async () => {
+      if (!match || !countryCode) {
+        // Hiç ülke kodu yoksa ABD'ye git, o da yoksa ilk mevcut ülkeye
+        const defaultCountry = allCountries.find(c => c.countryCode === 'US') || allCountries[0];
+        if (defaultCountry) {
+          setLocation(`/trade/${defaultCountry.countryCode}`);
+        } else {
+          // Eğer hiç ülke yoksa market sayfasına yönlendir
+          setLocation('/market');
+        }
+      }
+    };
+    
+    if (allCountries.length > 0) {
+      setDefaultCountry();
     }
-  }, [match, countryCode, setLocation]);
+  }, [match, countryCode, allCountries, setLocation]);
   
   if (isLoading) {
     return (
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col bg-[#0B0E11] text-[#EAECEF]">
         <Header />
         <main className="flex-grow flex items-center justify-center">
-          <Loader2 className="h-12 w-12 animate-spin text-primary" />
+          <Loader2 className="h-12 w-12 animate-spin text-[#F0B90B]" />
         </main>
         <Footer />
       </div>
     );
   }
   
-  if (error || !country) {
+  // Eğer ülke bulunamadıysa, hata göstermek yerine varsayılan ülkeye yönlendir
+  useEffect(() => {
+    if (error || !country) {
+      const defaultCountry = allCountries.find(c => c.countryCode === 'US') || allCountries[0];
+      if (defaultCountry) {
+        setLocation(`/trade/${defaultCountry.countryCode}`);
+      }
+    }
+  }, [error, country, allCountries, setLocation]);
+  
+  // Yükleme durumunda bekle, 404 sayfası gösterme
+  if (!country || !allCountries.length) {
     return (
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col bg-[#0B0E11] text-[#EAECEF]">
         <Header />
-        <main className="flex-grow py-8">
-          <div className="container mx-auto px-4 text-center">
-            <h1 className="text-2xl font-bold mb-4">Country Not Found</h1>
-            <p className="text-muted-foreground mb-6">
-              The country you're looking for doesn't exist or is not available for trading.
-            </p>
-            <Button onClick={() => setLocation('/market')}>
-              View All Markets
-            </Button>
-          </div>
+        <main className="flex-grow flex items-center justify-center">
+          <Loader2 className="h-12 w-12 animate-spin text-[#F0B90B]" />
         </main>
         <Footer />
       </div>
     );
   }
+  
+  // TypeScript için ülkenin kesinlikle tanımlı olduğunu belirtelim
+  const safeCountry = country;
 
   return (
     <div className="min-h-screen flex flex-col bg-[#0B0E11] text-[#EAECEF]">
@@ -127,33 +146,33 @@ export default function TradePage() {
           <div className="flex items-center space-x-2 min-w-max">
             <div className="flex items-center">
               <img 
-                src={`https://flagcdn.com/24x18/${country.countryCode.toLowerCase()}.png`} 
-                alt={country.countryName} 
+                src={`https://flagcdn.com/24x18/${safeCountry.countryCode.toLowerCase()}.png`} 
+                alt={safeCountry.countryName} 
                 className="h-5 mr-2"
               />
-              <span className="font-semibold">{country.countryCode}/USDT</span>
+              <span className="font-semibold">{safeCountry.countryCode}/USDT</span>
             </div>
-            <span className="text-lg font-semibold">${parseFloat(country.currentPrice).toFixed(5)}</span>
+            <span className="text-lg font-semibold">${parseFloat(safeCountry.currentPrice || "0").toFixed(5)}</span>
             
-            <PriceChange current={country.currentPrice} previous={country.previousPrice} />
+            <PriceChange current={safeCountry.currentPrice || "0"} previous={safeCountry.previousPrice || "0"} />
           </div>
           
           <div className="hidden md:flex items-center gap-5 text-xs text-[#848E9C]">
             <div>
               <span>24h Change</span>
-              <div className={parseFloat(country.currentPrice) > parseFloat(country.previousPrice || "0") ? 'text-green-500' : 'text-red-500'}>
-                {Math.abs(((parseFloat(country.currentPrice) - parseFloat(country.previousPrice || "0")) / parseFloat(country.previousPrice || "1")) * 100).toFixed(2)}%
+              <div className={parseFloat(safeCountry.currentPrice || "0") > parseFloat(safeCountry.previousPrice || "0") ? 'text-green-500' : 'text-red-500'}>
+                {Math.abs(((parseFloat(safeCountry.currentPrice || "0") - parseFloat(safeCountry.previousPrice || "0")) / parseFloat(safeCountry.previousPrice || "1")) * 100).toFixed(2)}%
               </div>
             </div>
             
             <div>
               <span>24h High</span>
-              <div>${(parseFloat(country.currentPrice) * 1.05).toFixed(5)}</div>
+              <div>${(parseFloat(safeCountry.currentPrice || "0") * 1.05).toFixed(5)}</div>
             </div>
             
             <div>
               <span>24h Low</span>
-              <div>${(parseFloat(country.currentPrice) * 0.95).toFixed(5)}</div>
+              <div>${(parseFloat(safeCountry.currentPrice || "0") * 0.95).toFixed(5)}</div>
             </div>
             
             <div>
@@ -246,7 +265,7 @@ export default function TradePage() {
               </div>
               
               <div className="h-[520px] relative">
-                <EnhancedTradingView country={country} />
+                <EnhancedTradingView country={safeCountry} />
               </div>
             </div>
             
