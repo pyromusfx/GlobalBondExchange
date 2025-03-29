@@ -78,6 +78,7 @@ export default function TradePage() {
     }
   }, [searchQuery, allCountries]);
   
+  // Tüm hook çağrılarını, herhangi bir koşullu return'den önce tanımlayalım
   // Varsayılan olarak ABD'ye git (veya kullanılabilir ilk ülke)  
   useEffect(() => {
     const setDefaultCountry = async () => {
@@ -98,18 +99,6 @@ export default function TradePage() {
     }
   }, [match, countryCode, allCountries, setLocation]);
   
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex flex-col bg-[#0B0E11] text-[#EAECEF]">
-        <Header />
-        <main className="flex-grow flex items-center justify-center">
-          <Loader2 className="h-12 w-12 animate-spin text-[#F0B90B]" />
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-  
   // Eğer ülke bulunamadıysa, hata göstermek yerine varsayılan ülkeye yönlendir
   useEffect(() => {
     if (error || !country) {
@@ -120,8 +109,8 @@ export default function TradePage() {
     }
   }, [error, country, allCountries, setLocation]);
   
-  // Yükleme durumunda bekle, 404 sayfası gösterme
-  if (!country || !allCountries.length) {
+  // Tüm hook çağrıları tamamlandıktan sonra, yükleme kontrolü yapabiliriz
+  if (isLoading || !allCountries.length) {
     return (
       <div className="min-h-screen flex flex-col bg-[#0B0E11] text-[#EAECEF]">
         <Header />
@@ -133,8 +122,18 @@ export default function TradePage() {
     );
   }
   
-  // TypeScript için ülkenin kesinlikle tanımlı olduğunu belirtelim
-  const safeCountry = country;
+  // TypeScript için varsayılan değerlerle güvenli bir country objesi oluşturalım
+  const safeCountry = country || allCountries[0] || {
+    id: 0,
+    countryCode: 'US',
+    countryName: 'United States',
+    currentPrice: '1.0',
+    previousPrice: '1.0',
+    availableShares: 10000000,
+    totalShares: 10000000,
+    isPreSale: false,
+    preSaleProgress: '0'
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-[#0B0E11] text-[#EAECEF]">
@@ -226,7 +225,7 @@ export default function TradePage() {
                 <button 
                   key={c.countryCode}
                   onClick={() => setLocation(`/trade/${c.countryCode}`)}
-                  className={`w-full p-2 hover:bg-[#1C212B] grid grid-cols-12 items-center ${c.countryCode === country.countryCode ? 'bg-[#1C212B]' : ''}`}
+                  className={`w-full p-2 hover:bg-[#1C212B] grid grid-cols-12 items-center ${c.countryCode === safeCountry.countryCode ? 'bg-[#1C212B]' : ''}`}
                 >
                   <div className="col-span-5 flex items-center">
                     <img 
@@ -272,7 +271,7 @@ export default function TradePage() {
             {/* Emir alanı bölümü */}
             <div className="lg:w-1/3 p-4">
               <div className="mb-4">
-                <h2 className="text-lg font-semibold mb-2">Trade {country.countryCode}/USDT</h2>
+                <h2 className="text-lg font-semibold mb-2">Trade {safeCountry.countryCode}/USDT</h2>
                 <div className="grid grid-cols-2 gap-2">
                   <Button variant="outline" className="text-green-500 border-green-500 hover:bg-green-500/10">
                     Buy
@@ -318,7 +317,7 @@ export default function TradePage() {
               
               <div className="mt-6">
                 <Button className="w-full bg-green-500 hover:bg-green-600 text-white">
-                  Buy {country.countryCode}
+                  Buy {safeCountry.countryCode}
                 </Button>
               </div>
               
@@ -351,7 +350,7 @@ export default function TradePage() {
               <div className="col-span-1">
                 <div className="text-xs text-[#848E9C] flex justify-between mb-2">
                   <span>Price (USDT)</span>
-                  <span>Amount ({country.countryCode})</span>
+                  <span>Amount ({safeCountry.countryCode})</span>
                   <span>Total</span>
                 </div>
                 
