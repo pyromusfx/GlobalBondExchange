@@ -274,15 +274,16 @@ export async function processNewsAndUpdateCountries(newsItems: any[]) {
       // Haberin etkisi ve okunma oranı ile doğru orantılı
       const impactMagnitude = Math.abs(impact);
       
-      // Haberin önemine göre değişim yüzdesini belirle (1% - 8%) - daha dramatik fiyat hareketleri için
-      const baseChangePercent = impactMagnitude * 8; 
+      // Haberin önemine göre değişim yüzdesini belirle (2% - 15%) - çok daha dramatik fiyat hareketleri
+      const baseChangePercent = impactMagnitude * 15 + 1; // En düşük değişim %1 olacak şekilde
       
-      // Geçmiş 24 saat içindeki fiyat hareketini hesaba katarak aşırı oynaklığı azalt
-      // Önceki değişim büyükse, yeni değişimi azalt (piyasa stabilizasyonu)
+      // Geçmiş 24 saat içinde değişim varsa bile, değişimleri sürekli kılmak için
+      // stabilizasyon faktörünü etki büyüklüğüne göre rastgele bir değer olarak belirle
       const prevChangeRatio = Math.abs(parseFloat(targetCountry.previousPrice || "1.0") - currentPrice) / currentPrice;
       
-      // Geçmiş fiyat hareketi çok büyükse, şimdiki değişimi daha az etkile
-      const marketStabilityFactor = prevChangeRatio > 0.05 ? 0.5 : 1;
+      // Her durumda hareket oluşması için stabilite faktörünü 0.7 ile 1.3 arasında rastgele belirle
+      // Bu, her değişimde fiyat hareketinin yönünü ve büyüklüğünü değiştirir
+      const marketStabilityFactor = 0.7 + Math.random() * 0.6; // 0.7-1.3 arası
       
       // Fiyat değişimini hesapla
       const directionSign = impact > 0 ? 1 : -1;
@@ -313,27 +314,28 @@ export async function processNewsAndUpdateCountries(newsItems: any[]) {
       // Zaten hedef ülke olarak işlendiyse atla
       if (targetCountry && country.countryCode === targetCountry.countryCode) continue;
       
-      // Düşük etki hesapla (normal etkinin 1/3'ü) - daha fazla etki için 1/5 -> 1/3 olarak güncellendi
-      const impact = calculateNewsImpact(categoryScores, country.countryCode) * 0.33;
+      // Her ülkeyi etkile, bazı haberlerin etkisini artır (1/3 -> 1/2) - çok daha fazla hareket sağla
+      const impact = calculateNewsImpact(categoryScores, country.countryCode) * 0.5;
       
-      // Etkinin çok düşük olduğu durumlarda işlem yapma - eşiği düşürerek daha fazla ülkenin etkilenmesini sağla
-      if (Math.abs(impact) < 0.005) continue;
+      // Etkinin çok düşük olduğu durumlarda bile işlem yapacağız - rastgele bir etki ekle
+      // Eğer etki çok düşükse bile küçük bir değer ata
+      const forcedImpact = Math.abs(impact) < 0.001 ? (Math.random() * 0.01 * (Math.random() > 0.5 ? 1 : -1)) : impact;
       
       // Mevcut fiyatı güncelle
       const currentPrice = parseFloat(country.currentPrice || "0");
       const previousPrice = currentPrice;
       
       // Haber etkisinin ciddiyetine göre fiyat değişim yüzdesini belirle
-      const impactMagnitude = Math.abs(impact);
+      const impactMagnitude = Math.abs(forcedImpact);
       
-      // Haberin önemine göre değişim yüzdesini belirle (0.5% - 2.5%) - daha yüksek fiyat değişimleri için
-      const baseChangePercent = impactMagnitude * 2.5; 
+      // Haberin önemine göre değişim yüzdesini belirle (1% - 5%) - asla 0 olmaması için +1
+      const baseChangePercent = impactMagnitude * 5 + 1; 
       
-      // Geçmiş fiyat hareketini hesaba katarak aşırı oynaklığı azalt
+      // Her zaman hareket olması için rastgele stabilite faktörü ekle
       const prevChangeRatio = Math.abs(parseFloat(country.previousPrice || "1.0") - currentPrice) / currentPrice;
       
-      // Geçmiş fiyat hareketi çok büyükse, şimdiki değişimi daha az etkile
-      const marketStabilityFactor = prevChangeRatio > 0.03 ? 0.4 : 1;
+      // Her durumda değişik bir değer üret (fiyatların sürekli hareket etmesi için)
+      const marketStabilityFactor = 0.7 + Math.random() * 0.6; // 0.7-1.3 arası rastgele
       
       // Fiyat değişimini hesapla
       const directionSign = impact > 0 ? 1 : -1;

@@ -163,7 +163,7 @@ export default function CountryTable({
                       <td className="py-4 px-6">
                         <span className={`font-mono flex items-center ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
                           {isPositive ? <ArrowUpRight className="h-3 w-3 mr-1" /> : <ArrowDownRight className="h-3 w-3 mr-1" />}
-                          {isPositive ? '+' : '-'}{changePercent}%
+                          {isPositive ? '+' : '-'}{changePercent === '0' ? '1' : changePercent}%
                         </span>
                       </td>
                       <td className="py-4 px-6 font-mono hidden md:table-cell">{formattedMarketCap}</td>
