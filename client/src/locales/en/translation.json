@@ -137,6 +137,28 @@
     "yes": "Yes",
     "no": "No"
   },
+  "support": {
+    "liveSupport": "Live Chat",
+    "getHelp": "Get help from our support team",
+    "liveSupportDesc": "Our support team is here to help you",
+    "minimize": "Minimize",
+    "close": "Close",
+    "name": "Name",
+    "email": "Email",
+    "enterName": "Enter your name",
+    "enterEmail": "Enter your email",
+    "startChat": "Start Chat",
+    "typeMessage": "Type your message...",
+    "formError": "Form Error",
+    "fillAllFields": "Please fill in all fields",
+    "welcomeMessage": "Hello {{name}}, how can we help you today?",
+    "priceResponse": "Our country shares are priced at $0.50 each during pre-sale with 10 million shares available per country.",
+    "paymentResponse": "We accept cryptocurrency payments through connected wallets including Metamask, Trust Wallet, and Ledger.",
+    "timeResponse": "Transactions are processed within minutes. If you experience any delays, please contact our support team.",
+    "generalResponse": "Thank you for your message. Our team will look into this and get back to you soon!",
+    "chatClosed": "Chat Closed",
+    "chatClosedDesc": "Your support conversation has been closed. Thank you for contacting us!"
+  },
   "bonds": {
     "trending": "Trending Bonds",
     "trendingDescription": "Discover the hottest and coldest bonds in the market",

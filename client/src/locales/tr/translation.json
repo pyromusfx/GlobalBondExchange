@@ -137,6 +137,28 @@
     "yes": "Evet",
     "no": "Hayır"
   },
+  "support": {
+    "liveSupport": "Canlı Destek",
+    "getHelp": "Destek ekibimizden yardım alın",
+    "liveSupportDesc": "Destek ekibimiz size yardımcı olmak için burada",
+    "minimize": "Küçült",
+    "close": "Kapat",
+    "name": "İsim",
+    "email": "E-posta",
+    "enterName": "İsminizi girin",
+    "enterEmail": "E-posta adresinizi girin",
+    "startChat": "Sohbeti Başlat",
+    "typeMessage": "Mesajınızı yazın...",
+    "formError": "Form Hatası",
+    "fillAllFields": "Lütfen tüm alanları doldurun",
+    "welcomeMessage": "Merhaba {{name}}, size nasıl yardımcı olabiliriz?",
+    "priceResponse": "Ülke hisselerimiz ön satışta 0,50$ fiyatla satılmaktadır ve ülke başına 10 milyon hisse mevcuttur.",
+    "paymentResponse": "Metamask, Trust Wallet ve Ledger dahil olmak üzere bağlı cüzdanlar aracılığıyla kripto para ödemelerini kabul ediyoruz.",
+    "timeResponse": "İşlemler dakikalar içinde işlenir. Herhangi bir gecikme yaşarsanız, lütfen destek ekibimizle iletişime geçin.",
+    "generalResponse": "Mesajınız için teşekkürler. Ekibimiz bunu inceleyecek ve en kısa sürede size geri dönecektir!",
+    "chatClosed": "Sohbet Kapatıldı",
+    "chatClosedDesc": "Destek görüşmeniz kapatıldı. Bizimle iletişime geçtiğiniz için teşekkür ederiz!"
+  },
   "bonds": {
     "trending": "Trend Tahviller",
     "trendingDescription": "Piyasadaki en sıcak ve en soğuk tahvilleri keşfedin",

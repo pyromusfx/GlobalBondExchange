@@ -130,7 +130,7 @@ export default function LiveSupport() {
                 onClick={() => setIsOpen(true)}
               >
                 <MessageCircle size={20} />
-                <span className="hidden sm:inline">{t('support.liveSupport') || "Live Support"}</span>
+                <span className="hidden sm:inline">{t('support.liveSupport') || "Canlı Destek"}</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>
@@ -145,7 +145,7 @@ export default function LiveSupport() {
         <DialogContent className="sm:max-w-md">
           <DialogHeader className="flex flex-row items-center justify-between">
             <div>
-              <DialogTitle>{t('support.liveSupport') || "Live Support"}</DialogTitle>
+              <DialogTitle>{t('support.liveSupport') || "Canlı Destek"}</DialogTitle>
               <DialogDescription>
                 {t('support.liveSupportDesc') || "Our support team is here to help you."}
               </DialogDescription>
