@@ -1,0 +1,1089 @@
+
+      '    rvbP.defer = true;\r\n' +
+      "    rvbP.type = 'text/javascript';\r\n" +
+      "    rvbP.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +\r\n" +
+      "'//revboostprocdnadsprod.azureedge.net/scripts/latest/min.js';\r\n" +
+      '    node.parentNode.insertBefore(rvbP, node);\r\n' +
+      '})();\r\n' +
+      '</script>\r\n' +
+      '\r\n' +
+      '<script>\r\n' +
+      "var script = document.createElement('script');\r\n" +
+      "    script.type = 'text/javascript';\r\n" +
+      "    script.src = 'https://widgets.outbrain.com/outbrain.js';    \r\n" +
+      "    script.setAttribute('async','async');\r\n" +
+      "    document.getElementsByTagName('head')[0].appendChild(script);\r\n" +
+      '</script><script async data-src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script><script async  type="application/ld+json">\r\n' +
+      '{\r\n' +
+      '"@context": "https://schema.org",\r\n' +
+      '"@type": "NewsMediaOrganization",\r\n' +
+      '"name": "The Jerusalem Post",\r\n' +
+      '"alternateName": "JPOST",\r\n' +
+      '"url": "https://www.jpost.com/",\r\n' +
+      '"logo": "https://images.jpost.com/image/upload/v1604486421/Icons/jpost-logo.svg",\r\n' +
+      '"sameAs": [\r\n' +
+      '"https://en.wikipedia.org/wiki/The_Jerusalem_Post",\r\n' +
+      '"https://www.facebook.com/TheJerusalemPost/",\r\n' +
+      '"https://twitter.com/Jerusalem_Post",\r\n' +
+      '"https://www.instagram.com/thejerusalem_post/",\r\n' +
+      '"https://www.youtube.com/channel/UCLLLdCANnMAdMyrXdYbSlxg",\r\n' +
+      '"https://www.reddit.com/domain/jpost.com/",\r\n' +
+      '"https://www.linkedin.com/company/jerusalem-post"]\r\n' +
+      '}\r\n' +
+      '\r\n' +
+      '</script>\r\n' +
+      ' <script async >\r\n' +
+      'if (valcookie == "") {\r\n' +
+      "  var generalAdapex= document.createElement('script');\r\n" +
+      "  generalAdapex.setAttribute('src', 'https://cdn.adapex.io/hb/aaw.jpost.js');\r\n" +
+      "  document.getElementsByTagName('Head')[0].appendChild(generalAdapex);\r\n" +
+      '}\r\n' +
+      '</script><script type="text/javascript">\r\n' +
+      '  (function() {\r\n' +
+      '    var _sf_async_config = window._sf_async_config = (window._sf_async_config || {});\r\n' +
+      '    _sf_async_config.uid = 20047;\r\n' +
+      '    _sf_async_config.domain = "jpost.com"; \r\n' +
+      '    _sf_async_config.flickerControl = false;\r\n' +
+      '    _sf_async_'... 25053 more characters
+  },
+  status: 404
+}
+Updated 1930 countries based on news from The Verge
+Updated 3281 countries based on news from The Local France
+Updated 3860 countries based on news from The Economist
+Error fetching Investing.com Forex feed: AxiosError: Request failed with status code 404
+    at settle (file:///home/sekance/GlobalBondExchange/node_modules/axios/lib/core/settle.js:19:12)
+    at BrotliDecompress.handleStreamEnd (file:///home/sekance/GlobalBondExchange/node_modules/axios/lib/adapters/http.js:599:11)
+    at BrotliDecompress.emit (node:events:529:35)
+    at endReadableNT (node:internal/streams/readable:1400:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+    at Axios.request (file:///home/sekance/GlobalBondExchange/node_modules/axios/lib/core/Axios.js:45:41)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at fetchRSSFeed (/home/sekance/GlobalBondExchange/server/rss-feed.ts:157:22)
+    at async Promise.allSettled (index 22)
+    at fetchAllNewsFeeds (/home/sekance/GlobalBondExchange/server/rss-feed.ts:228:21) {
+  code: 'ERR_BAD_REQUEST',
+  config: {
+    transitional: {
+      silentJSONParsing: true,
+      forcedJSONParsing: true,
+      clarifyTimeoutError: false
+    },
+    adapter: [ 'xhr', 'http', 'fetch' ],
+    transformRequest: [ [Function: transformRequest] ],
+    transformResponse: [ [Function: transformResponse] ],
+    timeout: 0,
+    xsrfCookieName: 'XSRF-TOKEN',
+    xsrfHeaderName: 'X-XSRF-TOKEN',
+    maxContentLength: -1,
+    maxBodyLength: -1,
+    env: { FormData: [Function [FormData]], Blob: [class Blob] },
+    validateStatus: [Function: validateStatus],
+    headers: Object [AxiosHeaders] {
+      Accept: 'application/rss+xml, application/xml, text/xml',
+      'Content-Type': undefined,
+      'User-Agent': 'axios/1.8.4',
+      'Accept-Encoding': 'gzip, compress, deflate, br'
+    },
+    method: 'get',
+    url: 'https://www.investing.com/rss/market_overview_forex.rss',
+    allowAbsoluteUrls: true,
+    data: undefined
+  },
+  request: <ref *1> ClientRequest {
+    _events: [Object: null prototype] {
+      abort: [Function (anonymous)],
+      aborted: [Function (anonymous)],
+      connect: [Function (anonymous)],
+      error: [Function (anonymous)],
+      socket: [Function (anonymous)],
+      timeout: [Function (anonymous)],
+      finish: [Function: requestOnFinish]
+    },
+    _eventsCount: 7,
+    _maxListeners: undefined,
+    outputData: [],
+    outputSize: 0,
+    writable: true,
+    destroyed: true,
+    _last: true,
+    chunkedEncoding: false,
+    shouldKeepAlive: false,
+    maxRequestsOnConnectionReached: false,
+    _defaultKeepAlive: true,
+    useChunkedEncodingByDefault: false,
+    sendDate: false,
+    _removedConnection: false,
+    _removedContLen: false,
+    _removedTE: false,
+    strictContentLength: false,
+    _contentLength: 0,
+    _hasBody: true,
+    _trailer: '',
+    finished: true,
+    _headerSent: true,
+    _closed: true,
+    socket: TLSSocket {
+      _tlsOptions: [Object],
+      _secureEstablished: true,
+      _securePending: false,
+      _newSessionPending: false,
+      _controlReleased: true,
+      secureConnecting: false,
+      _SNICallback: null,
+      servername: 'www.investing.com',
+      alpnProtocol: false,
+      authorized: true,
+      authorizationError: null,
+      encrypted: true,
+      _events: [Object: null prototype],
+      _eventsCount: 9,
+      connecting: false,
+      _hadError: false,
+      _parent: null,
+      _host: 'www.investing.com',
+      _closeAfterHandlingError: false,
+      _readableState: [ReadableState],
+      _maxListeners: undefined,
+      _writableState: [WritableState],
+      allowHalfOpen: false,
+      _sockname: null,
+      _pendingData: null,
+      _pendingEncoding: '',
+      server: undefined,
+      _server: null,
+      ssl: null,
+      _requestCert: true,
+      _rejectUnauthorized: true,
+      parser: null,
+      _httpMessage: [Circular *1],
+      write: [Function: writeAfterFIN],
+      [Symbol(alpncallback)]: null,
+      [Symbol(res)]: null,
+      [Symbol(verified)]: true,
+      [Symbol(pendingSession)]: null,
+      [Symbol(async_id_symbol)]: 6457,
+      [Symbol(kHandle)]: null,
+      [Symbol(lastWriteQueueSize)]: 0,
+      [Symbol(timeout)]: null,
+      [Symbol(kBuffer)]: null,
+      [Symbol(kBufferCb)]: null,
+      [Symbol(kBufferGen)]: null,
+      [Symbol(kCapture)]: false,
+      [Symbol(kSetNoDelay)]: false,
+      [Symbol(kSetKeepAlive)]: true,
+      [Symbol(kSetKeepAliveInitialDelay)]: 60,
+      [Symbol(kBytesRead)]: 49571,
+      [Symbol(kBytesWritten)]: 218,
+      [Symbol(connect-options)]: [Object]
+    },
+    _header: 'GET /rss/market_overview_forex.rss HTTP/1.1\r\n' +
+      'Accept: application/rss+xml, application/xml, text/xml\r\n' +
+      'User-Agent: axios/1.8.4\r\n' +
+      'Accept-Encoding: gzip, compress, deflate, br\r\n' +
+      'Host: www.investing.com\r\n' +
+      'Connection: close\r\n' +
+      '\r\n',
+    _keepAliveTimeout: 0,
+    _onPendingData: [Function: nop],
+    agent: Agent {
+      _events: [Object: null prototype],
+      _eventsCount: 2,
+      _maxListeners: undefined,
+      defaultPort: 443,
+      protocol: 'https:',
+      options: [Object: null prototype],
+      requests: [Object: null prototype] {},
+      sockets: [Object: null prototype] {},
+      freeSockets: [Object: null prototype] {},
+      keepAliveMsecs: 1000,
+      keepAlive: false,
+      maxSockets: Infinity,
+      maxFreeSockets: 256,
+      scheduling: 'lifo',
+      maxTotalSockets: Infinity,
+      totalSocketCount: 0,
+      maxCachedSessions: 100,
+      _sessionCache: [Object],
+      [Symbol(kCapture)]: false
+    },
+    socketPath: undefined,
+    method: 'GET',
+    maxHeaderSize: undefined,
+    insecureHTTPParser: undefined,
+    joinDuplicateHeaders: undefined,
+    path: '/rss/market_overview_forex.rss',
+    _ended: true,
+    res: IncomingMessage {
+      _readableState: [ReadableState],
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      socket: [TLSSocket],
+      httpVersionMajor: 1,
+      httpVersionMinor: 1,
+      httpVersion: '1.1',
+      complete: true,
+      rawHeaders: [Array],
+      rawTrailers: [],
+      joinDuplicateHeaders: undefined,
+      aborted: false,
+      upgrade: false,
+      url: '',
+      method: null,
+      statusCode: 404,
+      statusMessage: 'Not Found',
+      client: [TLSSocket],
+      _consuming: true,
+      _dumped: false,
+      req: [Circular *1],
+      responseUrl: 'https://www.investing.com/rss/market_overview_forex.rss',
+      redirects: [],
+      [Symbol(kCapture)]: false,
+      [Symbol(kHeaders)]: [Object],
+      [Symbol(kHeadersCount)]: 66,
+      [Symbol(kTrailers)]: null,
+      [Symbol(kTrailersCount)]: 0
+    },
+    aborted: false,
+    timeoutCb: null,
+    upgradeOrConnect: false,
+    parser: null,
+    maxHeadersCount: null,
+    reusedSocket: false,
+    host: 'www.investing.com',
+    protocol: 'https:',
+    _redirectable: Writable {
+      _writableState: [WritableState],
+      _events: [Object: null prototype],
+      _eventsCount: 3,
+      _maxListeners: undefined,
+      _options: [Object],
+      _ended: true,
+      _ending: true,
+      _redirectCount: 0,
+      _redirects: [],
+      _requestBodyLength: 0,
+      _requestBodyBuffers: [],
+      _onNativeResponse: [Function (anonymous)],
+      _currentRequest: [Circular *1],
+      _currentUrl: 'https://www.investing.com/rss/market_overview_forex.rss',
+      [Symbol(kCapture)]: false
+    },
+    [Symbol(kCapture)]: false,
+    [Symbol(kBytesWritten)]: 0,
+    [Symbol(kNeedDrain)]: false,
+    [Symbol(corked)]: 0,
+    [Symbol(kOutHeaders)]: [Object: null prototype] {
+      accept: [Array],
+      'user-agent': [Array],
+      'accept-encoding': [Array],
+      host: [Array]
+    },
+    [Symbol(errored)]: null,
+    [Symbol(kHighWaterMark)]: 16384,
+    [Symbol(kRejectNonStandardBodyWrites)]: false,
+    [Symbol(kUniqueHeaders)]: null
+  },
+  response: {
+    status: 404,
+    statusText: 'Not Found',
+    headers: Object [AxiosHeaders] {
+      date: 'Sun, 30 Mar 2025 00:18:05 GMT',
+      'content-type': 'text/html; charset=UTF-8',
+      'transfer-encoding': 'chunked',
+      connection: 'close',
+      vary: 'Accept-Encoding, User-Agent',
+      'set-cookie': [Array],
+      expires: 'Thu, 19 Nov 1981 08:52:00 GMT',
+      'cache-control': 'no-store, no-cache, must-revalidate',
+      pragma: 'no-cache',
+      'cf-cache-status': 'DYNAMIC',
+      server: 'cloudflare',
+      'cf-ray': '92836d806c65367a-FRA',
+      'alt-svc': 'h3=":443"; ma=86400'
+    },
+    config: {
+      transitional: [Object],
+      adapter: [Array],
+      transformRequest: [Array],
+      transformResponse: [Array],
+      timeout: 0,
+      xsrfCookieName: 'XSRF-TOKEN',
+      xsrfHeaderName: 'X-XSRF-TOKEN',
+      maxContentLength: -1,
+      maxBodyLength: -1,
+      env: [Object],
+      validateStatus: [Function: validateStatus],
+      headers: [Object [AxiosHeaders]],
+      method: 'get',
+      url: 'https://www.investing.com/rss/market_overview_forex.rss',
+      allowAbsoluteUrls: true,
+      data: undefined
+    },
+    request: <ref *1> ClientRequest {
+      _events: [Object: null prototype],
+      _eventsCount: 7,
+      _maxListeners: undefined,
+      outputData: [],
+      outputSize: 0,
+      writable: true,
+      destroyed: true,
+      _last: true,
+      chunkedEncoding: false,
+      shouldKeepAlive: false,
+      maxRequestsOnConnectionReached: false,
+      _defaultKeepAlive: true,
+      useChunkedEncodingByDefault: false,
+      sendDate: false,
+      _removedConnection: false,
+      _removedContLen: false,
+      _removedTE: false,
+      strictContentLength: false,
+      _contentLength: 0,
+      _hasBody: true,
+      _trailer: '',
+      finished: true,
+      _headerSent: true,
+      _closed: true,
+      socket: [TLSSocket],
+      _header: 'GET /rss/market_overview_forex.rss HTTP/1.1\r\n' +
+        'Accept: application/rss+xml, application/xml, text/xml\r\n' +
+        'User-Agent: axios/1.8.4\r\n' +
+        'Accept-Encoding: gzip, compress, deflate, br\r\n' +
+        'Host: www.investing.com\r\n' +
+        'Connection: close\r\n' +
+        '\r\n',
+      _keepAliveTimeout: 0,
+      _onPendingData: [Function: nop],
+      agent: [Agent],
+      socketPath: undefined,
+      method: 'GET',
+      maxHeaderSize: undefined,
+      insecureHTTPParser: undefined,
+      joinDuplicateHeaders: undefined,
+      path: '/rss/market_overview_forex.rss',
+      _ended: true,
+      res: [IncomingMessage],
+      aborted: false,
+      timeoutCb: null,
+      upgradeOrConnect: false,
+      parser: null,
+      maxHeadersCount: null,
+      reusedSocket: false,
+      host: 'www.investing.com',
+      protocol: 'https:',
+      _redirectable: [Writable],
+      [Symbol(kCapture)]: false,
+      [Symbol(kBytesWritten)]: 0,
+      [Symbol(kNeedDrain)]: false,
+      [Symbol(corked)]: 0,
+      [Symbol(kOutHeaders)]: [Object: null prototype],
+      [Symbol(errored)]: null,
+      [Symbol(kHighWaterMark)]: 16384,
+      [Symbol(kRejectNonStandardBodyWrites)]: false,
+      [Symbol(kUniqueHeaders)]: null
+    },
+    data: '    <!DOCTYPE HTML>\n' +
+      '    <html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:schema="http://schema.org/" class="com" lang="en" geo="DE">\n' +
+      '    <head>\n' +
+      '    \t    <script src="https://cdn.pbxai.com/aba93a3a-0792-49b0-9740-2018808409c4.js" async></script>\n' +
+      '    \t<link rel="dns-prefetch" href="https://i-invdn-com.investing.com" /> \n' +
+      '\t<link rel="dns-prefetch" href="https://a-invdn-com.investing.com" />\n' +
+      '\n' +
+      '\t<link rel="preconnect" href="//si.education.investing.com" />\n' +
+      '\t<link rel="dns-prefetch" href="//si.education.investing.com" />\n' +
+      '\t<link rel="preconnect" href="//c.amazon-adsystem.com" />\n' +
+      '\t<link rel="dns-prefetch" href="//c.amazon-adsystem.com" />\n' +
+      '        <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>\n' +
+      '    \t    <script>\n' +
+      '        // Load ToolSet hardcoded instead of from file\n' +
+      '        /**\n' +
+      '         * ToolSet (Investing Lib for DFP)\n' +
+      '         */\n' +
+      '        (()=>{\n' +
+      '            let lcl = console.log,\n' +
+      '                defineSlot = ({ defineSlot, sizes, adSlotDivID, middleDefinition, collapseDiv }, slotHolder) => {\n' +
+      '                    if (!slotHolder.slots) {\n' +
+      '                        slotHolder.slots = {};\n' +
+      '                    }\n' +
+      '                    if (collapseDiv && slot) {\n' +
+      '                        slot.setCollapseEmptyDiv(...collapseDiv);\n' +
+      '                    }\n' +
+      '                    if (middleDefinition && slot) {\n' +
+      '                        slot.defineSizeMapping(middleDefinition.reduce((acc, item) => acc.addSize(...item), window.googletag.sizeMapping()).build());\n' +
+      '                    }\n' +
+      '                                            if(!window.headerBidding) {\n' +
+      "                            slot.setTargeting('refresh_counter', '0');\n" +
+      '                        }\n' +
+      '                                        slotHolder.slots[defineSlot] = slot;\n' +
+      '\n' +
+      "                    window.googletag.pubads().addEventListener('slotRenderEnded',\n" +
+      '                        function(event) {\n' +
+      '                            var element = document.getElementById(event.slot.getSlotElementId());\n' +
+      '                            element.style.backgroundColor = null;\n' +
+      '                        });\n' +
+      '                },\n' +
+      '                displaySlot = (containerId) => {\n' +
+      '                    window.dfpSlots = window.dfpSlots || [];\n' +
+      '                    window.dfpSlotFlag = window.dfpSlotFlag || [];\n' +
+      "                    if(typeof window.dfpFlag !== 'undefined') {\n" +
+      '                        window.googletag.cmd.push(() => window.googletag.display(containerId))\n' +
+      '                    }\n' +
+      '                    else {\n' +
+      '                        window.dfpSlotFlag[containerId] = setInterval(() => {\n' +
+      "                            if( typeof window.dfpFlag !== 'undefined') {\n" +
+      '                                window.googletag.cmd.push(() => window.googletag.display(containerId))\n' +
+      '                                clearInterval(window.dfpSlotFlag[containerId]);\n' +
+      '                            }\n' +
+      '                        }, 50);\n' +
+      '                    }\n' +
+      '                };\n' +
+      '\n' +
+      '\n' +
+      '            window._ = {\n' +
+      '                ADVERTISEMENT_HEIGHT: 25,\n' +
+      '                MIN_AD_HEIGHT_CLOSE_BUTTON: 200,\n' +
+      '                each: (obj, iterator) => {\n' +
+      "                    if (typeof(obj) === 'object') {\n" +
+      '                        for (let key in obj) {\n' +
+      '                            iterator(obj[key], key);\n' +
+      '                        }\n' +
+      '                    } else {\n' +
+      '                        obj.forEach(iterator);\n' +
+      '                    }\n' +
+      '                },\n' +
+      '                setTargeting: (key, value) => {\n' +
+      '                    window.googletag.pubads().setTargeting(key, value);\n' +
+      '                },\n' +
+      '                defineSlotPB: (settings) => defineSlot(settings, window.pbjs), // Both of these methods must be called\n' +
+      '                defineSlot: (settings) => defineSlot(settings, window.googletag), // when globals are already available\n' +
+      '                displaySlot,\n' +
+      '                manageAd: (event) => {\n' +
+      '                    if(_.isShowAdvertisementPrefix(event)){\n' +
+      '                        _.showAdvertisementPrefix(event);\n' +
+      '                    }\n' +
+      '                    _.resizeContainer(event);\n' +
+      '                    if(_.isShowCloseButton(event)){\n' +
+      '                        _.showCloseElement(event);\n' +
+      '                    }\n' +
+      "                    if(event.slot.getSlotElementId() === 'div-gpt-ad-000000001-0' && !event.isEmpty){\n" +
+      '                        document.querySelector(".js-sticky-footer-close").classList.remove("displayNoneImp");\n' +
+      '                    }\n' +
+      '                    //TODO: we need to find a better solution (use adunits.phpparent attrs) for sepcific ads\n' +
+      '                    if (event.slot.getSlotElementId() === "div-gpt-ad-1541684394813-0") {\n' +
+      "                        let buySellDiv = document.querySelector('.overViewBox .buySellDiv');\n" +
+      "                        let hasVideoEl = document.querySelector('.overViewBox .has-video');\n" +
+      '                        if (event.isEmpty) {\n' +
+      '                            if(buySellDiv) {\n' +
+      '                                buySellDiv.classList.add("displayNone");\n' +
+      '                            }\n' +
+      '                            if(hasVideoEl) {\n' +
+      "                                hasVideoEl.classList.add('no-ad-loaded');\n" +
+      '                            }\n' +
+      '                        } else {\n' +
+      '                            if(buySellDiv) {\n' +
+      "                                buySellDiv.classList.remove('displayNone');\n" +
+      '                            }\n' +
+      '                            if(hasVideoEl) {\n' +
+      "                                hasVideoEl.classList.remove('no-ad-loaded');\n" +
+      '                            }\n' +
+      '                        }\n' +
+      '                    }\n' +
+      '                    //remove adFree sales popup if no DFP content\n' +
+      "                    if(event.slot.getSlotElementId() === 'dfpWrapper' && event.isEmpty){\n" +
+      "                        document.querySelector('#adFreeSalePopup').remove();\n" +
+      '                    }\n' +
+      '                },\n' +
+      '                showCloseElement: (event) => {\n' +
+      "                    document.getElementById(event.slot.getSlotElementId()).nextElementSibling.classList.remove('opacityNone');\n" +
+      '                },\n' +
+      '                showAdvertisementPrefix: (event) => {\n' +
+      '                    let dfpElement \t\t\t = document.getElementById(event.slot.getSlotElementId());\n' +
+      "                    let advertisementDiv = _.createAdvertisementPrefix(dfpElement.getAttribute('advertisementText'));\n" +
+      '                    dfpElement.prepend(advertisementDiv);\n' +
+      '                },\n' +
+      '                createAdvertisementPrefix: (text) => {\n' +
+      "                    let advertisementDiv     \t\t= document.createElement('div');\n" +
+      "                    let advertisementText \t\t\t= document.createElement('span');\n" +
+      '                    advertisementDiv.className \t\t= "advertisement-header";\n' +
+      '                    advertisementText.className \t= "text";\n' +
+      '                    advertisementText.textContent \t= text;\n' +
+      '                    advertisementDiv.append(advertisementText);\n' +
+      '                    return advertisementDiv;\n' +
+      '                },\n' +
+      '                resizeContainer: (event) => {\n' +
+      '                    if(event.isEmpty) {\n' +
+      '                        return;\n' +
+      '                    }\n' +
+      '                    let el = document.getElementById(event.slot.getSlotElementId());\n' +
+      "                    console.log('full event');\n" +
+      '                    console.log(JSON.stringify(event));\n' +
+      '\t\t\t\t\tif(event.slot.getSlotElementId().includes("Billboard_Default")) {\n' +
+      '\t\t\t\t\t\treturn;\n' +
+      '\t\t\t\t\t}\n' +
+      "                    if(!event.isEmpty && parseInt(el.getAttribute('resize'))){\n" +
+      '                        let advertisementHeight = 0;\n' +
+      '                        if (_.isShowAdvertisementPrefix(event)) {\n' +
+      "                            el.querySelector('.advertisement-header').style.width = event.size[0];\n" +
+      '                            advertisementHeight = _.ADVERTISEMENT_HEIGHT;\n' +
+      '                        }\n' +
+      '\n' +
+      '                        // Sometimes, prebid send us size of [1,1] for the billboard, so we get the height of the banner manually from the div generated from the child (google div).\n' +
+      '                        let billboardPrebidException = (event.slot.getSlotElementId().includes("Billboard_Default") && event.size[1] === 1 && el.childNodes[3].clientHeight > 1);\n' +
+      '                        if(billboardPrebidException && el.style.height === "276px") { // if we got the bug but, we have the big base size, we stay like this.\n' +
+      "                            console.log('bug of prebid is suppose to happen NOW')\n" +
+      '                            return;\n' +
+      '                        }\n' +
+      '                        let newHeight = (billboardPrebidException) ? el.childNodes[3].clientHeight : event.size[1];\n' +
+      "                        console.log('NEW HEIGHT');\n" +
+      '                        console.log(event.size[1] === 1 && billboardPrebidException);\n' +
+      "                        console.log('new size: '+ newHeight);\n" +
+      "                        el.style.height = newHeight + advertisementHeight + 1 + 'px';\n" +
+      "                        if (hasSomeParentTheClass(el, 'wideTopBanner')) {\n" +
+      "                            let parents = document.querySelectorAll('.midHeader .wideTopBanner');\n" +
+      '                            let parents_array = [...parents]; // convert to array\n' +
+      "                            parents_array.forEach(div => {div.style.height = 'auto';});\n" +
+      '                        }\n' +
+      '                    }\n' +
+      '                },\n' +
+      "                isFu: obj => typeof(obj) === 'function',\n" +
+      '                attachEvents: () => {\n' +
+      "                    window.googletag.pubads().addEventListener('slotRenderEnded', (event) => {_.manageAd(event)});\n" +
+      "                    let el = document.querySelector('.dfpCloseBtn');\n" +
+      '                    if(el !== null) {\n' +
+      "                        el.addEventListener('click', (event) => {\n" +
+      '                            $(event.target).parent().hide();\n' +
+      '                        });\n' +
+      '                    }\n' +
+      '\n' +
+      "                    let stickyEl = document.querySelector('.js-sticky-footer-close');\n" +
+      '                    if(stickyEl !== null) {\n' +
+      "                        stickyEl.addEventListener('click', (event) => {document.getElementById('sticky_footer').remove();});\n" +
+      '                    }\n' +
+      '                },\n' +
+      '                isShowCloseButton: event => {\n' +
+      '\n' +
+      '                    return !event.i'... 194109 more characters
+  },
+  status: 404
+}
+Error fetching Investing.com Commodities feed: AxiosError: Request failed with status code 404
+    at settle (file:///home/sekance/GlobalBondExchange/node_modules/axios/lib/core/settle.js:19:12)
+    at BrotliDecompress.handleStreamEnd (file:///home/sekance/GlobalBondExchange/node_modules/axios/lib/adapters/http.js:599:11)
+    at BrotliDecompress.emit (node:events:529:35)
+    at endReadableNT (node:internal/streams/readable:1400:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+    at Axios.request (file:///home/sekance/GlobalBondExchange/node_modules/axios/lib/core/Axios.js:45:41)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at fetchRSSFeed (/home/sekance/GlobalBondExchange/server/rss-feed.ts:157:22)
+    at async Promise.allSettled (index 21)
+    at fetchAllNewsFeeds (/home/sekance/GlobalBondExchange/server/rss-feed.ts:228:21) {
+  code: 'ERR_BAD_REQUEST',
+  config: {
+    transitional: {
+      silentJSONParsing: true,
+      forcedJSONParsing: true,
+      clarifyTimeoutError: false
+    },
+    adapter: [ 'xhr', 'http', 'fetch' ],
+    transformRequest: [ [Function: transformRequest] ],
+    transformResponse: [ [Function: transformResponse] ],
+    timeout: 0,
+    xsrfCookieName: 'XSRF-TOKEN',
+    xsrfHeaderName: 'X-XSRF-TOKEN',
+    maxContentLength: -1,
+    maxBodyLength: -1,
+    env: { FormData: [Function [FormData]], Blob: [class Blob] },
+    validateStatus: [Function: validateStatus],
+    headers: Object [AxiosHeaders] {
+      Accept: 'application/rss+xml, application/xml, text/xml',
+      'Content-Type': undefined,
+      'User-Agent': 'axios/1.8.4',
+      'Accept-Encoding': 'gzip, compress, deflate, br'
+    },
+    method: 'get',
+    url: 'https://www.investing.com/rss/market_overview_Commodities.rss',
+    allowAbsoluteUrls: true,
+    data: undefined
+  },
+  request: <ref *1> ClientRequest {
+    _events: [Object: null prototype] {
+      abort: [Function (anonymous)],
+      aborted: [Function (anonymous)],
+      connect: [Function (anonymous)],
+      error: [Function (anonymous)],
+      socket: [Function (anonymous)],
+      timeout: [Function (anonymous)],
+      finish: [Function: requestOnFinish]
+    },
+    _eventsCount: 7,
+    _maxListeners: undefined,
+    outputData: [],
+    outputSize: 0,
+    writable: true,
+    destroyed: true,
+    _last: true,
+    chunkedEncoding: false,
+    shouldKeepAlive: false,
+    maxRequestsOnConnectionReached: false,
+    _defaultKeepAlive: true,
+    useChunkedEncodingByDefault: false,
+    sendDate: false,
+    _removedConnection: false,
+    _removedContLen: false,
+    _removedTE: false,
+    strictContentLength: false,
+    _contentLength: 0,
+    _hasBody: true,
+    _trailer: '',
+    finished: true,
+    _headerSent: true,
+    _closed: true,
+    socket: TLSSocket {
+      _tlsOptions: [Object],
+      _secureEstablished: true,
+      _securePending: false,
+      _newSessionPending: false,
+      _controlReleased: true,
+      secureConnecting: false,
+      _SNICallback: null,
+      servername: 'www.investing.com',
+      alpnProtocol: false,
+      authorized: true,
+      authorizationError: null,
+      encrypted: true,
+      _events: [Object: null prototype],
+      _eventsCount: 9,
+      connecting: false,
+      _hadError: false,
+      _parent: null,
+      _host: 'www.investing.com',
+      _closeAfterHandlingError: false,
+      _readableState: [ReadableState],
+      _maxListeners: undefined,
+      _writableState: [WritableState],
+      allowHalfOpen: false,
+      _sockname: null,
+      _pendingData: null,
+      _pendingEncoding: '',
+      server: undefined,
+      _server: null,
+      ssl: null,
+      _requestCert: true,
+      _rejectUnauthorized: true,
+      parser: null,
+      _httpMessage: [Circular *1],
+      write: [Function: writeAfterFIN],
+      [Symbol(alpncallback)]: null,
+      [Symbol(res)]: null,
+      [Symbol(verified)]: true,
+      [Symbol(pendingSession)]: null,
+      [Symbol(async_id_symbol)]: 6452,
+      [Symbol(kHandle)]: null,
+      [Symbol(lastWriteQueueSize)]: 0,
+      [Symbol(timeout)]: null,
+      [Symbol(kBuffer)]: null,
+      [Symbol(kBufferCb)]: null,
+      [Symbol(kBufferGen)]: null,
+      [Symbol(kCapture)]: false,
+      [Symbol(kSetNoDelay)]: false,
+      [Symbol(kSetKeepAlive)]: true,
+      [Symbol(kSetKeepAliveInitialDelay)]: 60,
+      [Symbol(kBytesRead)]: 49667,
+      [Symbol(kBytesWritten)]: 224,
+      [Symbol(connect-options)]: [Object]
+    },
+    _header: 'GET /rss/market_overview_Commodities.rss HTTP/1.1\r\n' +
+      'Accept: application/rss+xml, application/xml, text/xml\r\n' +
+      'User-Agent: axios/1.8.4\r\n' +
+      'Accept-Encoding: gzip, compress, deflate, br\r\n' +
+      'Host: www.investing.com\r\n' +
+      'Connection: close\r\n' +
+      '\r\n',
+    _keepAliveTimeout: 0,
+    _onPendingData: [Function: nop],
+    agent: Agent {
+      _events: [Object: null prototype],
+      _eventsCount: 2,
+      _maxListeners: undefined,
+      defaultPort: 443,
+      protocol: 'https:',
+      options: [Object: null prototype],
+      requests: [Object: null prototype] {},
+      sockets: [Object: null prototype] {},
+      freeSockets: [Object: null prototype] {},
+      keepAliveMsecs: 1000,
+      keepAlive: false,
+      maxSockets: Infinity,
+      maxFreeSockets: 256,
+      scheduling: 'lifo',
+      maxTotalSockets: Infinity,
+      totalSocketCount: 0,
+      maxCachedSessions: 100,
+      _sessionCache: [Object],
+      [Symbol(kCapture)]: false
+    },
+    socketPath: undefined,
+    method: 'GET',
+    maxHeaderSize: undefined,
+    insecureHTTPParser: undefined,
+    joinDuplicateHeaders: undefined,
+    path: '/rss/market_overview_Commodities.rss',
+    _ended: true,
+    res: IncomingMessage {
+      _readableState: [ReadableState],
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      socket: [TLSSocket],
+      httpVersionMajor: 1,
+      httpVersionMinor: 1,
+      httpVersion: '1.1',
+      complete: true,
+      rawHeaders: [Array],
+      rawTrailers: [],
+      joinDuplicateHeaders: undefined,
+      aborted: false,
+      upgrade: false,
+      url: '',
+      method: null,
+      statusCode: 404,
+      statusMessage: 'Not Found',
+      client: [TLSSocket],
+      _consuming: true,
+      _dumped: false,
+      req: [Circular *1],
+      responseUrl: 'https://www.investing.com/rss/market_overview_Commodities.rss',
+      redirects: [],
+      [Symbol(kCapture)]: false,
+      [Symbol(kHeaders)]: [Object],
+      [Symbol(kHeadersCount)]: 66,
+      [Symbol(kTrailers)]: null,
+      [Symbol(kTrailersCount)]: 0
+    },
+    aborted: false,
+    timeoutCb: null,
+    upgradeOrConnect: false,
+    parser: null,
+    maxHeadersCount: null,
+    reusedSocket: false,
+    host: 'www.investing.com',
+    protocol: 'https:',
+    _redirectable: Writable {
+      _writableState: [WritableState],
+      _events: [Object: null prototype],
+      _eventsCount: 3,
+      _maxListeners: undefined,
+      _options: [Object],
+      _ended: true,
+      _ending: true,
+      _redirectCount: 0,
+      _redirects: [],
+      _requestBodyLength: 0,
+      _requestBodyBuffers: [],
+      _onNativeResponse: [Function (anonymous)],
+      _currentRequest: [Circular *1],
+      _currentUrl: 'https://www.investing.com/rss/market_overview_Commodities.rss',
+      [Symbol(kCapture)]: false
+    },
+    [Symbol(kCapture)]: false,
+    [Symbol(kBytesWritten)]: 0,
+    [Symbol(kNeedDrain)]: false,
+    [Symbol(corked)]: 0,
+    [Symbol(kOutHeaders)]: [Object: null prototype] {
+      accept: [Array],
+      'user-agent': [Array],
+      'accept-encoding': [Array],
+      host: [Array]
+    },
+    [Symbol(errored)]: null,
+    [Symbol(kHighWaterMark)]: 16384,
+    [Symbol(kRejectNonStandardBodyWrites)]: false,
+    [Symbol(kUniqueHeaders)]: null
+  },
+  response: {
+    status: 404,
+    statusText: 'Not Found',
+    headers: Object [AxiosHeaders] {
+      date: 'Sun, 30 Mar 2025 00:18:06 GMT',
+      'content-type': 'text/html; charset=UTF-8',
+      'transfer-encoding': 'chunked',
+      connection: 'close',
+      vary: 'Accept-Encoding, User-Agent',
+      'set-cookie': [Array],
+      expires: 'Thu, 19 Nov 1981 08:52:00 GMT',
+      'cache-control': 'no-store, no-cache, must-revalidate',
+      pragma: 'no-cache',
+      'cf-cache-status': 'DYNAMIC',
+      server: 'cloudflare',
+      'cf-ray': '92836d806f8fd2a4-FRA',
+      'alt-svc': 'h3=":443"; ma=86400'
+    },
+    config: {
+      transitional: [Object],
+      adapter: [Array],
+      transformRequest: [Array],
+      transformResponse: [Array],
+      timeout: 0,
+      xsrfCookieName: 'XSRF-TOKEN',
+      xsrfHeaderName: 'X-XSRF-TOKEN',
+      maxContentLength: -1,
+      maxBodyLength: -1,
+      env: [Object],
+      validateStatus: [Function: validateStatus],
+      headers: [Object [AxiosHeaders]],
+      method: 'get',
+      url: 'https://www.investing.com/rss/market_overview_Commodities.rss',
+      allowAbsoluteUrls: true,
+      data: undefined
+    },
+    request: <ref *1> ClientRequest {
+      _events: [Object: null prototype],
+      _eventsCount: 7,
+      _maxListeners: undefined,
+      outputData: [],
+      outputSize: 0,
+      writable: true,
+      destroyed: true,
+      _last: true,
+      chunkedEncoding: false,
+      shouldKeepAlive: false,
+      maxRequestsOnConnectionReached: false,
+      _defaultKeepAlive: true,
+      useChunkedEncodingByDefault: false,
+      sendDate: false,
+      _removedConnection: false,
+      _removedContLen: false,
+      _removedTE: false,
+      strictContentLength: false,
+      _contentLength: 0,
+      _hasBody: true,
+      _trailer: '',
+      finished: true,
+      _headerSent: true,
+      _closed: true,
+      socket: [TLSSocket],
+      _header: 'GET /rss/market_overview_Commodities.rss HTTP/1.1\r\n' +
+        'Accept: application/rss+xml, application/xml, text/xml\r\n' +
+        'User-Agent: axios/1.8.4\r\n' +
+        'Accept-Encoding: gzip, compress, deflate, br\r\n' +
+        'Host: www.investing.com\r\n' +
+        'Connection: close\r\n' +
+        '\r\n',
+      _keepAliveTimeout: 0,
+      _onPendingData: [Function: nop],
+      agent: [Agent],
+      socketPath: undefined,
+      method: 'GET',
+      maxHeaderSize: undefined,
+      insecureHTTPParser: undefined,
+      joinDuplicateHeaders: undefined,
+      path: '/rss/market_overview_Commodities.rss',
+      _ended: true,
+      res: [IncomingMessage],
+      aborted: false,
+      timeoutCb: null,
+      upgradeOrConnect: false,
+      parser: null,
+      maxHeadersCount: null,
+      reusedSocket: false,
+      host: 'www.investing.com',
+      protocol: 'https:',
+      _redirectable: [Writable],
+      [Symbol(kCapture)]: false,
+      [Symbol(kBytesWritten)]: 0,
+      [Symbol(kNeedDrain)]: false,
+      [Symbol(corked)]: 0,
+      [Symbol(kOutHeaders)]: [Object: null prototype],
+      [Symbol(errored)]: null,
+      [Symbol(kHighWaterMark)]: 16384,
+      [Symbol(kRejectNonStandardBodyWrites)]: false,
+      [Symbol(kUniqueHeaders)]: null
+    },
+    data: '    <!DOCTYPE HTML>\n' +
+      '    <html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:schema="http://schema.org/" class="com" lang="en" geo="DE">\n' +
+      '    <head>\n' +
+      '    \t    <script src="https://cdn.pbxai.com/aba93a3a-0792-49b0-9740-2018808409c4.js" async></script>\n' +
+      '    \t<link rel="dns-prefetch" href="https://i-invdn-com.investing.com" /> \n' +
+      '\t<link rel="dns-prefetch" href="https://a-invdn-com.investing.com" />\n' +
+      '\n' +
+      '\t<link rel="preconnect" href="//si.education.investing.com" />\n' +
+      '\t<link rel="dns-prefetch" href="//si.education.investing.com" />\n' +
+      '\t<link rel="preconnect" href="//c.amazon-adsystem.com" />\n' +
+      '\t<link rel="dns-prefetch" href="//c.amazon-adsystem.com" />\n' +
+      '        <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>\n' +
+      '    \t    <script>\n' +
+      '        // Load ToolSet hardcoded instead of from file\n' +
+      '        /**\n' +
+      '         * ToolSet (Investing Lib for DFP)\n' +
+      '         */\n' +
+      '        (()=>{\n' +
+      '            let lcl = console.log,\n' +
+      '                defineSlot = ({ defineSlot, sizes, adSlotDivID, middleDefinition, collapseDiv }, slotHolder) => {\n' +
+      '                    if (!slotHolder.slots) {\n' +
+      '                        slotHolder.slots = {};\n' +
+      '                    }\n' +
+      '                    if (collapseDiv && slot) {\n' +
+      '                        slot.setCollapseEmptyDiv(...collapseDiv);\n' +
+      '                    }\n' +
+      '                    if (middleDefinition && slot) {\n' +
+      '                        slot.defineSizeMapping(middleDefinition.reduce((acc, item) => acc.addSize(...item), window.googletag.sizeMapping()).build());\n' +
+      '                    }\n' +
+      '                                            if(!window.headerBidding) {\n' +
+      "                            slot.setTargeting('refresh_counter', '0');\n" +
+      '                        }\n' +
+      '                                        slotHolder.slots[defineSlot] = slot;\n' +
+      '\n' +
+      "                    window.googletag.pubads().addEventListener('slotRenderEnded',\n" +
+      '                        function(event) {\n' +
+      '                            var element = document.getElementById(event.slot.getSlotElementId());\n' +
+      '                            element.style.backgroundColor = null;\n' +
+      '                        });\n' +
+      '                },\n' +
+      '                displaySlot = (containerId) => {\n' +
+      '                    window.dfpSlots = window.dfpSlots || [];\n' +
+      '                    window.dfpSlotFlag = window.dfpSlotFlag || [];\n' +
+      "                    if(typeof window.dfpFlag !== 'undefined') {\n" +
+      '                        window.googletag.cmd.push(() => window.googletag.display(containerId))\n' +
+      '                    }\n' +
+      '                    else {\n' +
+      '                        window.dfpSlotFlag[containerId] = setInterval(() => {\n' +
+      "                            if( typeof window.dfpFlag !== 'undefined') {\n" +
+      '                                window.googletag.cmd.push(() => window.googletag.display(containerId))\n' +
+      '                                clearInterval(window.dfpSlotFlag[containerId]);\n' +
+      '                            }\n' +
+      '                        }, 50);\n' +
+      '                    }\n' +
+      '                };\n' +
+      '\n' +
+      '\n' +
+      '            window._ = {\n' +
+      '                ADVERTISEMENT_HEIGHT: 25,\n' +
+      '                MIN_AD_HEIGHT_CLOSE_BUTTON: 200,\n' +
+      '                each: (obj, iterator) => {\n' +
+      "                    if (typeof(obj) === 'object') {\n" +
+      '                        for (let key in obj) {\n' +
+      '                            iterator(obj[key], key);\n' +
+      '                        }\n' +
+      '                    } else {\n' +
+      '                        obj.forEach(iterator);\n' +
+      '                    }\n' +
+      '                },\n' +
+      '                setTargeting: (key, value) => {\n' +
+      '                    window.googletag.pubads().setTargeting(key, value);\n' +
+      '                },\n' +
+      '                defineSlotPB: (settings) => defineSlot(settings, window.pbjs), // Both of these methods must be called\n' +
+      '                defineSlot: (settings) => defineSlot(settings, window.googletag), // when globals are already available\n' +
+      '                displaySlot,\n' +
+      '                manageAd: (event) => {\n' +
+      '                    if(_.isShowAdvertisementPrefix(event)){\n' +
+      '                        _.showAdvertisementPrefix(event);\n' +
+      '                    }\n' +
+      '                    _.resizeContainer(event);\n' +
+      '                    if(_.isShowCloseButton(event)){\n' +
+      '                        _.showCloseElement(event);\n' +
+      '                    }\n' +
+      "                    if(event.slot.getSlotElementId() === 'div-gpt-ad-000000001-0' && !event.isEmpty){\n" +
+      '                        document.querySelector(".js-sticky-footer-close").classList.remove("displayNoneImp");\n' +
+      '                    }\n' +
+      '                    //TODO: we need to find a better solution (use adunits.phpparent attrs) for sepcific ads\n' +
+      '                    if (event.slot.getSlotElementId() === "div-gpt-ad-1541684394813-0") {\n' +
+      "                        let buySellDiv = document.querySelector('.overViewBox .buySellDiv');\n" +
+      "                        let hasVideoEl = document.querySelector('.overViewBox .has-video');\n" +
+      '                        if (event.isEmpty) {\n' +
+      '                            if(buySellDiv) {\n' +
+      '                                buySellDiv.classList.add("displayNone");\n' +
+      '                            }\n' +
+      '                            if(hasVideoEl) {\n' +
+      "                                hasVideoEl.classList.add('no-ad-loaded');\n" +
+      '                            }\n' +
+      '                        } else {\n' +
+      '                            if(buySellDiv) {\n' +
+      "                                buySellDiv.classList.remove('displayNone');\n" +
+      '                            }\n' +
+      '                            if(hasVideoEl) {\n' +
+      "                                hasVideoEl.classList.remove('no-ad-loaded');\n" +
+      '                            }\n' +
+      '                        }\n' +
+      '                    }\n' +
+      '                    //remove adFree sales popup if no DFP content\n' +
+      "                    if(event.slot.getSlotElementId() === 'dfpWrapper' && event.isEmpty){\n" +
+      "                        document.querySelector('#adFreeSalePopup').remove();\n" +
+      '                    }\n' +
+      '                },\n' +
+      '                showCloseElement: (event) => {\n' +
+      "                    document.getElementById(event.slot.getSlotElementId()).nextElementSibling.classList.remove('opacityNone');\n" +
+      '                },\n' +
+      '                showAdvertisementPrefix: (event) => {\n' +
+      '                    let dfpElement \t\t\t = document.getElementById(event.slot.getSlotElementId());\n' +
+      "                    let advertisementDiv = _.createAdvertisementPrefix(dfpElement.getAttribute('advertisementText'));\n" +
+      '                    dfpElement.prepend(advertisementDiv);\n' +
+      '                },\n' +
+      '                createAdvertisementPrefix: (text) => {\n' +
+      "                    let advertisementDiv     \t\t= document.createElement('div');\n" +
+      "                    let advertisementText \t\t\t= document.createElement('span');\n" +
+      '                    advertisementDiv.className \t\t= "advertisement-header";\n' +
+      '                    advertisementText.className \t= "text";\n' +
+      '                    advertisementText.textContent \t= text;\n' +
+      '                    advertisementDiv.append(advertisementText);\n' +
+      '                    return advertisementDiv;\n' +
+      '                },\n' +
+      '                resizeContainer: (event) => {\n' +
+      '                    if(event.isEmpty) {\n' +
+      '                        return;\n' +
+      '                    }\n' +
+      '                    let el = document.getElementById(event.slot.getSlotElementId());\n' +
+      "                    console.log('full event');\n" +
+      '                    console.log(JSON.stringify(event));\n' +
+      '\t\t\t\t\tif(event.slot.getSlotElementId().includes("Billboard_Default")) {\n' +
+      '\t\t\t\t\t\treturn;\n' +
+      '\t\t\t\t\t}\n' +
+      "                    if(!event.isEmpty && parseInt(el.getAttribute('resize'))){\n" +
+      '                        let advertisementHeight = 0;\n' +
+      '                        if (_.isShowAdvertisementPrefix(event)) {\n' +
+      "                            el.querySelector('.advertisement-header').style.width = event.size[0];\n" +
+      '                            advertisementHeight = _.ADVERTISEMENT_HEIGHT;\n' +
+      '                        }\n' +
+      '\n' +
+      '                        // Sometimes, prebid send us size of [1,1] for the billboard, so we get the height of the banner manually from the div generated from the child (google div).\n' +
+      '                        let billboardPrebidException = (event.slot.getSlotElementId().includes("Billboard_Default") && event.size[1] === 1 && el.childNodes[3].clientHeight > 1);\n' +
+      '                        if(billboardPrebidException && el.style.height === "276px") { // if we got the bug but, we have the big base size, we stay like this.\n' +
+      "                            console.log('bug of prebid is suppose to happen NOW')\n" +
+      '                            return;\n' +
+      '                        }\n' +
+      '                        let newHeight = (billboardPrebidException) ? el.childNodes[3].clientHeight : event.size[1];\n' +
+      "                        console.log('NEW HEIGHT');\n" +
+      '                        console.log(event.size[1] === 1 && billboardPrebidException);\n' +
+      "                        console.log('new size: '+ newHeight);\n" +
+      "                        el.style.height = newHeight + advertisementHeight + 1 + 'px';\n" +
+      "                        if (hasSomeParentTheClass(el, 'wideTopBanner')) {\n" +
+      "                            let parents = document.querySelectorAll('.midHeader .wideTopBanner');\n" +
+      '                            let parents_array = [...parents]; // convert to array\n' +
+      "                            parents_array.forEach(div => {div.style.height = 'auto';});\n" +
+      '                        }\n' +
+      '                    }\n' +
+      '                },\n' +
+      "                isFu: obj => typeof(obj) === 'function',\n" +
+      '                attachEvents: () => {\n' +
+      "                    window.googletag.pubads().addEventListener('slotRenderEnded', (event) => {_.manageAd(event)});\n" +
+      "                    let el = document.querySelector('.dfpCloseBtn');\n" +
+      '                    if(el !== null) {\n' +
+      "                        el.addEventListener('click', (event) => {\n" +
+      '                            $(event.target).parent().hide();\n' +
+      '                        });\n' +
+      '                    }\n' +
+      '\n' +
+      "                    let stickyEl = document.querySelector('.js-sticky-footer-close');\n" +
+      '                    if(stickyEl !== null) {\n' +
+      "                        stickyEl.addEventListener('click', (event) => {document.getElementById('sticky_footer').remove();});\n" +
+      '                    }\n' +
+      '                },\n' +
+      '                isShowCloseButton: event => {\n' +
+      '\n' +
+      '                    return !event.i'... 194129 more characters
+  },
+  status: 404
+}
+Successfully updated news feeds: 41 sources, 0 failures, 537 total items
+Yeniden analiz: 10 haber ile 10 ülkenin fiyatı güncellendi

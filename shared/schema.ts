@@ -1,109 +1,109 @@
-import { pgTable, text, serial, integer, decimal, boolean, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
+import { mysqlTable, varchar, int, decimal, boolean, timestamp, text, index, unique, primaryKey } from "drizzle-orm/mysql-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import session from "express-session";
 
 // Users table
-export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
-  username: text("username").notNull().unique(),
-  email: text("email").notNull().unique(),
-  password: text("password").notNull(),
-  fullName: text("full_name"),
+export const users = mysqlTable("users", {
+  id: int("id").autoincrement().primaryKey(),
+  username: varchar("username", { length: 255 }).notNull().unique(),
+  email: varchar("email", { length: 255 }).notNull().unique(),
+  password: varchar("password", { length: 255 }).notNull(),
+  fullName: varchar("full_name", { length: 255 }),
   isKycVerified: boolean("is_kyc_verified").default(false),
-  walletBalance: decimal("wallet_balance").default("1000"),
-  referralCode: text("referral_code").unique(),
-  referredBy: integer("referred_by").references(() => users.id),
+  walletBalance: decimal("wallet_balance", { precision: 10, scale: 2 }).default("1000"),
+  referralCode: varchar("referral_code", { length: 255 }).unique(),
+  referredBy: int("referred_by").references(() => users.id),
   lastBonusClaimDate: timestamp("last_bonus_claim_date"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 // KYC information table
-export const kycInfo = pgTable("kyc_info", {
-  id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull().references(() => users.id),
-  firstName: text("first_name").notNull(),
-  lastName: text("last_name").notNull(),
-  dateOfBirth: text("date_of_birth").notNull(),
-  country: text("country").notNull(),
-  address: text("address"),
-  city: text("city"),
-  postalCode: text("postal_code"),
-  phoneNumber: text("phone_number"),
-  idType: text("id_type"),
-  idNumber: text("id_number"),
-  status: text("status").default("pending"), // pending, approved, rejected
+export const kycInfo = mysqlTable("kyc_info", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("user_id").notNull().references(() => users.id),
+  firstName: varchar("first_name", { length: 255 }).notNull(),
+  lastName: varchar("last_name", { length: 255 }).notNull(),
+  dateOfBirth: varchar("date_of_birth", { length: 255 }).notNull(),
+  country: varchar("country", { length: 255 }).notNull(),
+  address: varchar("address", { length: 255 }),
+  city: varchar("city", { length: 255 }),
+  postalCode: varchar("postal_code", { length: 255 }),
+  phoneNumber: varchar("phone_number", { length: 255 }),
+  idType: varchar("id_type", { length: 255 }),
+  idNumber: varchar("id_number", { length: 255 }),
+  status: varchar("status", { length: 255 }).default("pending"), // pending, approved, rejected
   submittedAt: timestamp("submitted_at").defaultNow(),
 });
 
 // Country shares table
-export const countryShares = pgTable("country_shares", {
-  id: serial("id").primaryKey(),
-  countryCode: text("country_code").notNull().unique(),
-  countryName: text("country_name").notNull(),
-  totalShares: integer("total_shares").default(10000000), // 10 million shares
-  availableShares: integer("available_shares").default(10000000),
-  currentPrice: decimal("current_price").default("0.5"),
-  previousPrice: decimal("previous_price").default("0.5"),
+export const countryShares = mysqlTable("country_shares", {
+  id: int("id").autoincrement().primaryKey(),
+  countryCode: varchar("country_code", { length: 10 }).notNull().unique(),
+  countryName: varchar("country_name", { length: 255 }).notNull(),
+  totalShares: int("total_shares").default(10000000), // 10 million shares
+  availableShares: int("available_shares").default(10000000),
+  currentPrice: decimal("current_price", { precision: 10, scale: 2 }).default("0.5"),
+  previousPrice: decimal("previous_price", { precision: 10, scale: 2 }).default("0.5"),
   isPreSale: boolean("is_pre_sale").default(true),
-  preSaleProgress: decimal("pre_sale_progress").default("0"),
+  preSaleProgress: decimal("pre_sale_progress", { precision: 10, scale: 2 }).default("0"),
 });
 
 // User holdings table
-export const userHoldings = pgTable("user_holdings", {
-  id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull().references(() => users.id),
-  countryCode: text("country_code").notNull().references(() => countryShares.countryCode),
-  shares: decimal("shares").notNull(),
-  averageBuyPrice: decimal("average_buy_price").notNull(),
+export const userHoldings = mysqlTable("user_holdings", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("user_id").notNull().references(() => users.id),
+  countryCode: varchar("country_code", { length: 10 }).notNull().references(() => countryShares.countryCode),
+  shares: decimal("shares", { precision: 10, scale: 2 }).notNull(),
+  averageBuyPrice: decimal("average_buy_price", { precision: 10, scale: 2 }).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 }, (table) => {
   return {
-    userCountryIdx: uniqueIndex("user_country_idx").on(table.userId, table.countryCode),
+    userCountryIdx: unique("user_country_idx").on(table.userId, table.countryCode),
   };
 });
 
 // Transactions table
-export const transactions = pgTable("transactions", {
-  id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull().references(() => users.id),
-  countryCode: text("country_code").notNull().references(() => countryShares.countryCode),
-  type: text("type").notNull(), // buy, sell
-  shares: decimal("shares").notNull(),
-  price: decimal("price").notNull(),
-  leverage: integer("leverage").default(1),
-  total: decimal("total").notNull(),
+export const transactions = mysqlTable("transactions", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("user_id").notNull().references(() => users.id),
+  countryCode: varchar("country_code", { length: 10 }).notNull().references(() => countryShares.countryCode),
+  type: varchar("type", { length: 10 }).notNull(), // buy, sell
+  shares: decimal("shares", { precision: 10, scale: 2 }).notNull(),
+  price: decimal("price", { precision: 10, scale: 2 }).notNull(),
+  leverage: int("leverage").default(1),
+  total: decimal("total", { precision: 10, scale: 2 }).notNull(),
   timestamp: timestamp("timestamp").defaultNow(),
 });
 
 // News items table
-export const newsItems = pgTable("news_items", {
-  id: serial("id").primaryKey(),
-  countryCode: text("country_code").references(() => countryShares.countryCode),
-  title: text("title").notNull(),
+export const newsItems = mysqlTable("news_items", {
+  id: int("id").autoincrement().primaryKey(),
+  countryCode: varchar("country_code", { length: 10 }).references(() => countryShares.countryCode),
+  title: varchar("title", { length: 255 }).notNull(),
   content: text("content").notNull(),
-  source: text("source"),
+  source: varchar("source", { length: 255 }),
   timestamp: timestamp("timestamp").defaultNow(),
 });
 
 // Affiliate commissions table
-export const affiliateCommissions = pgTable("affiliate_commissions", {
-  id: serial("id").primaryKey(),
-  referrerId: integer("referrer_id").notNull().references(() => users.id),
-  referredUserId: integer("referred_user_id").notNull().references(() => users.id),
-  transactionId: integer("transaction_id").references(() => transactions.id),
-  amount: decimal("amount").notNull(),
-  status: text("status").default("pending"), // pending, paid
+export const affiliateCommissions = mysqlTable("affiliate_commissions", {
+  id: int("id").autoincrement().primaryKey(),
+  referrerId: int("referrer_id").notNull().references(() => users.id),
+  referredUserId: int("referred_user_id").notNull().references(() => users.id),
+  transactionId: int("transaction_id").references(() => transactions.id),
+  amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+  status: varchar("status", { length: 50 }).default("pending"), // pending, paid
   createdAt: timestamp("created_at").defaultNow(),
   paidAt: timestamp("paid_at"),
 });
 
 // Bonus claims table
-export const bonusClaims = pgTable("bonus_claims", {
-  id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull().references(() => users.id),
-  countryCode: text("country_code").notNull().references(() => countryShares.countryCode),
-  shares: decimal("shares").notNull(),
+export const bonusClaims = mysqlTable("bonus_claims", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("user_id").notNull().references(() => users.id),
+  countryCode: varchar("country_code", { length: 10 }).notNull().references(() => countryShares.countryCode),
+  shares: decimal("shares", { precision: 10, scale: 2 }).notNull(),
   claimDate: timestamp("claim_date").defaultNow(),
 });
 
@@ -177,34 +177,34 @@ export type BonusClaim = typeof bonusClaims.$inferSelect;
 export type InsertBonusClaim = z.infer<typeof insertBonusClaimSchema>;
 
 // Site Settings
-export const siteSettings = pgTable("site_settings", {
-  id: serial("id").primaryKey(),
-  settingKey: text("setting_key").notNull().unique(),
+export const siteSettings = mysqlTable("site_settings", {
+  id: int("id").autoincrement().primaryKey(),
+  settingKey: varchar("setting_key", { length: 255 }).notNull().unique(),
   settingValue: text("setting_value"),
-  category: text("category").notNull(),
+  category: varchar("category", { length: 255 }).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Footer Links
-export const footerLinks = pgTable("footer_links", {
-  id: serial("id").primaryKey(),
-  title: text("title").notNull(),
-  url: text("url").notNull(),
-  category: text("category").notNull(),
-  order: integer("order").notNull(),
+export const footerLinks = mysqlTable("footer_links", {
+  id: int("id").autoincrement().primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  url: varchar("url", { length: 255 }).notNull(),
+  category: varchar("category", { length: 255 }).notNull(),
+  order: int("order").notNull(),
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Social Links
-export const socialLinks = pgTable("social_links", {
-  id: serial("id").primaryKey(),
-  platform: text("platform").notNull(),
-  url: text("url").notNull(),
-  icon: text("icon"),
-  order: integer("order").notNull(),
+export const socialLinks = mysqlTable("social_links", {
+  id: int("id").autoincrement().primaryKey(),
+  platform: varchar("platform", { length: 255 }).notNull(),
+  url: varchar("url", { length: 255 }).notNull(),
+  icon: varchar("icon", { length: 255 }),
+  order: int("order").notNull(),
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),

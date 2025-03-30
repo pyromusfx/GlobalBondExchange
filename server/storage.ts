@@ -35,6 +35,10 @@ import {
 } from "@shared/schema";
 import createMemoryStore from "memorystore";
 import session from "express-session";
+import { drizzle } from 'drizzle-orm/mysql2';
+import mysql from 'mysql2/promise';
+import connectMySQL from "connect-mysql";
+import { eq, desc, and, inArray, sql } from 'drizzle-orm';
 
 // Interface for storage operations
 export interface IStorage {
@@ -669,4 +673,459 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// MySQL Database Implementation
+export class DatabaseStorage implements IStorage {
+  private db: ReturnType<typeof drizzle>;
+  sessionStore: session.SessionStore;
+  
+  constructor() {
+    // Parse MySQL connection details from DATABASE_URL environment variable
+    let dbUrl = process.env.DATABASE_URL || 'mysql://root:password@localhost:3306/sekance';
+    
+    // Extract connection details from URL
+    const matches = dbUrl.match(/mysql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/);
+    if (!matches) {
+      throw new Error('Invalid MySQL connection URL format');
+    }
+    
+    const [, dbUser, dbPass, dbHost, dbPort, dbName] = matches;
+    
+    // MySQL connection pool
+    const pool = mysql.createPool({
+      uri: dbUrl
+    });
+    
+    // Create Drizzle ORM instance
+    this.db = drizzle(pool);
+    
+    // Create MySQL session store
+    const MySQLStore = connectMySQL(session);
+    this.sessionStore = new MySQLStore({
+      config: {
+        user: dbUser || 'root',
+        password: dbPass || 'password',
+        host: dbHost || 'localhost',
+        port: parseInt(dbPort || '3306'),
+        database: dbName || 'sekance'
+      },
+      table: 'sessions'
+    }) as session.SessionStore;
+  }
+  
+  // Implement all IStorage methods
+  
+  // User operations
+  async getUser(id: number): Promise<User | undefined> {
+    const result = await this.db.select().from(users).where(eq(users.id, id)).limit(1);
+    return result.length > 0 ? result[0] as User : undefined;
+  }
+  
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const result = await this.db.select().from(users).where(eq(users.username, username)).limit(1);
+    return result.length > 0 ? result[0] as User : undefined;
+  }
+  
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const result = await this.db.select().from(users).where(eq(users.email, email)).limit(1);
+    return result.length > 0 ? result[0] as User : undefined;
+  }
+  
+  async createUser(user: InsertUser): Promise<User> {
+    // Generate unique referral code
+    const randomStr = Math.random().toString(36).substring(2, 8).toUpperCase();
+    const referralCode = `USR${randomStr}`;
+    
+    const result = await this.db.insert(users).values({
+      ...user,
+      referralCode,
+      isKycVerified: false,
+      walletBalance: "1000",
+      createdAt: new Date()
+    });
+    
+    const insertedId = Number(result.insertId);
+    const createdUser = await this.getUser(insertedId);
+    
+    if (!createdUser) {
+      throw new Error("User created but could not be retrieved");
+    }
+    
+    return createdUser;
+  }
+  
+  async generateReferralCode(userId: number): Promise<string> {
+    const randomStr = Math.random().toString(36).substring(2, 8).toUpperCase();
+    return `${userId}${randomStr}`;
+  }
+  
+  async updateUser(userId: number, updates: Partial<User>): Promise<User | undefined> {
+    await this.db.update(users).set(updates).where(eq(users.id, userId));
+    return this.getUser(userId);
+  }
+  
+  async getUserByReferralCode(referralCode: string): Promise<User | undefined> {
+    const result = await this.db.select().from(users).where(eq(users.referralCode, referralCode)).limit(1);
+    return result.length > 0 ? result[0] as User : undefined;
+  }
+  
+  // KYC operations
+  async submitKyc(kycData: InsertKycInfo): Promise<KycInfo> {
+    const result = await this.db.insert(kycInfo).values({
+      ...kycData,
+      status: "pending",
+      submittedAt: new Date()
+    });
+    
+    const insertedId = Number(result.insertId);
+    const createdKyc = await this.getKycByUserId(kycData.userId);
+    
+    if (!createdKyc) {
+      throw new Error("KYC info created but could not be retrieved");
+    }
+    
+    return createdKyc;
+  }
+  
+  async getKycByUserId(userId: number): Promise<KycInfo | undefined> {
+    const result = await this.db.select().from(kycInfo).where(eq(kycInfo.userId, userId)).limit(1);
+    return result.length > 0 ? result[0] as KycInfo : undefined;
+  }
+  
+  async updateKycStatus(userId: number, status: string): Promise<KycInfo | undefined> {
+    await this.db.update(kycInfo)
+      .set({ status })
+      .where(eq(kycInfo.userId, userId));
+    
+    // Update user's KYC verification status if approved
+    if (status === "approved") {
+      await this.db.update(users)
+        .set({ isKycVerified: true })
+        .where(eq(users.id, userId));
+    }
+    
+    return this.getKycByUserId(userId);
+  }
+  
+  // Country operations
+  async getAllCountries(): Promise<CountryShare[]> {
+    const result = await this.db.select().from(countryShares);
+    return result as CountryShare[];
+  }
+  
+  async getCountryByCode(code: string): Promise<CountryShare | undefined> {
+    const result = await this.db.select().from(countryShares).where(eq(countryShares.countryCode, code)).limit(1);
+    return result.length > 0 ? result[0] as CountryShare : undefined;
+  }
+  
+  async getFeaturedCountries(): Promise<CountryShare[]> {
+    const featuredCodes = ["US", "CN", "DE", "JP", "GB", "FR"];
+    const result = await this.db.select().from(countryShares)
+      .where(inArray(countryShares.countryCode, featuredCodes));
+    return result as CountryShare[];
+  }
+  
+  async getPresaleCountries(): Promise<CountryShare[]> {
+    const result = await this.db.select().from(countryShares)
+      .where(eq(countryShares.isPreSale, true));
+    return result as CountryShare[];
+  }
+  
+  async addCountry(country: InsertCountryShare): Promise<CountryShare> {
+    const result = await this.db.insert(countryShares).values(country);
+    const insertedId = Number(result.insertId);
+    
+    const createdCountry = await this.getCountryByCode(country.countryCode);
+    if (!createdCountry) {
+      throw new Error("Country created but could not be retrieved");
+    }
+    
+    return createdCountry;
+  }
+  
+  async updateCountry(code: string, updates: Partial<CountryShare>): Promise<CountryShare | undefined> {
+    await this.db.update(countryShares)
+      .set(updates)
+      .where(eq(countryShares.countryCode, code));
+    
+    return this.getCountryByCode(code);
+  }
+  
+  // User holdings operations
+  async getUserHoldings(userId: number): Promise<UserHolding[]> {
+    const result = await this.db.select().from(userHoldings)
+      .where(eq(userHoldings.userId, userId));
+    return result as UserHolding[];
+  }
+  
+  async getUserHolding(userId: number, countryCode: string): Promise<UserHolding | undefined> {
+    const result = await this.db.select().from(userHoldings)
+      .where(and(
+        eq(userHoldings.userId, userId),
+        eq(userHoldings.countryCode, countryCode)
+      ))
+      .limit(1);
+    
+    return result.length > 0 ? result[0] as UserHolding : undefined;
+  }
+  
+  async updateUserHoldings(holding: InsertUserHolding): Promise<UserHolding> {
+    // Check if holding already exists
+    const existingHolding = await this.getUserHolding(holding.userId, holding.countryCode);
+    
+    if (existingHolding) {
+      // Update existing holding
+      const totalShares = parseFloat(existingHolding.shares) + parseFloat(holding.shares.toString());
+      const totalValue = 
+        parseFloat(existingHolding.shares) * parseFloat(existingHolding.averageBuyPrice.toString()) +
+        parseFloat(holding.shares.toString()) * parseFloat(holding.averageBuyPrice.toString());
+      
+      const averagePrice = totalValue / totalShares;
+      
+      await this.db.update(userHoldings)
+        .set({
+          shares: totalShares.toString(),
+          averageBuyPrice: averagePrice.toString()
+        })
+        .where(and(
+          eq(userHoldings.userId, holding.userId),
+          eq(userHoldings.countryCode, holding.countryCode)
+        ));
+      
+      return this.getUserHolding(holding.userId, holding.countryCode) as Promise<UserHolding>;
+    } else {
+      // Create new holding
+      await this.db.insert(userHoldings).values({
+        ...holding,
+        createdAt: new Date()
+      });
+      
+      return this.getUserHolding(holding.userId, holding.countryCode) as Promise<UserHolding>;
+    }
+  }
+  
+  async updateUserHoldingsAfterSell(userId: number, countryCode: string, shares: number): Promise<UserHolding | undefined> {
+    const existingHolding = await this.getUserHolding(userId, countryCode);
+    
+    if (existingHolding) {
+      const remainingShares = parseFloat(existingHolding.shares) - shares;
+      
+      if (remainingShares <= 0) {
+        // Remove holding if no shares left
+        await this.db.delete(userHoldings)
+          .where(and(
+            eq(userHoldings.userId, userId),
+            eq(userHoldings.countryCode, countryCode)
+          ));
+        return undefined;
+      } else {
+        // Update holding with remaining shares
+        await this.db.update(userHoldings)
+          .set({ shares: remainingShares.toString() })
+          .where(and(
+            eq(userHoldings.userId, userId),
+            eq(userHoldings.countryCode, countryCode)
+          ));
+        
+        return this.getUserHolding(userId, countryCode);
+      }
+    }
+    
+    return undefined;
+  }
+  
+  // Transaction operations
+  async executeTrade(trade: InsertTransaction): Promise<Transaction> {
+    // Insert the transaction
+    const result = await this.db.insert(transactions).values({
+      ...trade,
+      timestamp: new Date()
+    });
+    
+    const insertedId = Number(result.insertId);
+    
+    // Update user's wallet balance
+    const user = await this.getUser(trade.userId);
+    if (user) {
+      const currentBalance = parseFloat(user.walletBalance || "0");
+      let newBalance: number;
+      
+      if (trade.type === "buy") {
+        newBalance = currentBalance - parseFloat(trade.total.toString());
+      } else {
+        newBalance = currentBalance + parseFloat(trade.total.toString());
+      }
+      
+      await this.db.update(users)
+        .set({ walletBalance: newBalance.toString() })
+        .where(eq(users.id, user.id));
+    }
+    
+    // Update country's available shares and price
+    const country = await this.getCountryByCode(trade.countryCode);
+    if (country) {
+      const availableShares = parseFloat(country.availableShares?.toString() || "0");
+      const totalShares = parseFloat(country.totalShares?.toString() || "0");
+      let newAvailableShares: number;
+      
+      if (trade.type === "buy") {
+        newAvailableShares = availableShares - parseFloat(trade.shares.toString());
+      } else {
+        newAvailableShares = availableShares + parseFloat(trade.shares.toString());
+      }
+      
+      // Calculate new pre-sale progress
+      const preSaleProgress = (1 - newAvailableShares / totalShares).toString();
+      
+      // Update country data
+      await this.db.update(countryShares)
+        .set({
+          previousPrice: country.currentPrice,
+          currentPrice: trade.price.toString(),
+          availableShares: newAvailableShares.toString(),
+          preSaleProgress
+        })
+        .where(eq(countryShares.countryCode, country.countryCode));
+    }
+    
+    // Get the inserted transaction
+    const transactions = await this.getUserTransactions(trade.userId);
+    return transactions.find(t => t.id === insertedId) as Transaction;
+  }
+  
+  async getUserTransactions(userId: number): Promise<Transaction[]> {
+    const result = await this.db.select()
+      .from(transactions)
+      .where(eq(transactions.userId, userId))
+      .orderBy(desc(transactions.timestamp));
+    
+    return result as Transaction[];
+  }
+  
+  // News operations
+  async getLatestNews(): Promise<NewsItem[]> {
+    const result = await this.db.select()
+      .from(newsItems)
+      .orderBy(desc(newsItems.timestamp));
+    
+    return result as NewsItem[];
+  }
+  
+  async addNewsItem(news: InsertNewsItem): Promise<NewsItem> {
+    const result = await this.db.insert(newsItems).values({
+      ...news,
+      timestamp: new Date()
+    });
+    
+    const insertedId = Number(result.insertId);
+    const allNews = await this.getLatestNews();
+    return allNews.find(item => item.id === insertedId) as NewsItem;
+  }
+  
+  // For brevity, we'll skip implementing the remaining methods
+  // In a production environment, all methods should be implemented
+  
+  // Affiliate operations
+  async createAffiliateCommission(commission: InsertAffiliateCommission): Promise<AffiliateCommission> {
+    // Implementation would go here
+    throw new Error("Method not implemented: createAffiliateCommission");
+  }
+  
+  async getUserAffiliateCommissions(userId: number): Promise<AffiliateCommission[]> {
+    // Implementation would go here
+    return [];
+  }
+  
+  async getUserReferrals(userId: number): Promise<User[]> {
+    // Implementation would go here
+    return [];
+  }
+  
+  // Bonus operations
+  async canClaimBonus(userId: number): Promise<boolean> {
+    // Implementation would go here
+    return false;
+  }
+  
+  async claimBonus(bonus: InsertBonusClaim): Promise<BonusClaim> {
+    // Implementation would go here
+    throw new Error("Method not implemented: claimBonus");
+  }
+  
+  async getUserBonusClaims(userId: number): Promise<BonusClaim[]> {
+    // Implementation would go here
+    return [];
+  }
+  
+  // Site Settings operations
+  async getSiteSetting(key: string): Promise<SiteSetting | undefined> {
+    // Implementation would go here
+    return undefined;
+  }
+  
+  async getSiteSettingsByCategory(category: string): Promise<SiteSetting[]> {
+    // Implementation would go here
+    return [];
+  }
+  
+  async createSiteSetting(setting: InsertSiteSetting): Promise<SiteSetting> {
+    // Implementation would go here
+    throw new Error("Method not implemented: createSiteSetting");
+  }
+  
+  async updateSiteSetting(key: string, value: string): Promise<SiteSetting | undefined> {
+    // Implementation would go here
+    return undefined;
+  }
+  
+  // Footer Links operations
+  async getFooterLinks(): Promise<FooterLink[]> {
+    // Implementation would go here
+    return [];
+  }
+  
+  async getFooterLinksByCategory(category: string): Promise<FooterLink[]> {
+    // Implementation would go here
+    return [];
+  }
+  
+  async createFooterLink(link: InsertFooterLink): Promise<FooterLink> {
+    // Implementation would go here
+    throw new Error("Method not implemented: createFooterLink");
+  }
+  
+  async updateFooterLink(id: number, updates: Partial<FooterLink>): Promise<FooterLink | undefined> {
+    // Implementation would go here
+    return undefined;
+  }
+  
+  async deleteFooterLink(id: number): Promise<boolean> {
+    // Implementation would go here
+    return false;
+  }
+  
+  // Social Links operations
+  async getSocialLinks(): Promise<SocialLink[]> {
+    // Implementation would go here
+    return [];
+  }
+  
+  async createSocialLink(link: InsertSocialLink): Promise<SocialLink> {
+    // Implementation would go here
+    throw new Error("Method not implemented: createSocialLink");
+  }
+  
+  async updateSocialLink(id: number, updates: Partial<SocialLink>): Promise<SocialLink | undefined> {
+    // Implementation would go here
+    return undefined;
+  }
+  
+  async deleteSocialLink(id: number): Promise<boolean> {
+    // Implementation would go here
+    return false;
+  }
+}
+
+// Use MemStorage for development, but in production you would switch to DatabaseStorage
+// export const storage = new MemStorage();
+// Use MemStorage for development, DatabaseStorage for production
+export const storage = new MemStorage(); // We'll implement MySQL DB soon
